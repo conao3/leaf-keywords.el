@@ -1,0 +1,103 @@
+#+author: conao
+#+date: <2019-05-24 Fri>
+
+[[https://github.com/conao3/leaf-keywords.el][https://raw.githubusercontent.com/conao3/files/master/blob/headers/png/leaf-keywords.el.png]]
+[[https://github.com/conao3/leaf-keywords.el/blob/master/LICENSE][https://img.shields.io/github/license/conao3/leaf-keywords.el.svg?style=flat-square]]
+[[https://github.com/conao3/leaf-keywords.el/releases][https://img.shields.io/github/tag/conao3/leaf-keywords.el.svg?style=flat-square]]
+[[https://travis-ci.org/conao3/leaf-keywords.el][https://img.shields.io/travis/conao3/leaf-keywords.el/master.svg?style=flat-square]]
+[[https://app.codacy.com/project/conao3/leaf-keywords.el/dashboard][https://img.shields.io/codacy/grade/1a6befcbdfdb4b1fb37a6f7f040a75b2.svg?logo=codacy&style=flat-square]]
+[[https://www.patreon.com/conao3][https://img.shields.io/badge/patreon-@conao3-orange.svg?logo=patreon&style=flat-square]]
+[[https://twitter.com/conao_3][https://img.shields.io/badge/twitter-@conao__3-blue.svg?logo=twitter&style=flat-square]]
+[[https://join.slack.com/t/conao3-support/shared_invite/enQtNTg2MTY0MjkzOTU0LTFjOTdhOTFiNTM2NmY5YTE5MTNlYzNiOTE2MTZlZWZkNDEzZmRhN2E0NjkwMWViZTZiYjA4MDUxYTUzNDZiNjY][https://img.shields.io/badge/chat-on_slack-blue.svg?logo=slack&style=flat-square]]
+
+* Table of Contents
+- [[#background][Background]]
+- [[#install][Install]]
+- [[#usage][Usage]]
+- [[#information][Information]]
+  - [[#donation][Donation]]
+  - [[#community][Community]]
+  - [[#contribution][Contribution]]
+  - [[#migration][Migration]]
+  - [[#license][License]]
+  - [[#author][Author]]
+  - [[#contributors][Contributors]]
+  - [[#welcome-pr][Welcome PR]]
+  - [[#special-thanks][Special Thanks]]
+
+* Description
+~leaf.el~ is yet another [[https://github.com/jwiegley/use-package][use-package]].
+
+~leaf-keywords.el~ add additional keywords for ~leaf.el~
+* Install
+Put ~leaf-keywords.el~ at any folder added ~load-path~.
+Then ~(require 'leaf-keywords)~.
+
+#+BEGIN_SRC emacs-lisp
+  ;; add to load-path
+  ;; (locate-user-emacs-file "site-lisp/leaf-keywords.el")
+  ;;  => "~/.emacs.d/local/26.1/site-lisp/leaf-keywords.el"
+
+  (add-to-list 'load-path (locate-user-emacs-file "site-lisp/leaf-keywords.el"))
+  (add-to-list 'load-path (locate-user-emacs-file "site-lisp/feather.el"))
+
+  (require 'leaf)
+  (require 'leaf-keywords')
+  (custom-set-variables '(leaf-backend-ensure 'package)
+                        '(leaf-backend-bind 'bind-key)
+                        '(leaf-backend-bind* 'bind-key))
+
+  (leaf package
+    :config
+    (add-list-to-list 'package-archives
+      '(("org"       . "https://orgmode.org/elpa/")
+        ("melpa"     . "https://melpa.org/packages/")))
+    (package-initialize))
+#+END_SRC
+
+* Usage
+Use ~leaf~ in your init.el like ~use-package~.
+You declaratively tell the ~leaf~ to configure the package using special keywords.
+
+~leaf~ converts your declaration into Elisp for Emacs to understand, and Emacs executes it to configure the package.
+
+* Information
+** Donation
+I love OSS and I am dreaming of working on it as *full-time* job.
+
+*With your support*, I will be able to spend more time at OSS!
+
+[[https://www.patreon.com/conao3][https://c5.patreon.com/external/logo/become_a_patron_button.png]]
+
+** Community
+All feedback and suggestions are welcome!
+
+You can use github issues, but you can also use [[https://join.slack.com/t/conao3-support/shared_invite/enQtNTg2MTY0MjkzOTU0LTFjOTdhOTFiNTM2NmY5YTE5MTNlYzNiOTE2MTZlZWZkNDEzZmRhN2E0NjkwMWViZTZiYjA4MDUxYTUzNDZiNjY][Slack]]
+if you want a more casual conversation.
+
+** Contribution
+We welcome PR!
+Travis Cl test ~leaf-test.el~ with all Emacs version 24.4 or above.
+
+I think that it is difficult to prepare the environment locally,
+so I think that it is good to throw PR and test Travis for the time being!
+Feel free throw PR!
+
+** Migration
+** License
+#+begin_example
+  Affero General Public License Version 3 (AGPLv3)
+  Copyright (c) Naoya Yamashita - https://conao3.com
+  https://github.com/conao3/leaf-keywords.el/blob/master/LICENSE
+#+end_example
+
+** Author
+- Naoya Yamashita ([[https://github.com/conao3][conao3]])
+
+** Contributors
+
+** Special Thanks
+Advice and comments given by [[http://emacs-jp.github.io/][Emacs-JP]]'s forum member has been a great help
+in developing ~leaf-keywords.el~.
+
+Thank you very much!!
