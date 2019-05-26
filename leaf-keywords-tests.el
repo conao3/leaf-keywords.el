@@ -184,6 +184,83 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+(cort-deftest-with-macroexpand leaf/el-get
+  '(((leaf leaf
+       :init (leaf-pre-init)
+       :el-get t
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle leaf)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ;; ((leaf leaf
+    ;;    :init (leaf-pre-init)
+    ;;    :el-get nil
+    ;;    :config (leaf-init))
+    ;;  (prog1 'leaf
+    ;;    (leaf-pre-init)
+    ;;    (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :el-get leaf leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :el-get t
+       :el-get leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :el-get t leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :el-get (zenburn-theme
+                :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+                (load-theme 'zenburn t))
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+         (load-theme 'zenburn t))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :el-get
+       (yaicomplete
+        :url "https://github.com/tarao/elisp.git"
+        :features yaicomplete)
+       (zenburn-theme
+        :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+        (load-theme 'zenburn t))
+       :config (leaf-init))
+     (prog1 'leaf
+       (el-get-bundle yaicomplete :url "https://github.com/tarao/elisp.git" :features yaicomplete)
+       (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+         (load-theme 'zenburn t))
+       (leaf-pre-init)
+       (leaf-init)))))
 
 (provide 'leaf-keywords-tests)
 ;;; leaf-keywords-tests.el ends here

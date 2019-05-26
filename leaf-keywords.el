@@ -58,6 +58,11 @@
 
 (progn
   (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :ensure
+          (cdr
+           '(:dummy
+             :el-get `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)))))
+  (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :commands
           (cdr
            '(:dummy
@@ -73,7 +78,12 @@
             (let ((ret (leaf-flatten leaf--value)))
               (if (eq nil (car ret))
                   nil
-                (delete-dups (delq nil (leaf-subst t leaf--name ret)))))))
+                (delete-dups (delq nil (leaf-subst t leaf--name ret))))))
+           ((memq leaf--key '(:el-get))
+            (mapcar
+             (lambda (elm)
+               (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
+             leaf--value)))
          leaf-normarize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
