@@ -39,7 +39,7 @@
   leaf-defaults leaf-system-defaults leaf-defer-keywords
   leaf--raw leaf--name leaf--key leaf--keyname
   leaf--value leaf--body leaf--rest leaf--autoload
-  leaf-keywords leaf-normarize
+  leaf-keywords leaf-normalize
   :defun
   leaf-warn leaf-error
   leaf-truep leaf-pairp
@@ -54,12 +54,12 @@
 (defconst leaf-keywords-raw-keywords leaf-keywords
   "Raw `leaf-keywords' before this package changed.")
 
-(defconst leaf-keywords-raw-normarize leaf-normarize
-  "Raw `leaf-normarize' before this package changed.")
+(defconst leaf-keywords-raw-normalize leaf-normalize
+  "Raw `leaf-normalize' before this package changed.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  Additional keywords, normarize
+;;  Additional keywords, normalize
 ;;
 
 ;; silent byte-compiler
@@ -68,7 +68,7 @@
 (defvar leaf-keywords-before-load)
 (defvar leaf-keywords-after-load)
 (defvar leaf-keywords-after-require)
-(defvar leaf-keywords-normarize)
+(defvar leaf-keywords-normalize)
 
 (defun leaf-keywords-set-keywords ()
   "Modify `leaf-keywords'"
@@ -112,10 +112,10 @@
                 :group 'leaf)))
          (leaf-plist-keys leaf-keywords)))))
 
-(defun leaf-keywords-set-normarize ()
-  "Modify leaf-normarize"
-  (setq leaf-normarize
-        (append leaf-keywords-normarize leaf-keywords-raw-normarize)))
+(defun leaf-keywords-set-normalize ()
+  "Modify leaf-normalize"
+  (setq leaf-normalize
+        (append leaf-keywords-normalize leaf-keywords-raw-normalize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -157,7 +157,7 @@
   "Additional `leaf-keywords' after wait loading.
 :require ... <this place> :config")
 
-(defvar leaf-keywords-normarize
+(defvar leaf-keywords-normalize
   '(((memq leaf--key '(:diminish))
      ;; Accept: 't, 'nil, symbol and list of these (and nested)
      ;; Return: symbol list.
@@ -205,10 +205,10 @@
       (lambda (elm)
         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
       leaf--value)))
-  "Additional `leaf-normarize'.")
+  "Additional `leaf-normalize'.")
 
 (leaf-keywords-set-keywords)
-(leaf-keywords-set-normarize)
+(leaf-keywords-set-normalize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
