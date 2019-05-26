@@ -262,6 +262,231 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+(cort-deftest-with-macroexpand leaf/chord
+  '(((leaf macrostep
+       :ensure t
+       :chord (("jk" . macrostep-expand)))
+     (prog1 'macrostep
+       (autoload #'macrostep-expand "macrostep" nil t)
+       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-key-chord "jk" #'macrostep-expand nil)))
+
+    ((leaf macrostep
+       :ensure t
+       :chord ("jk" . macrostep-expand))
+     (prog1 'macrostep
+       (autoload #'macrostep-expand "macrostep" nil t)
+       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-key-chord "jk" #'macrostep-expand nil)))
+
+    ((leaf color-moccur
+       :chord
+       ("jk" . moccur)
+       ("fi" . isearch-moccur))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord "jk" #'moccur nil)
+       (leaf-key-chord "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord (("jk" . moccur)
+               ("fi" . isearch-moccur)))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord "jk" #'moccur nil)
+       (leaf-key-chord "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord
+       ("jk" . nil)
+       ("fi" . isearch-moccur))
+     (prog1 'color-moccur
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord "jk" #'nil nil)
+       (leaf-key-chord "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord (("jk" . nil)
+               ("fi" . isearch-moccur)))
+     (prog1 'color-moccur
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord "jk" #'nil nil)
+       (leaf-key-chord "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord
+       ("jk" . moccur)
+       (:isearch-mode-map
+        :package isearch
+        ("ji" . isearch-moccur)
+        ("jo" . isearch-moccur-all)))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (leaf-key-chord "jk" #'moccur nil)
+       (leaf-key-chord "ji" #'isearch-moccur isearch-mode-map)
+       (leaf-key-chord "jo" #'isearch-moccur-all isearch-mode-map)))
+
+    ((leaf color-moccur
+       :chord (("jk" . moccur)
+               (:isearch-mode-map
+                :package isearch
+                ("ji" . isearch-moccur)
+                ("jo" . isearch-moccur-all))))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (leaf-key-chord "jk" #'moccur nil)
+       (leaf-key-chord "ji" #'isearch-moccur isearch-mode-map)
+       (leaf-key-chord "jo" #'isearch-moccur-all isearch-mode-map)))))
+
+(cort-deftest-with-macroexpand leaf/chord*
+  '(((leaf macrostep
+       :ensure t
+       :chord* (("jk" . macrostep-expand)))
+     (prog1 'macrostep
+       (autoload #'macrostep-expand "macrostep" nil t)
+       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-key-chord* "jk" #'macrostep-expand nil)))
+
+    ((leaf macrostep
+       :ensure t
+       :chord* ("jk" . macrostep-expand))
+     (prog1 'macrostep
+       (autoload #'macrostep-expand "macrostep" nil t)
+       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-key-chord* "jk" #'macrostep-expand nil)))
+
+    ((leaf color-moccur
+       :chord*
+       ("jk" . moccur)
+       ("fi" . isearch-moccur))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'moccur nil)
+       (leaf-key-chord* "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord* (("jk" . moccur)
+               ("fi" . isearch-moccur)))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'moccur nil)
+       (leaf-key-chord* "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord*
+       ("jk" . nil)
+       ("fi" . isearch-moccur))
+     (prog1 'color-moccur
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'nil nil)
+       (leaf-key-chord* "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord* (("jk" . nil)
+               ("fi" . isearch-moccur)))
+     (prog1 'color-moccur
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'nil nil)
+       (leaf-key-chord* "fi" #'isearch-moccur nil)))
+
+    ((leaf color-moccur
+       :chord*
+       ("jk" . moccur)
+       (:isearch-mode-map
+        :package isearch
+        ("ji" . isearch-moccur)
+        ("jo" . isearch-moccur-all)))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'moccur nil)
+       (leaf-key-chord* "ji" #'isearch-moccur isearch-mode-map)
+       (leaf-key-chord* "jo" #'isearch-moccur-all isearch-mode-map)))
+
+    ((leaf color-moccur
+       :chord* (("jk" . moccur)
+               (:isearch-mode-map
+                :package isearch
+                ("ji" . isearch-moccur)
+                ("jo" . isearch-moccur-all))))
+     (prog1 'color-moccur
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (leaf-key-chord* "jk" #'moccur nil)
+       (leaf-key-chord* "ji" #'isearch-moccur isearch-mode-map)
+       (leaf-key-chord* "jo" #'isearch-moccur-all isearch-mode-map)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Support leaf macros
+;;
+
+(cort-deftest-with-macroexpand leaf/leaf-key-chord
+  '(((leaf-key-chord "jj" 'undo 'c-mode-map)
+     (leaf-key [key-chord 106 106] 'undo 'c-mode-map))
+
+    ((leaf-key-chord "jk" 'undo 'c-mode-map)
+     (progn
+       (leaf-key [key-chord 106 107] 'undo 'c-mode-map)
+       (leaf-key [key-chord 107 106] 'undo 'c-mode-map)))
+
+    ((leaf-key-chord "jj" 'undo)
+     (leaf-key [key-chord 106 106] 'undo nil))
+
+    ((leaf-key-chord "jk" 'undo)
+     (progn
+       (leaf-key [key-chord 106 107] 'undo nil)
+       (leaf-key [key-chord 107 106] 'undo nil)))))
+
+(cort-deftest-with-macroexpand leaf/leaf-key-chord*
+  '(((leaf-key-chord* "jj" 'undo)
+     (leaf-key-chord "jj" 'undo 'leaf-key-override-global-map))
+
+    ((leaf-key-chord* "jk" 'undo)
+     (leaf-key-chord "jk" 'undo 'leaf-key-override-global-map))))
+
+(cort-deftest-with-macroexpand leaf/leaf-key-chords
+  '(((leaf-key-chords :bind ("jk" . undo))
+     (progn
+       (leaf-key-chord "jk" 'undo 'nil)))
+
+    ((leaf-key-chords :bind (("jk" . undo)
+                             ("fi" . find-file)))
+     (progn
+       (leaf-key-chord "jk" 'undo 'nil)
+       (leaf-key-chord "fi" 'find-file 'nil)))
+
+    ((leaf-key-chords :map c-mode-map :bind ("jk" . undo))
+     (progn
+       (leaf-key-chord "jk" 'undo 'c-mode-map)))
+
+    ((leaf-key-chords :map c-mode-map :bind (("jk" . undo)
+                                             ("fi" . find-file)))
+     (progn
+       (leaf-key-chord "jk" 'undo 'c-mode-map)
+       (leaf-key-chord "fi" 'find-file 'c-mode-map)))))
+
+(cort-deftest-with-macroexpand leaf/leaf-key-chords*
+  '(((leaf-key-chords* :bind ("jk" . undo))
+     (leaf-key-chords :map 'leaf-key-override-global-map
+                      :bind ("jk" . undo)))
+
+    ((leaf-key-chords* :bind (("jk" . undo)
+                             ("fi" . find-file)))
+     (leaf-key-chords :map 'leaf-key-override-global-map
+                      :bind (("jk" . undo)
+                             ("fi" . find-file))))))
+
 (provide 'leaf-keywords-tests)
 ;;; leaf-keywords-tests.el ends here
 
