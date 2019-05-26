@@ -122,6 +122,7 @@ Example
 ;;
 
 (custom-set-variables '(leaf-expand-leaf-protect nil))
+(leaf-keywords-init)
 
 (cort-deftest-with-macroexpand leaf/diminish
   '(((leaf leaf

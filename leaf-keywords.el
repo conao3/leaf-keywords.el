@@ -62,79 +62,43 @@
 ;;  Additional keywords, normalize
 ;;
 
-;; silent byte-compiler
-(defvar leaf-keywords-before-conditions)
-(defvar leaf-keywords-after-conditions)
-(defvar leaf-keywords-before-load)
-(defvar leaf-keywords-after-load)
-(defvar leaf-keywords-after-require)
-(defvar leaf-keywords-normalize)
+(defvar leaf-keywords-init-frg nil)
+(defun leaf-keywords-set-keywords (sym val)
+  "Set SYM as VAL and modify `leaf-keywords'."
+  (set-default sym val)
+  (when leaf-keywords-init-frg
+    (leaf-keywords-init)))
 
-(defun leaf-keywords-set-keywords ()
-  "Modify `leaf-keywords'"
-  ;; restore raw `leaf-keywords'
-  (setq leaf-keywords leaf-keywords-raw-keywords)
-
-  ;; :disabled :leaf-protect ... :preface <this place> :when :unless :if
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :when
-          leaf-keywords-before-conditions))
-
-  ;; :when :unless :if :ensure <this place> :after
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :after
-          leaf-keywords-after-conditions))
-
-  ;; :after ... <this place> :leaf-defer
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :leaf-defer
-          leaf-keywords-before-load))
-
-  ;; :leaf-defer ... <this place> :init :require
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :init
-          leaf-keywords-after-load))
-
-  ;; :require ... <this place> :config
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :config
-          leaf-keywords-after-require))
-
-  ;; define new leaf-expand-* variable
-  (eval
-   `(progn
-      ,@(mapcar
-         (lambda (elm)
-           (let ((keyname (substring (symbol-name elm) 1)))
-             `(defcustom ,(intern (format "leaf-expand-%s" keyname)) t
-                ,(format "If nil, do not expand values for :%s." keyname)
-                :type 'boolean
-                :group 'leaf)))
-         (leaf-plist-keys leaf-keywords)))))
-
-(defun leaf-keywords-set-normalize ()
-  "Modify leaf-normalize"
-  (setq leaf-normalize
-        (append leaf-keywords-normalize leaf-keywords-raw-normalize)))
+(defun leaf-keywords-set-normalize (sym val)
+  "Set SYM as VAL and modify leaf-normalize."
+  (set-default sym val)
+  (when leaf-keywords-init-frg
+    (leaf-keywords-init)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Actual implementation
 ;;
 
-(defvar leaf-keywords-before-conditions
+(defcustom leaf-keywords-before-conditions
   (cdr nil)
   "Additional `leaf-keywords' before conditional branching.
-:disabled :leaf-protect ... :preface <this place> :when :unless :if")
+:disabled :leaf-protect ... :preface <this place> :when :unless :if"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
 
-(defvar leaf-keywords-after-conditions
+(defcustom leaf-keywords-after-conditions
   (cdr
    '(:dummy
      :el-get `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)))
   "Additional `leaf-keywords' after conditional branching.
-:when :unless :if :ensure <this place> :after")
+:when :unless :if :ensure <this place> :after"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
 
-(defvar leaf-keywords-before-load
+(defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
      :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)
@@ -145,19 +109,28 @@
                  (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
                  `(,@(mapcar (lambda (elm) `(leaf-key-chord* ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))))
   "Additional `leaf-keywords' after wait loading.
-:after ... <this place> :leaf-defer")
+:after ... <this place> :leaf-defer"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
 
-(defvar leaf-keywords-after-load
+(defcustom leaf-keywords-after-load
   (cdr nil)
   "Additional `leaf-keywords' after wait loading.
-:leaf-defer ... <this place> :init :require")
+:leaf-defer ... <this place> :init :require"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
 
-(defvar leaf-keywords-after-require
+(defcustom leaf-keywords-after-require
   (cdr nil)
   "Additional `leaf-keywords' after wait loading.
-:require ... <this place> :config")
+:require ... <this place> :config"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
 
-(defvar leaf-keywords-normalize
+(defcustom leaf-keywords-normalize
   '(((memq leaf--key '(:diminish))
      ;; Accept: 't, 'nil, symbol and list of these (and nested)
      ;; Return: symbol list.
@@ -205,10 +178,10 @@
       (lambda (elm)
         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
       leaf--value)))
-  "Additional `leaf-normalize'.")
-
-(leaf-keywords-set-keywords)
-(leaf-keywords-set-normalize)
+  "Additional `leaf-normalize'."
+  :set #'leaf-keywords-set-normalize
+  :type 'sexp
+  :group 'leaf-keywords)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -273,6 +246,59 @@ NOTE: :package, :bind can accept list of these.
   (when (leaf-plist-get :map plist)
     (leaf-error "leaf-keys* should not call with :map argument.  arg: %s" plist))
   `(leaf-key-chords :map 'leaf-key-override-global-map ,@plist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Main initializer
+;;
+
+(defun leaf-keywords-init ()
+  "Add additional keywords to `leaf'."
+  (setq leaf-keywords-init-frg t)
+
+  ;; restore raw `leaf-keywords'
+  (setq leaf-keywords leaf-keywords-raw-keywords)
+
+  ;; :disabled :leaf-protect ... :preface <this place> :when :unless :if
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :when
+          leaf-keywords-before-conditions))
+
+  ;; :when :unless :if :ensure <this place> :after
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :after
+          leaf-keywords-after-conditions))
+
+  ;; :after ... <this place> :leaf-defer
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :leaf-defer
+          leaf-keywords-before-load))
+
+  ;; :leaf-defer ... <this place> :init :require
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :init
+          leaf-keywords-after-load))
+
+  ;; :require ... <this place> :config
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :config
+          leaf-keywords-after-require))
+
+  ;; add additional normalize on the top
+  (setq leaf-normalize
+          (append leaf-keywords-normalize leaf-keywords-raw-normalize))
+
+  ;; define new leaf-expand-* variable
+  (eval
+   `(progn
+      ,@(mapcar
+         (lambda (elm)
+           (let ((keyname (substring (symbol-name elm) 1)))
+             `(defcustom ,(intern (format "leaf-expand-%s" keyname)) t
+                ,(format "If nil, do not expand values for :%s." keyname)
+                :type 'boolean
+                :group 'leaf)))
+         (leaf-plist-keys leaf-keywords)))))
 
 (provide 'leaf-keywords)
 ;;; leaf-keywords.el ends here
