@@ -56,6 +56,26 @@
 ;;  Customize backend
 ;;
 
+(progn
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :commands
+          (cdr
+           '(:dummy
+             :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)))))
+  (setq leaf-normarize
+        (append
+         '(((memq leaf--key '(:diminish))
+            ;; Accept: 't, 'nil, symbol and list of these (and nested)
+            ;; Return: symbol list.
+            ;; Note  : 't will convert to 'leaf--name
+            ;;         if 'nil placed on top, ignore all argument
+            ;;         remove duplicate element
+            (let ((ret (leaf-flatten leaf--value)))
+              (if (eq nil (car ret))
+                  nil
+                (delete-dups (delq nil (leaf-subst t leaf--name ret)))))))
+         leaf-normarize)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Support functions

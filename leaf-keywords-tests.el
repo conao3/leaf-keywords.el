@@ -121,9 +121,68 @@ Example
 ;;  test definition
 ;;
 
-(custom-set-variables '(leaf-backend-ensure 'package)
-                      '(leaf-backend-bind   'bind-key)
-                      '(leaf-expand-leaf-no-error nil))
+(custom-set-variables '(leaf-expand-leaf-protect nil))
+
+(cort-deftest-with-macroexpand leaf/diminish
+  '(((leaf leaf
+       :init (leaf-pre-init)
+       :diminish t
+       :config (leaf-init))
+     (prog1 'leaf
+       (diminish leaf)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :diminish nil
+       :config (leaf-init))
+     (prog1 'leaf
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :diminish leaf leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (diminish leaf)
+       (diminish leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :diminish t
+       :diminish leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (diminish leaf)
+       (diminish leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :diminish t leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (diminish leaf)
+       (diminish leaf-polyfill)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :diminish (leaf leaf-polyfill leaf-sub leaf-subsub)
+       :config (leaf-init))
+     (prog1 'leaf
+       (diminish leaf)
+       (diminish leaf-polyfill)
+       (diminish leaf-sub)
+       (diminish leaf-subsub)
+       (leaf-pre-init)
+       (leaf-init)))))
 
 
 (provide 'leaf-keywords-tests)
