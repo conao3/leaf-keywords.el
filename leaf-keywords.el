@@ -51,103 +51,168 @@
   leaf-to-string leaf-add-keyword-before
   leaf-add-keyword-after leaf-normalize-list-in-list)
 
+(defconst leaf-keywords-raw-keywords leaf-keywords
+  "Raw `leaf-keywords' before this package changed.")
+
+(defconst leaf-keywords-raw-normarize leaf-normarize
+  "Raw `leaf-normarize' before this package changed.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;  Customize backend
+;;  Additional keywords, normarize
 ;;
 
-(progn
+;; silent byte-compiler
+(defvar leaf-keywords-before-conditions)
+(defvar leaf-keywords-after-conditions)
+(defvar leaf-keywords-before-load)
+(defvar leaf-keywords-after-load)
+(defvar leaf-keywords-after-require)
+(defvar leaf-keywords-normarize)
+
+(defun leaf-keywords-set-keywords ()
+  "Modify `leaf-keywords'"
+  ;; restore raw `leaf-keywords'
+  (setq leaf-keywords leaf-keywords-raw-keywords)
+
+  ;; :disabled :leaf-protect ... :preface <this place> :when :unless :if
   (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :ensure
-          (cdr
-           '(:dummy
-             :el-get `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)))))
+        (leaf-insert-list-before leaf-keywords :when
+          leaf-keywords-before-conditions))
+
+  ;; :when :unless :if :ensure <this place> :after
   (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :commands
-          (cdr
-           '(:dummy
-             :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)
-             :chord    (progn
-                         (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
-                         `(,@(mapcar (lambda (elm) `(leaf-key-chord ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))
-             :chord*   (progn
-                         (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
-                         `(,@(mapcar (lambda (elm) `(leaf-key-chord* ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))))))
+        (leaf-insert-list-before leaf-keywords :after
+          leaf-keywords-after-conditions))
+
+  ;; :after ... <this place> :leaf-defer
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :leaf-defer
+          leaf-keywords-before-load))
+
+  ;; :leaf-defer ... <this place> :init :require
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :init
+          leaf-keywords-after-load))
+
+  ;; :require ... <this place> :config
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :config
+          leaf-keywords-after-require))
+
+  ;; define new leaf-expand-* variable
+  (eval
+   `(progn
+      ,@(mapcar
+         (lambda (elm)
+           (let ((keyname (substring (symbol-name elm) 1)))
+             `(defcustom ,(intern (format "leaf-expand-%s" keyname)) t
+                ,(format "If nil, do not expand values for :%s." keyname)
+                :type 'boolean
+                :group 'leaf)))
+         (leaf-plist-keys leaf-keywords)))))
+
+(defun leaf-keywords-set-normarize ()
+  "Modify leaf-normarize"
   (setq leaf-normarize
-        (append
-         '(((memq leaf--key '(:diminish))
-            ;; Accept: 't, 'nil, symbol and list of these (and nested)
-            ;; Return: symbol list.
-            ;; Note  : 't will convert to 'leaf--name
-            ;;         if 'nil placed on top, ignore all argument
-            ;;         remove duplicate element
-            (let ((ret (leaf-flatten leaf--value)))
-              (if (eq nil (car ret))
-                  nil
-                (delete-dups (delq nil (leaf-subst t leaf--name ret))))))
+        (append leaf-keywords-normarize leaf-keywords-raw-normarize)))
 
-           ((memq leaf--key '(:chord :chord*))
-            ;; Accept: list of pair (bind . func), (bind . nil)
-            ;;         ([:{{hoge}}-map] [:package {{pkg}}](bind . func) (bind . func) ...)
-            ;;         optional, [:{{hoge}}-map] [:package {{pkg}}]
-            ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
-            (mapcan (lambda (elm)
-                      (cond
-                       ((leaf-pairp elm 'allow-nil)
-                        (list `(:package ,leaf--name :key ,(car elm) :func ,(cdr elm))))
-                       ((not (keywordp (car elm)))
-                        (mapcar
-                         (lambda (el) `(:package ,leaf--name :key ,(car el) :func ,(cdr el))) elm))
-                       (t
-                        (delq nil
-                              (mapcar (lambda (el)
-                                        (when (leaf-pairp el 'allow-nil)
-                                          (let ((map (intern (substring (symbol-name (car elm)) 1)))
-                                                (pkg (leaf-plist-get :package (cdr elm))))
-                                            (cdr `(:dummy
-                                                   :map ,map
-                                                   :package ,(if pkg pkg leaf--name)
-                                                   :key ,(car el)
-                                                   :func ,(cdr el))))))
-                                      (cdr elm))))))
-                    (mapcan (lambda (elm)
-                              (if (or (and (listp elm) (keywordp (car elm)))
-                                      (and (listp elm) (atom (car elm)) (atom (cdr elm))))
-                                  (list elm)
-                                elm))
-                            leaf--value)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Actual implementation
+;;
 
-           ((memq leaf--key '(:el-get))
-            (mapcar
-             (lambda (elm)
-               (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
-             leaf--value)))
-         leaf-normarize)))
+(defvar leaf-keywords-before-conditions
+  (cdr nil)
+  "Additional `leaf-keywords' before conditional branching.
+:disabled :leaf-protect ... :preface <this place> :when :unless :if")
+
+(defvar leaf-keywords-after-conditions
+  (cdr
+   '(:dummy
+     :el-get `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)))
+  "Additional `leaf-keywords' after conditional branching.
+:when :unless :if :ensure <this place> :after")
+
+(defvar leaf-keywords-before-load
+  (cdr
+   '(:dummy
+     :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)
+     :chord    (progn
+                 (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
+                 `(,@(mapcar (lambda (elm) `(leaf-key-chord ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))
+     :chord*   (progn
+                 (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
+                 `(,@(mapcar (lambda (elm) `(leaf-key-chord* ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))))
+  "Additional `leaf-keywords' after wait loading.
+:after ... <this place> :leaf-defer")
+
+(defvar leaf-keywords-after-load
+  (cdr nil)
+  "Additional `leaf-keywords' after wait loading.
+:leaf-defer ... <this place> :init :require")
+
+(defvar leaf-keywords-after-require
+  (cdr nil)
+  "Additional `leaf-keywords' after wait loading.
+:require ... <this place> :config")
+
+(defvar leaf-keywords-normarize
+  '(((memq leaf--key '(:diminish))
+     ;; Accept: 't, 'nil, symbol and list of these (and nested)
+     ;; Return: symbol list.
+     ;; Note  : 't will convert to 'leaf--name
+     ;;         if 'nil placed on top, ignore all argument
+     ;;         remove duplicate element
+     (let ((ret (leaf-flatten leaf--value)))
+       (if (eq nil (car ret))
+           nil
+         (delete-dups (delq nil (leaf-subst t leaf--name ret))))))
+
+    ((memq leaf--key '(:chord :chord*))
+     ;; Accept: list of pair (bind . func), (bind . nil)
+     ;;         ([:{{hoge}}-map] [:package {{pkg}}](bind . func) (bind . func) ...)
+     ;;         optional, [:{{hoge}}-map] [:package {{pkg}}]
+     ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
+     (mapcan (lambda (elm)
+               (cond
+                ((leaf-pairp elm 'allow-nil)
+                 (list `(:package ,leaf--name :key ,(car elm) :func ,(cdr elm))))
+                ((not (keywordp (car elm)))
+                 (mapcar
+                  (lambda (el) `(:package ,leaf--name :key ,(car el) :func ,(cdr el))) elm))
+                (t
+                 (delq nil
+                       (mapcar (lambda (el)
+                                 (when (leaf-pairp el 'allow-nil)
+                                   (let ((map (intern (substring (symbol-name (car elm)) 1)))
+                                         (pkg (leaf-plist-get :package (cdr elm))))
+                                     (cdr `(:dummy
+                                            :map ,map
+                                            :package ,(if pkg pkg leaf--name)
+                                            :key ,(car el)
+                                            :func ,(cdr el))))))
+                               (cdr elm))))))
+             (mapcan (lambda (elm)
+                       (if (or (and (listp elm) (keywordp (car elm)))
+                               (and (listp elm) (atom (car elm)) (atom (cdr elm))))
+                           (list elm)
+                         elm))
+                     leaf--value)))
+
+    ((memq leaf--key '(:el-get))
+     (mapcar
+      (lambda (elm)
+        (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
+      leaf--value)))
+  "Additional `leaf-normarize'.")
+
+(leaf-keywords-set-keywords)
+(leaf-keywords-set-normarize)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Support functions
-;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  leaf keywords definition
-;;
-
-(eval
- `(progn
-    ,@(mapcar
-       (lambda (elm)
-         (let ((keyname (substring (symbol-name elm) 1)))
-           `(defcustom ,(intern (format "leaf-expand-%s" keyname)) t
-              ,(format "If nil, do not expand values for :%s." keyname)
-              :type 'boolean
-              :group 'leaf)))
-       (leaf-plist-keys leaf-keywords))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Handler
 ;;
 
 (defmacro leaf-key-chord (chord command &optional keymap)
@@ -195,9 +260,9 @@ NOTE: :package, :bind can accept list of these.
     (when (atom mpkg) (setq mpkg `(,mpkg)))
     (when (leaf-pairp mbind 'allow-nil) (setq mbind `(,mbind)))
     (setq mform `(progn
-                  ,@(mapcar
-                     (lambda (elm) `(leaf-key-chord ,(car elm) ',(cdr elm) ',mmap))
-                     mbind)))
+                   ,@(mapcar
+                      (lambda (elm) `(leaf-key-chord ,(car elm) ',(cdr elm) ',mmap))
+                      mbind)))
     (if (equal '(nil) mpkg)
         mform
       (dolist (pkg mpkg) (setq mform `(eval-after-load ',pkg ',mform)))
