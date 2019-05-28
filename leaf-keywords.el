@@ -86,11 +86,11 @@
    '(:dummy
      :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)
      :chord    (progn
-                 (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
-                 `(,@(mapcar (lambda (elm) `(leaf-key-chord ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))
-     :chord*   (progn
-                 (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
-                 `(,@(mapcar (lambda (elm) `(leaf-key-chord* ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))))
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
+     :chord*    (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))))
   "Additional `leaf-keywords' after wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
@@ -130,31 +130,7 @@
      ;;         ([:{{hoge}}-map] [:package {{pkg}}](bind . func) (bind . func) ...)
      ;;         optional, [:{{hoge}}-map] [:package {{pkg}}]
      ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
-     (mapcan (lambda (elm)
-               (cond
-                ((leaf-pairp elm 'allow-nil)
-                 (list `(:package ,leaf--name :key ,(car elm) :func ,(cdr elm))))
-                ((not (keywordp (car elm)))
-                 (mapcar
-                  (lambda (el) `(:package ,leaf--name :key ,(car el) :func ,(cdr el))) elm))
-                (t
-                 (delq nil
-                       (mapcar (lambda (el)
-                                 (when (leaf-pairp el 'allow-nil)
-                                   (let ((map (intern (substring (symbol-name (car elm)) 1)))
-                                         (pkg (leaf-plist-get :package (cdr elm))))
-                                     (cdr `(:dummy
-                                            :map ,map
-                                            :package ,(if pkg pkg leaf--name)
-                                            :key ,(car el)
-                                            :func ,(cdr el))))))
-                               (cdr elm))))))
-             (mapcan (lambda (elm)
-                       (if (or (and (listp elm) (keywordp (car elm)))
-                               (and (listp elm) (atom (car elm)) (atom (cdr elm))))
-                           (list elm)
-                         elm))
-                     leaf--value)))
+     (eval `(leaf-key-chords ,leaf--value ,leaf--name)))
 
     ((memq leaf--key '(:el-get))
      (mapcar
@@ -192,43 +168,85 @@ For example:
   "Similar to `leaf-key-chord', but overrides any mode-specific bindings."
   `(leaf-key-chord ,key ,command 'leaf-key-override-global-map))
 
-(defmacro leaf-key-chords (&rest plist)
-  "Bind multiple keys at once.
-
-Accepts keyword arguments:
-MUST:
-  :bind (KEY . COMMAND) - bind KEY to COMMAND
-        (KEY . nil)     - unbind KEY
+(defmacro leaf-key-chords (bind &optional dryrun-name)
+  "Bind multiple BIND for KEYMAP defined in PKG.
+BIND is (KEY . COMMAND) or (KEY . nil) to unbind KEY.
+This macro is minor change version form `leaf-keys'.
 
 OPTIONAL:
-  :map MAP              - a keymap into which the keybind should be added
-  :package PKG          - a package in which the MAP defined in
-                          (wrap `eval-after-load' PKG)
+  BIND also accept below form.
+    (:{{map}} :package {{pkg}} (KEY . COMMAND) (KEY . COMMAND))
+  KEYMAP is quoted keymap name.
+  PKG is quoted package name which define KEYMAP.
+  (wrap `eval-after-load' PKG)
 
-NOTE: :package, :bind can accept list of these.
-  :package (PKG ... PKG)
-  :bind ((KEY . COMMAND) ... (KEY . COMMAND))"
-  (let ((mmap  (leaf-plist-get :map plist))
-        (mpkg  (leaf-plist-get :package plist))
-        (mbind (leaf-plist-get :bind plist))
-        (mform))
-    (unless mbind (leaf-error "leaf-key-chords need :bind argument.  arg: %s" plist))
-    (when (atom mpkg) (setq mpkg `(,mpkg)))
-    (when (leaf-pairp mbind 'allow-nil) (setq mbind `(,mbind)))
-    (setq mform `(progn
-                   ,@(mapcar
-                      (lambda (elm) `(leaf-key-chord ,(car elm) ',(cdr elm) ',mmap))
-                      mbind)))
-    (if (equal '(nil) mpkg)
-        mform
-      (dolist (pkg mpkg) (setq mform `(eval-after-load ',pkg ',mform)))
-      mform)))
+  If DRYRUN-NAME is non-nil, return list like
+  (LEAF_KEYS-FORMS (FN FN ...))
 
-(defmacro leaf-key-chords* (&rest plist)
+  If omit :package of BIND, fill it in LEAF_KEYS-FORM.
+
+NOTE: BIND can also accept list of these."
+  (let ((pairp (lambda (x)
+                 (condition-case _err
+                     (and (listp x)
+                          (or (stringp (eval (car x)))
+                              (vectorp (eval (car x))))
+                          (atom (cdr x)))
+                   (error nil))))
+        (recurfn) (forms) (bds) (fns))
+    (setq recurfn
+          (lambda (bind)
+            (cond
+             ((funcall pairp bind)
+              (push `(leaf-key-chord ,(car bind) #',(cdr bind)) forms)
+              (push bind bds)
+              (push (cdr bind) fns))
+             ((and (listp (car bind))
+                   (funcall pairp (car bind)))
+              (mapcar (lambda (elm)
+                        (if (funcall pairp elm)
+                            (progn
+                              (push `(leaf-key-chord ,(car elm) #',(cdr elm)) forms)
+                              (push elm bds)
+                              (push (cdr elm) fns))
+                          (funcall recurfn elm)))
+                      bind))
+             ((or (keywordp (car bind))
+                  (symbolp (car bind)))
+              (let* ((map (if (keywordp (car bind))
+                              (intern (substring (symbol-name (car bind)) 1))
+                            (car bind)))
+                     (pkg (leaf-plist-get :package (cdr bind)))
+                     (pkgs (if (atom pkg) `(,pkg) pkg))
+                     (elmbind (if pkg (nthcdr 3 bind) (nthcdr 1 bind)))
+                     (elmbinds (if (funcall pairp (car elmbind))
+                                   elmbind (car elmbind)))
+                     (form `(progn
+                              ,@(mapcar
+                                 (lambda (elm)
+                                   (push (cdr elm) fns)
+                                   `(leaf-key-chord ,(car elm) #',(cdr elm) ',map))
+                                 elmbinds))))
+                (push (if pkg bind
+                        `(,(intern (concat ":" (symbol-name map)))
+                          :package ,dryrun-name
+                          ,@elmbinds))
+                      bds)
+                (when pkg
+                  (dolist (elmpkg pkgs)
+                    (setq form `(eval-after-load ',elmpkg ',form))))
+                (push form forms)))
+             (t
+              (mapcar (lambda (elm) (funcall recurfn elm)) bind)))))
+    (funcall recurfn bind)
+    (if dryrun-name `'(,(nreverse bds) ,(nreverse fns))
+      (if (cdr forms) `(progn ,@(nreverse forms)) (car forms)))))
+
+(defmacro leaf-key-chords* (bind)
   "Similar to `leaf-key-chords', but overrides any mode-specific bindings."
-  (when (leaf-plist-get :map plist)
-    (leaf-error "leaf-keys* should not call with :map argument.  arg: %s" plist))
-  `(leaf-key-chords :map 'leaf-key-override-global-map ,@plist))
+  (let ((binds (if (and (atom (car bind)) (atom (cdr bind)))
+                   `(,bind) bind)))
+    `(leaf-key-chords (:leaf-key-override-global-map ,@binds))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
