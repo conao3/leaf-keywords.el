@@ -42,7 +42,7 @@ Then ~(require 'leaf-keywords)~.
   (add-to-list 'load-path (locate-user-emacs-file "site-lisp/feather.el"))
 
   (require 'leaf)
-  (require 'leaf-keywords')
+  (require 'leaf-keywords)
   (custom-set-variables '(leaf-backend-ensure 'package)
                         '(leaf-backend-bind 'bind-key)
                         '(leaf-backend-bind* 'bind-key))
