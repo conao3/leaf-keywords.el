@@ -35,10 +35,10 @@
   :group 'lisp)
 
 (defconst leaf-keywords-raw-keywords leaf-keywords
-  "Raw `leaf-keywords' before this package changed.")
+  "Raw `leaf-keywords' before this package change.")
 
 (defconst leaf-keywords-raw-normalize leaf-normalize
-  "Raw `leaf-normalize' before this package changed.")
+  "Raw `leaf-normalize' before this package change.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
