@@ -35,27 +35,27 @@ Then ~(require 'leaf-keywords)~.
 
 
 #+BEGIN_SRC emacs-lisp
-  ;; add to load-path
-  ;; (locate-user-emacs-file "site-lisp/leaf-keywords.el")
-  ;;  => "~/.emacs.d/local/26.1/site-lisp/leaf-keywords.el"
+    ;; add to load-path
+    ;; (locate-user-emacs-file "site-lisp/leaf-keywords.el")
+    ;;  => "~/.emacs.d/local/26.1/site-lisp/leaf-keywords.el"
 
-  (prog1 "Load leaf.el"
-    (add-to-list 'load-path (locate-user-emacs-file "site-lisp/leaf.el"))
-    (require 'leaf)
-    (leaf leaf
-      :doc "Symplify your init.el configuration"
-      :doc "Initialize leaf dependent packages"
-      :config
-      (leaf package
-        :custom ((package-archives . '(("org"   . "https://orgmode.org/elpa/")
-                                       ("melpa" . "https://melpa.org/packages/")
-                                       ("gnu"   . "https://elpa.gnu.org/packages/"))))
+    (prog1 "Load leaf.el"
+      (add-to-list 'load-path (locate-user-emacs-file "site-lisp/leaf.el"))
+      (require 'leaf)
+      (leaf leaf
+        :doc "Symplify your init.el configuration"
+        :doc "Initialize leaf dependent packages"
         :config
-        (package-initialize))))
+        (leaf package
+          :custom ((package-archives . '(("org"   . "https://orgmode.org/elpa/")
+                                         ("melpa" . "https://melpa.org/packages/")
+                                         ("gnu"   . "https://elpa.gnu.org/packages/"))))
+          :config (package-initialize))))
 
-  (leaf leaf-keywords
-        :load-path `,(locate-user-emacs-file "site-lisp/leaf-keywords.el")
-        :require t)
+    (leaf leaf-keywords
+          :load-path `,(locate-user-emacs-file "site-lisp/leaf-keywords.el")
+          :require t
+          :config (leaf-keywords-init))
 
 #+END_SRC
 
