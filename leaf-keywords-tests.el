@@ -195,14 +195,6 @@ Example
        (leaf-pre-init)
        (leaf-init)))
 
-    ;; ((leaf leaf
-    ;;    :init (leaf-pre-init)
-    ;;    :el-get nil
-    ;;    :config (leaf-init))
-    ;;  (prog1 'leaf
-    ;;    (leaf-pre-init)
-    ;;    (leaf-init)))
-
     ((leaf leaf
        :init (leaf-pre-init)
        :el-get leaf leaf-polyfill
@@ -255,11 +247,13 @@ Example
        (zenburn-theme
         :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
         (load-theme 'zenburn t))
+       (kazu-yamamoto/Mew :name mew :build ("./configure" "make"))
        :config (leaf-init))
      (prog1 'leaf
        (el-get-bundle yaicomplete :url "https://github.com/tarao/elisp.git" :features yaicomplete)
        (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
          (load-theme 'zenburn t))
+       (el-get-bundle kazu-yamamoto/Mew :name mew :build ("./configure" "make"))
        (leaf-pre-init)
        (leaf-init)))))
 
@@ -345,6 +339,23 @@ Example
        (autoload (function isearch-moccur-all) "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          (:isearch-mode-map
+                          :package isearch
+                          ("ji" . isearch-moccur)
+                          ("jo" . isearch-moccur-all))))))
+
+    ;; you also use symbol instead of keyword to specify keymap
+    ((leaf color-moccur
+       :chord (("jk" . moccur)
+               (isearch-mode-map
+                :package isearch
+                ("ji" . isearch-moccur)
+                ("jo" . isearch-moccur-all))))
+     (prog1 'color-moccur
+       (autoload (function moccur) "color-moccur" nil t)
+       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (leaf-key-chords (("jk" . moccur)
+                         (isearch-mode-map
                           :package isearch
                           ("ji" . isearch-moccur)
                           ("jo" . isearch-moccur-all))))))))

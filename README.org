@@ -11,9 +11,17 @@
 [[https://join.slack.com/t/conao3-support/shared_invite/enQtNTg2MTY0MjkzOTU0LTFjOTdhOTFiNTM2NmY5YTE5MTNlYzNiOTE2MTZlZWZkNDEzZmRhN2E0NjkwMWViZTZiYjA4MDUxYTUzNDZiNjY][https://img.shields.io/badge/chat-on_slack-blue.svg?logo=slack&style=flat-square]]
 
 * Table of Contents
-- [[#background][Background]]
+- [[#description][Description]]
 - [[#install][Install]]
 - [[#usage][Usage]]
+- [[#ensure-keywords][Ensure keywords]]
+  - [[#package-ensure-keywords][:package, :ensure keywords]]
+  - [[#el-get-keyword][:el-get keyword]]
+- [[#bind-keywords][Bind keywords]]
+  - [[#bind-bind-keywords][:bind :bind* keywords]]
+  - [[#chord-chord-keywords][:chord :chord* keywords]]
+- [[#modeline-keywords][Modeline keywords]]
+  - [[#diminish-keyword][:diminish keyword]]
 - [[#information][Information]]
   - [[#donation][Donation]]
   - [[#community][Community]]
@@ -32,7 +40,6 @@
 * Install
 Put ~leaf-keywords.el~ at any folder added ~load-path~.
 Then ~(require 'leaf-keywords)~.
-
 
 #+BEGIN_SRC emacs-lisp
     ;; add to load-path
@@ -56,7 +63,6 @@ Then ~(require 'leaf-keywords)~.
           :load-path `,(locate-user-emacs-file "site-lisp/leaf-keywords.el")
           :require t
           :config (leaf-keywords-init))
-
 #+END_SRC
 
 * Usage
@@ -64,6 +70,479 @@ Use ~leaf~ in your init.el like ~use-package~.
 You declaratively tell the ~leaf~ to configure the package using special keywords.
 
 ~leaf~ converts your declaration into Elisp for Emacs to understand, and Emacs executes it to configure the package.
+
+* Ensure keywords
+** :package, :ensure keywords
+These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#package-ensure-keywords][here]].
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/package
+    '(((leaf leaf
+         :package t
+         :config (leaf-init))
+       (prog1 'leaf
+         (leaf-handler-package leaf leaf nil)
+         (leaf-init)))
+
+      ((leaf leaf
+         :package t leaf-browser
+         :config (leaf-init))
+       (prog1 'leaf
+         (leaf-handler-package leaf leaf nil)
+         (leaf-handler-package leaf leaf-browser nil)
+         (leaf-init)))
+
+      ((leaf leaf
+         :package feather leaf-key leaf-browser
+         :config (leaf-init))
+       (prog1 'leaf
+         (leaf-handler-package leaf feather nil)
+         (leaf-handler-package leaf leaf-key nil)
+         (leaf-handler-package leaf leaf-browser nil)
+         (leaf-init)))))
+
+  (cort-deftest-with-macroexpand leaf/handler-package
+    '(((leaf macrostep :ensure t)
+       (prog1 'macrostep
+         (leaf-handler-package macrostep macrostep nil))
+
+       ((leaf-handler-package macrostep macrostep nil)
+        (unless
+            (package-installed-p 'macrostep)
+          (condition-case err
+              (progn
+                (unless (assoc 'macrostep package-archive-contents)
+                  (package-refresh-contents))
+                (package-install 'macrostep))
+            (error
+             (condition-case err
+                 (progn
+                   (package-refresh-contents)
+                   (package-install 'macrostep))
+               (error
+                (leaf-error "In `macrostep' block, failed to :package of macrostep.  Error msg: %s"
+                            (error-message-string err)))))))))))
+#+end_src
+
+** :el-get keyword
+~:el-get~ provide frontend of ~el-get-bundle~.
+
+If you specify ~t~, leaf assumes that you specified the name of the leaf-block.
+
+Given a list, the arguments are passed as is to the ~el-get-bundle~.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/el-get
+    '(((leaf leaf
+         :init (leaf-pre-init)
+         :el-get t
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle leaf)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :el-get leaf leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle leaf)
+         (el-get-bundle leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :el-get t
+         :el-get leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle leaf)
+         (el-get-bundle leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :el-get t leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle leaf)
+         (el-get-bundle leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :el-get (zenburn-theme
+                  :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+                  (load-theme 'zenburn t))
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+           (load-theme 'zenburn t))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :el-get
+         (yaicomplete
+          :url "https://github.com/tarao/elisp.git"
+          :features yaicomplete)
+         (zenburn-theme
+          :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+          (load-theme 'zenburn t))
+         (kazu-yamamoto/Mew :name mew :build ("./configure" "make"))
+         :config (leaf-init))
+       (prog1 'leaf
+         (el-get-bundle yaicomplete :url "https://github.com/tarao/elisp.git" :features yaicomplete)
+         (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+           (load-theme 'zenburn t))
+         (el-get-bundle kazu-yamamoto/Mew :name mew :build ("./configure" "make"))
+         (leaf-pre-init)
+         (leaf-init)))))
+#+end_src
+
+* Bind keywords
+** :bind :bind* keywords
+These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#bind-bind-keywords][here]].
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/bind
+    '(((leaf macrostep
+         :package t
+         :bind (("C-c e" . macrostep-expand)))
+       (prog1 'macrostep
+         (autoload #'macrostep-expand "macrostep" nil t)
+         (leaf-handler-package macrostep macrostep nil)
+         (leaf-keys (("C-c e" . macrostep-expand)))))
+
+      ((leaf macrostep
+         :package t
+         :bind ("C-c e" . macrostep-expand))
+       (prog1 'macrostep
+         (autoload #'macrostep-expand "macrostep" nil t)
+         (leaf-handler-package macrostep macrostep nil)
+         (leaf-keys
+          (("C-c e" . macrostep-expand)))))
+
+      ((leaf color-moccur
+         :bind
+         ("M-s O" . moccur)
+         ("M-o" . isearch-moccur)
+         ("M-O" . isearch-moccur-all))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     ("M-o" . isearch-moccur)
+                     ("M-O" . isearch-moccur-all)))))
+
+      ((leaf color-moccur
+         :bind (("M-s O" . moccur)
+                ("M-o" . isearch-moccur)
+                ("M-O" . isearch-moccur-all)))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     ("M-o" . isearch-moccur)
+                     ("M-O" . isearch-moccur-all)))))
+
+      ((leaf color-moccur
+         :bind
+         ("M-s" . nil)
+         ("M-s o" . isearch-moccur)
+         ("M-s i" . isearch-moccur-all))
+       (prog1 'color-moccur
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s")
+                     ("M-s o" . isearch-moccur)
+                     ("M-s i" . isearch-moccur-all)))))
+
+      ((leaf color-moccur
+         :bind (("M-s" . nil)
+                ("M-s o" . isearch-moccur)
+                ("M-s i" . isearch-moccur-all)))
+       (prog1 'color-moccur
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s")
+                     ("M-s o" . isearch-moccur)
+                     ("M-s i" . isearch-moccur-all)))))
+
+      ((leaf color-moccur
+         :bind
+         ("M-s O" . moccur)
+         (:isearch-mode-map
+          ("M-o" . isearch-moccur)
+          ("M-O" . isearch-moccur-all)))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     (:isearch-mode-map
+                      :package color-moccur
+                      ("M-o" . isearch-moccur)
+                      ("M-O" . isearch-moccur-all))))))
+
+      ((leaf color-moccur
+         :bind
+         ("M-s O" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("M-o" . isearch-moccur)
+          ("M-O" . isearch-moccur-all)))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     (:isearch-mode-map
+                      :package isearch
+                      ("M-o" . isearch-moccur)
+                      ("M-O" . isearch-moccur-all))))))
+
+      ((leaf color-moccur
+         :bind (("M-s O" . moccur)
+                (:isearch-mode-map
+                 :package isearch
+                 ("M-o" . isearch-moccur)
+                 ("M-O" . isearch-moccur-all))))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     (:isearch-mode-map
+                      :package isearch
+                      ("M-o" . isearch-moccur)
+                      ("M-O" . isearch-moccur-all))))))
+
+      ;; you also use symbol instead of keyword to specify keymap
+      ((leaf color-moccur
+         :bind (("M-s O" . moccur)
+                (isearch-mode-map
+                 :package isearch
+                 ("M-o" . isearch-moccur)
+                 ("M-O" . isearch-moccur-all))))
+       (prog1 'color-moccur
+         (autoload #'moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur "color-moccur" nil t)
+         (autoload #'isearch-moccur-all "color-moccur" nil t)
+         (leaf-keys (("M-s O" . moccur)
+                     (isearch-mode-map
+                      :package isearch
+                      ("M-o" . isearch-moccur)
+                      ("M-O" . isearch-moccur-all))))))))
+
+  (cort-deftest-with-macroexpand leaf/leaf-key
+    '(((leaf-key "C-M-i" 'flyspell-correct-wrapper)
+       (let* ((old (lookup-key global-map (kbd "C-M-i")))
+              (value `(("C-M-i" . global-map) flyspell-correct-wrapper ,(and old (not (numberp old)) old))))
+         (push value leaf-key-bindlist)
+         (define-key global-map (kbd "C-M-i") 'flyspell-correct-wrapper)))))
+#+end_src
+
+** :chord :chord* keywords
+~:chord~ and ~:chord*~ provide frontend for ~leaf-key-chord~ which bind key for [[https://github.com/emacsorphanage/key-chord][key-chord]].
+
+The usage and notes are the same as for the ~:bind~ keyword.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/chord
+    '(((leaf macrostep
+         :ensure t
+         :chord (("jk" . macrostep-expand)))
+       (prog1 'macrostep
+         (autoload (function macrostep-expand) "macrostep" nil t)
+         (leaf-handler-package macrostep macrostep nil)
+         (leaf-key-chords (("jk" . macrostep-expand)))))
+
+      ((leaf macrostep
+         :ensure t
+         :chord ("jk" . macrostep-expand))
+       (prog1 'macrostep
+         (autoload (function macrostep-expand) "macrostep" nil t)
+         (leaf-handler-package macrostep macrostep nil)
+         (leaf-key-chords (("jk" . macrostep-expand)))))
+
+      ((leaf color-moccur
+         :chord
+         ("jk" . moccur)
+         ("fi" . isearch-moccur))
+       (prog1 'color-moccur
+         (autoload (function moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (leaf-key-chords (("jk" . moccur)
+                           ("fi" . isearch-moccur)))))
+
+      ((leaf color-moccur
+         :chord (("jk" . moccur)
+                 ("fi" . isearch-moccur)))
+       (prog1 'color-moccur
+         (autoload (function moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (leaf-key-chords (("jk" . moccur)
+                           ("fi" . isearch-moccur)))))
+
+      ((leaf color-moccur
+         :chord
+         ("jk" . nil)
+         ("fi" . isearch-moccur))
+       (prog1 'color-moccur
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (leaf-key-chords (("jk")
+                           ("fi" . isearch-moccur)))))
+
+      ((leaf color-moccur
+         :chord (("jk" . nil)
+                 ("fi" . isearch-moccur)))
+       (prog1 'color-moccur
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (leaf-key-chords (("jk")
+                           ("fi" . isearch-moccur)))))
+
+      ((leaf color-moccur
+         :chord
+         ("jk" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all)))
+       (prog1 'color-moccur
+         (autoload (function moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur-all) "color-moccur" nil t)
+         (leaf-key-chords (("jk" . moccur)
+                           (:isearch-mode-map
+                            :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))
+
+      ((leaf color-moccur
+         :chord (("jk" . moccur)
+                 (:isearch-mode-map
+                  :package isearch
+                  ("ji" . isearch-moccur)
+                  ("jo" . isearch-moccur-all))))
+       (prog1 'color-moccur
+         (autoload (function moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur-all) "color-moccur" nil t)
+         (leaf-key-chords (("jk" . moccur)
+                           (:isearch-mode-map
+                            :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))
+
+      ;; you also use symbol instead of keyword to specify keymap
+      ((leaf color-moccur
+         :chord (("jk" . moccur)
+                 (isearch-mode-map
+                  :package isearch
+                  ("ji" . isearch-moccur)
+                  ("jo" . isearch-moccur-all))))
+       (prog1 'color-moccur
+         (autoload (function moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur) "color-moccur" nil t)
+         (autoload (function isearch-moccur-all) "color-moccur" nil t)
+         (leaf-key-chords (("jk" . moccur)
+                           (isearch-mode-map
+                            :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))))
+
+  (cort-deftest-with-macroexpand leaf/leaf-key-chord
+    '(((leaf-key-chord "jj" 'undo 'c-mode-map)
+       (leaf-key [key-chord 106 106] 'undo 'c-mode-map))
+
+      ((leaf-key-chord "jk" 'undo 'c-mode-map)
+       (progn
+         (leaf-key [key-chord 106 107] 'undo 'c-mode-map)
+         (leaf-key [key-chord 107 106] 'undo 'c-mode-map)))
+
+      ((leaf-key-chord "jj" 'undo)
+       (leaf-key [key-chord 106 106] 'undo nil))
+
+      ((leaf-key-chord "jk" 'undo)
+       (progn
+         (leaf-key [key-chord 106 107] 'undo nil)
+         (leaf-key [key-chord 107 106] 'undo nil)))))
+#+end_src
+
+* Modeline keywords
+** :diminish keyword
+~:diminish~ keyword provide frontend for [[https://github.com/myrjola/diminish.el/tree/master][diminish]].
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/diminish
+    '(((leaf leaf
+         :init (leaf-pre-init)
+         :diminish t
+         :config (leaf-init))
+       (prog1 'leaf
+         (diminish leaf)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :diminish nil
+         :config (leaf-init))
+       (prog1 'leaf
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :diminish leaf leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (diminish leaf)
+         (diminish leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :diminish t
+         :diminish leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (diminish leaf)
+         (diminish leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :diminish t leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (diminish leaf)
+         (diminish leaf-polyfill)
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :diminish (leaf leaf-polyfill leaf-sub leaf-subsub)
+         :config (leaf-init))
+       (prog1 'leaf
+         (diminish leaf)
+         (diminish leaf-polyfill)
+         (diminish leaf-sub)
+         (diminish leaf-subsub)
+         (leaf-pre-init)
+         (leaf-init)))))
+#+end_src
 
 * Information
 ** Donation
