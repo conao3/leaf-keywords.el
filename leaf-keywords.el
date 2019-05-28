@@ -34,23 +34,6 @@
   "Additional keywords for `leaf'."
   :group 'lisp)
 
-(leaf leaf
-  :defvar
-  leaf-defaults leaf-system-defaults leaf-defer-keywords
-  leaf--raw leaf--name leaf--key leaf--keyname
-  leaf--value leaf--body leaf--rest leaf--autoload
-  leaf-keywords leaf-normalize
-  :defun
-  leaf-warn leaf-error
-  leaf-truep leaf-pairp
-  leaf-dotlistp leaf-list-memq
-  leaf-subst leaf-flatten
-  leaf-insert-before leaf-insert-after
-  leaf-insert-list-before leaf-insert-list-after
-  leaf-plist-keys leaf-plist-get leaf-register-autoload
-  leaf-to-string leaf-add-keyword-before
-  leaf-add-keyword-after leaf-normalize-list-in-list)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Customize backend
