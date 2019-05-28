@@ -39,7 +39,7 @@
   leaf-defaults leaf-system-defaults leaf-defer-keywords
   leaf--raw leaf--name leaf--key leaf--keyname
   leaf--value leaf--body leaf--rest leaf--autoload
-  leaf-keywords leaf-normarize
+  leaf-keywords leaf-normalize
   :defun
   leaf-warn leaf-error
   leaf-truep leaf-pairp
@@ -73,7 +73,7 @@
              :chord*   (progn
                          (mapc (lambda (elm) (leaf-register-autoload (leaf-plist-get :func elm) leaf--name)) leaf--value)
                          `(,@(mapcar (lambda (elm) `(leaf-key-chord* ,(leaf-plist-get :key elm) #',(leaf-plist-get :func elm) ,(leaf-plist-get :map elm))) leaf--value) ,@leaf--body))))))
-  (setq leaf-normarize
+  (setq leaf-normalize
         (append
          '(((memq leaf--key '(:diminish))
             ;; Accept: 't, 'nil, symbol and list of these (and nested)
@@ -122,7 +122,7 @@
              (lambda (elm)
                (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
              leaf--value)))
-         leaf-normarize)))
+         leaf-normalize)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
