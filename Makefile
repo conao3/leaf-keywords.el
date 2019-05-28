@@ -34,7 +34,7 @@ git-hook:
 build: $(ELS:%.el=%.elc)
 
 %.elc: %.el $(DEPENDS)
-	$(BATCH) $(DEPENDS:%=-L %/) -f batch-byte-compile $<
+	$(BATCH) -f batch-byte-compile $<
 
 ##############################
 #
@@ -79,7 +79,7 @@ test: $(ALL_EMACS:%=.make/silent-%)
 ##############################
 
 clean:
-	rm -rf $(ELC) $(DEPENDS) .make
+	rm -rf $(ELS:%.el=%.elc) $(DEPENDS) .make
 
 ##############################
 #

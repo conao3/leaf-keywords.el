@@ -269,7 +269,7 @@ Example
        :chord (("jk" . macrostep-expand)))
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
-       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chord "jk" #'macrostep-expand nil)))
 
     ((leaf macrostep
@@ -277,7 +277,7 @@ Example
        :chord ("jk" . macrostep-expand))
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
-       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chord "jk" #'macrostep-expand nil)))
 
     ((leaf color-moccur
@@ -351,7 +351,7 @@ Example
        :chord* (("jk" . macrostep-expand)))
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
-       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chord* "jk" #'macrostep-expand nil)))
 
     ((leaf macrostep
@@ -359,7 +359,7 @@ Example
        :chord* ("jk" . macrostep-expand))
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
-       (leaf-handler-ensure macrostep macrostep nil)
+       (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chord* "jk" #'macrostep-expand nil)))
 
     ((leaf color-moccur
