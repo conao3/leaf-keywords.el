@@ -125,57 +125,43 @@ Example
 (leaf-keywords-init)
 
 (cort-deftest-with-macroexpand leaf/diminish
-  '(((leaf leaf
-       :init (leaf-pre-init)
+  '(((leaf autorevert
+       :diminish t)
+     (prog1 'autorevert
+       (diminish autorevert)))
+
+    ((leaf autorevert
+       :diminish autorevert)
+     (prog1 'autorevert
+       (diminish autorevert)))
+
+    ((leaf autorevert
        :diminish t
-       :config (leaf-init))
-     (prog1 'leaf
-       (diminish leaf)
-       (leaf-pre-init)
-       (leaf-init)))
+       :diminish autorevert-polyfill)
+     (prog1 'autorevert
+       (diminish autorevert)
+       (diminish autorevert-polyfill)))
 
-    ((leaf leaf
-       :init (leaf-pre-init)
-       :diminish leaf leaf-polyfill
-       :config (leaf-init))
-     (prog1 'leaf
-       (diminish leaf)
-       (diminish leaf-polyfill)
-       (leaf-pre-init)
-       (leaf-init)))
+    ((leaf autorevert
+       :diminish t autorevert-polyfill)
+     (prog1 'autorevert
+       (diminish autorevert)
+       (diminish autorevert-polyfill)))
 
-    ((leaf leaf
-       :init (leaf-pre-init)
-       :diminish t
-       :diminish leaf-polyfill
-       :config (leaf-init))
-     (prog1 'leaf
-       (diminish leaf)
-       (diminish leaf-polyfill)
-       (leaf-pre-init)
-       (leaf-init)))
+    ((leaf go-mode
+       :diminish " Go")
+     (prog1 'go-mode
+       (diminish go-mode " Go")))
 
-    ((leaf leaf
-       :init (leaf-pre-init)
-       :diminish t leaf-polyfill
-       :config (leaf-init))
-     (prog1 'leaf
-       (diminish leaf)
-       (diminish leaf-polyfill)
-       (leaf-pre-init)
-       (leaf-init)))
+    ((leaf abbrev
+       :diminish (abbrev-mode " Abv"))
+     (prog1 'abbrev
+       (diminish abbrev-mode " Abv")))
 
-    ((leaf leaf
-       :init (leaf-pre-init)
-       :diminish (leaf leaf-polyfill leaf-sub leaf-subsub)
-       :config (leaf-init))
-     (prog1 'leaf
-       (diminish leaf)
-       (diminish leaf-polyfill)
-       (diminish leaf-sub)
-       (diminish leaf-subsub)
-       (leaf-pre-init)
-       (leaf-init)))))
+    ((leaf projectile
+       :diminish (projectile (:eval (concat " " (projectile-project-name)))))
+     (prog1 'projectile
+       (diminish projectile (:eval (concat " " (projectile-project-name))))))))
 
 (cort-deftest-with-macroexpand leaf/el-get
   '(((leaf leaf

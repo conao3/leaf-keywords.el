@@ -84,7 +84,7 @@
 (defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
-     :diminish `(,@(mapcar (lambda (elm) `(diminish ,elm)) leaf--value) ,@leaf--body)
+     :diminish `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
      :chord    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -153,7 +153,15 @@
                        (leaf-normalize-list-in-list elm 'dotlistp))
                      leaf--value)))
 
-    ((memq leaf--key '(:el-get))
+    ((memq leaf--key '(:diminish))
+     (mapcar
+      (lambda (elm) (if (stringp (car elm)) `(,leaf--name ,(car elm)) elm))
+      (mapcar
+       (lambda (elm)
+         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
+       leaf--value)))
+
+    ((memq leaf--key '(:el-get :diminish))
      (mapcar
       (lambda (elm)
         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
