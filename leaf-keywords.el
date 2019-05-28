@@ -114,7 +114,7 @@
   :group 'leaf-keywords)
 
 (defcustom leaf-keywords-normalize
-  '(((memq leaf--key '(:diminish))
+  '(((memq leaf--key '())
      ;; Accept: 't, 'nil, symbol and list of these (and nested)
      ;; Return: symbol list.
      ;; Note  : 't will convert to 'leaf--name
@@ -132,10 +132,31 @@
      ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
      (eval `(leaf-key-chords ,leaf--value ,leaf--name)))
 
+    ((memq leaf--key '())
+     ;; Accept: (sym . val), ((sym sym ...) . val), (sym sym ... . val)
+     ;; Return: list of pair (sym . val)
+     ;; Note  : atom ('t, 'nil, symbol) is just ignored
+     ;;         remove duplicate configure
+     (mapcar (lambda (elm)
+               (cond
+                ((leaf-pairp elm)
+                 (if (eq t (car elm)) `(,leaf--name . (cdr elm)) elm))
+                ((memq leaf--key '())
+                 (if (eq t elm) `(,leaf--name . nil) `(,elm . nil)))
+                ((memq leaf--key '())
+                 `(,elm . ,leaf--name))
+                ((memq leaf--key '())
+                 elm)
+                (t
+                 elm)))
+             (mapcan (lambda (elm)
+                       (leaf-normalize-list-in-list elm 'dotlistp))
+                     leaf--value)))
+
     ((memq leaf--key '(:el-get))
      (mapcar
       (lambda (elm)
-        (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'dotlistp))
+        (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
       leaf--value)))
   "Additional `leaf-normalize'."
   :set #'leaf-keywords-set-normalize

@@ -136,14 +136,6 @@ Example
 
     ((leaf leaf
        :init (leaf-pre-init)
-       :diminish nil
-       :config (leaf-init))
-     (prog1 'leaf
-       (leaf-pre-init)
-       (leaf-init)))
-
-    ((leaf leaf
-       :init (leaf-pre-init)
        :diminish leaf leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
