@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.2
+;; Version: 1.0.3
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -84,14 +84,20 @@
 (defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
-     :diminish `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
-     :delight  `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
-     :hydra    (progn
-                 (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
-     :chord    (progn
-                 (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
+     :diminish  `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+     :delight   `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
+     :hydra     (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+     :smartrep  (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
+     :smartrep* (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
+     :chord     (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
      :chord*    (progn
                   (leaf-register-autoload (cadr leaf--value) leaf--name)
                   `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))))
@@ -171,6 +177,40 @@
                       (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
                   leaf--value))
        `(,val ,fns)))
+
+    ((memq leaf--key '(:smartrep :smartrep*))
+     (let ((map (if (eq :smartrep leaf--key) 'global-map 'leaf-key-override-global-map))
+           (val) (fns))
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((and (listp elm) (listp (car elm)))
+                      (mapcar
+                       (lambda (el)
+                         (let ((a (nth 0 el))
+                               (b (nth 1 el))
+                               (c (nth 2 el)))
+                           (and (listp b) (eq 'quote (car b)) (setq b (eval b)))
+                           (and (listp c) (eq 'quote (car c)) (setq c (eval c)))
+                           (if (stringp (car el))
+                               (progn (setq fns (append fns (mapcar #'cdr b))) `(,map ,a ',b))
+                             (progn (setq fns (append fns (mapcar #'cdr c))) `(,a ,b ',c)))))
+                       elm))
+                     ((listp elm)
+                      (let ((a (nth 0 elm))
+                            (b (nth 1 elm))
+                            (c (nth 2 elm)))
+                        (and (listp b) (eq 'quote (car b)) (setq b (eval b)))
+                        (and (listp c) (eq 'quote (car c)) (setq c (eval c)))
+                        (if (stringp (car elm))
+                            (progn (setq fns (append fns (mapcar #'cdr b))) `((,map ,a ',b)))
+                          (progn (setq fns (append fns (mapcar #'cdr c))) `((,a ,b ',c))))))))
+                  leaf--value))
+       `(,val ,(delq nil (mapcar
+                          (lambda (elm)
+                            (cond ((symbolp elm) elm)
+                                  ((and (listp elm) (eq 'quote (car elm))) (eval elm))))
+                          fns)))))
 
     ((memq leaf--key '(:delight))
      (mapcan
