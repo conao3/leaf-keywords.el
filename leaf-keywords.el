@@ -5,9 +5,9 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.1.1
+;; Version: 1.1.2
 ;; URL: https://github.com/conao3/leaf-keywords.el
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the Affero GNU General Public License as
