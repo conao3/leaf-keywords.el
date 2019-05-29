@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -85,6 +85,7 @@
   (cdr
    '(:dummy
      :diminish `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+     :delight  `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
      :chord    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -153,6 +154,17 @@
                        (leaf-normalize-list-in-list elm 'dotlistp))
                      leaf--value)))
 
+    ((memq leaf--key '(:delight))
+     (mapcan
+      (lambda (elm)
+        (cond
+         ((eq t elm) `((',leaf--name)))
+         ((symbolp elm) `((',elm)))
+         ((stringp elm) `((',leaf--name ,elm)))
+         ((and (listp elm) (listp (car elm))) (mapcar (lambda (el) `(',(car el) ,@(cdr el))) elm))
+         ((listp elm) `((',(car elm) ,@(cdr elm))))))
+      leaf--value))
+
     ((memq leaf--key '(:diminish))
      (mapcar
       (lambda (elm) (if (stringp (car elm)) `(,leaf--name ,(car elm)) elm))
@@ -161,7 +173,7 @@
          (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
        leaf--value)))
 
-    ((memq leaf--key '(:el-get :diminish))
+    ((memq leaf--key '(:el-get))
      (mapcar
       (lambda (elm)
         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))

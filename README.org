@@ -22,6 +22,7 @@
   - [[#chord-chord-keywords][:chord :chord* keywords]]
 - [[#modeline-keywords][Modeline keywords]]
   - [[#diminish-keyword][:diminish keyword]]
+  - [[#delight-keyword][:delight keyword]]
 - [[#information][Information]]
   - [[#donation][Donation]]
   - [[#community][Community]]
@@ -520,6 +521,68 @@ The usage and notes are the same as for the ~:bind~ keyword.
          :diminish (projectile (:eval (concat " " (projectile-project-name)))))
        (prog1 'projectile
          (diminish projectile (:eval (concat " " (projectile-project-name))))))))
+#+end_src
+
+** :delight keyword
+~:delight~ keyword provide frontend for delight ([[http://elpa.gnu.org/packages/delight.html][ELPA]], [[https://www.emacswiki.org/emacs/DelightedModes][Emacs wiki]]).
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/delight
+    '(((leaf autorevert
+         :delight t)
+       (prog1 'autorevert
+         (delight 'autorevert)))
+
+      ((leaf autorevert
+         :delight autorevert)
+       (prog1 'autorevert
+         (delight 'autorevert)))
+
+      ((leaf autorevert
+         :delight t
+         :delight autorevert-polyfill)
+       (prog1 'autorevert
+         (delight 'autorevert)
+         (delight 'autorevert-polyfill)))
+
+      ((leaf autorevert
+         :delight t autorevert-polyfill)
+       (prog1 'autorevert
+         (delight 'autorevert)
+         (delight 'autorevert-polyfill)))
+
+      ((leaf go-mode
+         :delight " Go")
+       (prog1 'go-mode
+         (delight 'go-mode " Go")))
+
+      ((leaf abbrev
+         :delight (abbrev-mode " Abv"))
+       (prog1 'abbrev
+         (delight 'abbrev-mode " Abv")))
+
+      ((leaf projectile
+         :delight (projectile (:eval (concat " " (projectile-project-name)))))
+       (prog1 'projectile
+         (delight 'projectile
+                  (:eval
+                   (concat " "
+                           (projectile-project-name))))))
+
+      ((leaf delight
+         :delight ((abbrev-mode " Abv" "abbrev")
+                   (smart-tab-mode " \\t" "smart-tab")
+                   (eldoc-mode nil "eldoc")
+                   (rainbow-mode)
+                   (overwrite-mode " Ov" t)
+                   (emacs-lisp-mode "Elisp" :major)))
+       (prog1 'delight
+         (delight 'abbrev-mode " Abv" "abbrev")
+         (delight 'smart-tab-mode " \\t" "smart-tab")
+         (delight 'eldoc-mode nil "eldoc")
+         (delight 'rainbow-mode)
+         (delight 'overwrite-mode " Ov" t)
+         (delight 'emacs-lisp-mode "Elisp" :major)))))
 #+end_src
 
 * Information
