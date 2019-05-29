@@ -25,8 +25,8 @@
 
 ;;; Code:
 
+(load "cort-test")
 (require 'leaf-keywords)
-(require 'cort-test)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
