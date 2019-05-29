@@ -571,6 +571,49 @@ Example
          '(("M-n" outline-next-visible-heading 1)
            ("M-p" outline-previous-visible-heading 1)))))))
 
+(cort-deftest-with-macroexpand leaf/smartrep*
+  '(((leaf multiple-cursors
+       :smartrep* ("C-t"
+                   (("C-p" . mc/mark-previous-like-this)
+                    ("C-n" . mc/mark-next-like-this)
+                    ("u"   . mc/unmark-next-like-this)
+                    ("U"   . mc/unmark-previous-like-this)
+                    ("s"   . mc/skip-to-next-like-this)
+                    ("S"   . mc/skip-to-previous-like-this)
+                    ("*"   . mc/mark-all-like-this))))
+     (prog1 'multiple-cursors
+       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
+       (smartrep-define-key leaf-key-override-global-map "C-t"
+         '(("C-p" . mc/mark-previous-like-this)
+           ("C-n" . mc/mark-next-like-this)
+           ("u" . mc/unmark-next-like-this)
+           ("U" . mc/unmark-previous-like-this)
+           ("s" . mc/skip-to-next-like-this)
+           ("S" . mc/skip-to-previous-like-this)
+           ("*" . mc/mark-all-like-this)))))
+
+    ((leaf org
+       :smartrep* ((org-mode-map
+                    "C-c"
+                    (("C-n" . (outline-next-visible-heading 1))
+                     ("C-p" . (outline-previous-visible-heading 1))))
+                   ("s-c"
+                    (("M-n" . (outline-next-visible-heading 1))
+                     ("M-p" . (outline-previous-visible-heading 1))))))
+     (prog1 'org
+       (smartrep-define-key org-mode-map "C-c"
+         '(("C-n" outline-next-visible-heading 1)
+           ("C-p" outline-previous-visible-heading 1)))
+       (smartrep-define-key leaf-key-override-global-map "s-c"
+         '(("M-n" outline-next-visible-heading 1)
+           ("M-p" outline-previous-visible-heading 1)))))))
+
 (cort-deftest-with-macroexpand leaf/hydra
   '(((leaf face-remap
        :hydra (hydra-zoom

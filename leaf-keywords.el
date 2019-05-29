@@ -92,6 +92,9 @@
      :smartrep (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
+     :smartrep* (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
      :chord    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -175,8 +178,9 @@
                   leaf--value))
        `(,val ,fns)))
 
-    ((memq leaf--key '(:smartrep))
-     (let ((val) (fns))
+    ((memq leaf--key '(:smartrep :smartrep*))
+     (let ((map (if (eq :smartrep leaf--key) 'global-map 'leaf-key-override-global-map))
+           (val) (fns))
        (setq val (mapcan
                   (lambda (elm)
                     (cond
@@ -189,7 +193,7 @@
                            (and (listp b) (eq 'quote (car b)) (setq b (eval b)))
                            (and (listp c) (eq 'quote (car c)) (setq c (eval c)))
                            (if (stringp (car el))
-                               (progn (setq fns (append fns (mapcar #'cdr b))) `(global-map ,a ',b))
+                               (progn (setq fns (append fns (mapcar #'cdr b))) `(,map ,a ',b))
                              (progn (setq fns (append fns (mapcar #'cdr c))) `(,a ,b ',c)))))
                        elm))
                      ((listp elm)
@@ -199,7 +203,7 @@
                         (and (listp b) (eq 'quote (car b)) (setq b (eval b)))
                         (and (listp c) (eq 'quote (car c)) (setq c (eval c)))
                         (if (stringp (car elm))
-                            (progn (setq fns (append fns (mapcar #'cdr b))) `((global-map ,a ',b)))
+                            (progn (setq fns (append fns (mapcar #'cdr b))) `((,map ,a ',b)))
                           (progn (setq fns (append fns (mapcar #'cdr c))) `((,a ,b ',c))))))))
                   leaf--value))
        `(,val ,(delq nil (mapcar
