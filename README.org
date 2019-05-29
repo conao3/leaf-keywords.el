@@ -21,7 +21,7 @@
   - [[#bind-bind-keywords][:bind :bind* keywords]]
   - [[#chord-chord-keywords][:chord :chord* keywords]]
   - [[#smartrep-smartrep-keywords][:smartrep :smartrep* keywords]]
-  - [[#key-combo-keycombo-keywords][:key-combo, :key-combo* keywords]]
+  - [[#key-combo-key-combo-keywords][:key-combo, :key-combo* keywords]]
   - [[#hydra-keyword][:hydra keyword]]
 - [[#modeline-keywords][Modeline keywords]]
   - [[#diminish-keyword][:diminish keyword]]
@@ -30,11 +30,11 @@
   - [[#donation][Donation]]
   - [[#community][Community]]
   - [[#contribution][Contribution]]
+    - [[#define-new-keywords][Define new keywords]]
   - [[#migration][Migration]]
   - [[#license][License]]
   - [[#author][Author]]
   - [[#contributors][Contributors]]
-  - [[#welcome-pr][Welcome PR]]
   - [[#special-thanks][Special Thanks]]
 
 * Description
@@ -498,116 +498,6 @@ The usage and notes are the same as for the ~:bind~ keyword.
               (leaf-key-chords
                (("jk" . moccur)
                 (isearch-mode-map
-                 :package isearch
-                 ("ji" . isearch-moccur)
-                 ("jo" . isearch-moccur-all))))))))))
-
-  (cort-deftest-with-macroexpand leaf/chord*
-    '(((leaf macrostep
-         :ensure t
-         :chord* (("jk" . macrostep-expand)))
-       (prog1 'macrostep
-         (autoload #'macrostep-expand "macrostep" nil t)
-         (leaf-handler-package macrostep macrostep nil)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . macrostep-expand)))))))
-
-      ((leaf macrostep
-         :ensure t
-         :chord* ("jk" . macrostep-expand))
-       (prog1 'macrostep
-         (autoload #'macrostep-expand "macrostep" nil t)
-         (leaf-handler-package macrostep macrostep nil)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . macrostep-expand)))))))
-
-      ((leaf color-moccur
-         :chord*
-         ("jk" . moccur)
-         ("fi" . isearch-moccur))
-       (prog1 'color-moccur
-         (autoload #'moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . moccur)
-                ("fi" . isearch-moccur)))))))
-
-      ((leaf color-moccur
-         :chord* (("jk" . moccur)
-                  ("fi" . isearch-moccur)))
-       (prog1 'color-moccur
-         (autoload #'moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . moccur)
-                ("fi" . isearch-moccur)))))))
-
-      ((leaf color-moccur
-         :chord*
-         ("jk" . nil)
-         ("fi" . isearch-moccur))
-       (prog1 'color-moccur
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk")
-                ("fi" . isearch-moccur)))))))
-
-      ((leaf color-moccur
-         :chord* (("jk" . nil)
-                  ("fi" . isearch-moccur)))
-       (prog1 'color-moccur
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk")
-                ("fi" . isearch-moccur)))))))
-
-      ((leaf color-moccur
-         :chord*
-         ("jk" . moccur)
-         (:isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all)))
-       (prog1 'color-moccur
-         (autoload #'moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur-all "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . moccur)
-                (:isearch-mode-map
-                 :package isearch
-                 ("ji" . isearch-moccur)
-                 ("jo" . isearch-moccur-all))))))))
-
-      ((leaf color-moccur
-         :chord* (("jk" . moccur)
-                  (:isearch-mode-map
-                   :package isearch
-                   ("ji" . isearch-moccur)
-                   ("jo" . isearch-moccur-all))))
-       (prog1 'color-moccur
-         (autoload #'moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur "color-moccur" nil t)
-         (autoload #'isearch-moccur-all "color-moccur" nil t)
-         (eval-after-load 'key-chord
-           '(progn
-              (leaf-key-chords*
-               (("jk" . moccur)
-                (:isearch-mode-map
                  :package isearch
                  ("ji" . isearch-moccur)
                  ("jo" . isearch-moccur-all))))))))))
@@ -1190,6 +1080,92 @@ Travis Cl test ~leaf-test.el~ with all Emacs version 24.4 or above.
 I think that it is difficult to prepare the environment locally,
 so I think that it is good to throw PR and test Travis for the time being!
 Feel free throw PR!
+
+*** Define new keywords
+The following script is useful for adding keywords. This is a simplified ~leaf~ macro for ~*scratch*~.
+
+You first design the list that the normalizer should return and define the keyword processor.
+Then trial-and-error builds the normalizer by this script, and by typing ~C-M-x (eval-defun)~ at the beginning of ~defcustom~,
+it can be overwrite variable and recognized by ~leaf~ (At that time the function to specify ~:set~ is executed.).
+
+Once you have the S-expression expected from [[https://github.com/joddie/macrostep][macrostep]], let ~leaf-keywords-test.el~ define multiple tests
+to ensure that they will execute correctly into the future.
+
+#+begin_src emacs-lisp
+  (let ((name 'leaf)
+        (args '(;; << Your new leaf argument >>
+                :key-combo (("="   . (" = " " == " " === " ))
+                            ("=>"  . " => ")
+                            ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                            ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))))
+
+    ;; call `leaf'
+    (let* ((leaf--autoload)
+           ;; omit `leaf-append-defaults' to debug
+           (args* (leaf-sort-values-plist
+                   (leaf-normalize-plist args 'merge 'eval))))
+
+      ;; call `leaf-process-keywords'
+      (let ((name name) (plist args*) (raw args*))
+        (let* ((leaf--name    name)
+               (leaf--key     (pop plist))
+               (leaf--keyname (substring (symbol-name leaf--key) 1))
+               (leaf--value   (pop plist))
+               (leaf--raw     raw)
+               (leaf--rest    plist)
+               (leaf--body))
+          ;; renew (normalize) leaf--value, save follow expansion in leaf--body
+          (setq leaf--value
+                (cond
+
+                 ;; << Your new normalizer >>
+                 ((memq leaf--key '(:key-combo :key-combo*))
+                  (let ((map (if (eq :key-combo leaf--key) 'global-map 'leaf-key-override-global-map))
+                        (val) (fns))
+                    (setq val (mapcan
+                               (lambda (elm)
+                                 (cond
+                                  ((and (listp elm)
+                                        (listp (car elm))
+                                        (listp (caar elm)))
+                                   (mapcan
+                                    (lambda (el)
+                                      (let ((emap  (and (symbolp (car el)) (car el)))   ; el's map
+                                            (binds (if (leaf-pairp (car el)) el (cdr el))))
+                                        (mapcar
+                                         (lambda (el)
+                                           (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
+                                           `(,(or emap map) ,(car el) ,(if (stringp (cdr el)) (cdr el) `',(cdr el))))
+                                         binds)))
+                                    elm))
+                                  ((listp elm)
+                                   (let ((emap  (and (symbolp (car elm)) (car elm)))    ; elm's map
+                                         (binds (if (leaf-pairp (car elm)) elm (cdr elm))))
+                                     (mapcar
+                                      (lambda (el)
+                                        (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
+                                        `(,(or emap map) ,(car el) ,(if (stringp (cdr el)) (cdr el) `',(cdr el))))
+                                      binds)))))
+                               leaf--value))
+                    `(,val ,(delq nil (mapcar (lambda (elm) (when (symbolp elm) elm)) fns)))))))
+
+          (pp `(========== leaf--value
+                ,leaf--value
+                (:dummy)
+                ========== leaf--body
+                (progn
+                  ,@(eval (plist-get leaf-keywords leaf--key)))
+                ))
+          nil))))
+#+end_src
+
+Note: ~macrostep~ return ~function~ instead of #', replace it via follow regexp by ~C-M-% (query-replace-regexp)~.
+
+#+begin_quote
+(autoload
+         (function \([^ ]*\))
+         \([^ ]*\) → (autoload #'\1 \2
+#+end_quote
 
 ** Migration
 ** License
