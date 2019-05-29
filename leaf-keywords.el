@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.3
+;; Version: 1.0.4
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -89,6 +89,12 @@
      :hydra     (progn
                   (leaf-register-autoload (cadr leaf--value) leaf--name)
                   `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+     :key-combo  (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
+     :key-combo* (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
      :smartrep  (progn
                   (leaf-register-autoload (cadr leaf--value) leaf--name)
                   `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
@@ -177,6 +183,36 @@
                       (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
                   leaf--value))
        `(,val ,fns)))
+
+    ((memq leaf--key '(:key-combo :key-combo*))
+     (let ((map (if (eq :key-combo leaf--key) 'global-map 'leaf-key-override-global-map))
+           (val) (fns))
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((and (listp elm)
+                           (listp (car elm))
+                           (listp (caar elm)))
+                      (mapcan
+                       (lambda (el)
+                         (let ((emap  (and (symbolp (car el)) (car el)))   ; el's map
+                               (binds (if (leaf-pairp (car el)) el (cdr el))))
+                           (mapcar
+                            (lambda (el)
+                              (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
+                              `(,(or emap map) ,(car el) ,(if (stringp (cdr el)) (cdr el) `',(cdr el))))
+                            binds)))
+                       elm))
+                     ((listp elm)
+                      (let ((emap  (and (symbolp (car elm)) (car elm)))    ; elm's map
+                            (binds (if (leaf-pairp (car elm)) elm (cdr elm))))
+                        (mapcar
+                         (lambda (el)
+                           (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
+                           `(,(or emap map) ,(car el) ,(if (stringp (cdr el)) (cdr el) `',(cdr el))))
+                         binds)))))
+                  leaf--value))
+       `(,val ,(delq nil (mapcar (lambda (elm) (when (symbolp elm) elm)) fns)))))
 
     ((memq leaf--key '(:smartrep :smartrep*))
      (let ((map (if (eq :smartrep leaf--key) 'global-map 'leaf-key-override-global-map))
