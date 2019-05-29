@@ -84,20 +84,20 @@
 (defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
-     :diminish `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
-     :delight  `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
-     :hydra    (progn
-                 (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
-     :smartrep (progn
-                 (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
+     :diminish  `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+     :delight   `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
+     :hydra     (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+     :smartrep  (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
      :smartrep* (progn
                   (leaf-register-autoload (cadr leaf--value) leaf--name)
                   `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
-     :chord    (progn
-                 (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
+     :chord     (progn
+                  (leaf-register-autoload (cadr leaf--value) leaf--name)
+                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
      :chord*    (progn
                   (leaf-register-autoload (cadr leaf--value) leaf--name)
                   `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))))
