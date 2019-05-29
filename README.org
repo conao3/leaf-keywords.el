@@ -23,7 +23,7 @@
   - [[#bind-bind-keywords][:bind :bind* keywords]]
   - [[#chord-chord-keywords][:chord :chord* keywords]]
   - [[#smartrep-smartrep-keywords][:smartrep :smartrep* keywords]]
-  - [[#key-combo-key-combo-keywords][:key-combo, :key-combo* keywords]]
+  - [[#combo-combo-keywords][:combo, :combo* keywords]]
   - [[#hydra-keyword][:hydra keyword]]
 - [[#modeline-keywords][Modeline keywords]]
   - [[#diminish-keyword][:diminish keyword]]
@@ -727,23 +727,23 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:smartrep~ and
                   ("M-p" outline-previous-visible-heading 1)))))))))
 #+end_src
 
-** :key-combo, :key-combo* keywords
-~:key-combo~, ~:key-combo*~ provide frontend for [[https://github.com/uk-ar/key-combo][key-combo]].
+** :combo, :combo* keywords
+~:combo~, ~:combo*~ provide frontend for [[https://github.com/uk-ar/key-combo][key-combo]].
 
 They can process a list of arguments, or a nested list of them.
 
 Automatically generates an ~autoload~ statement when a function symbol is passed.
 
-If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
-~leaf-key-override-global-map~ for leaf-key in ~:key-combo*~.
+If you omit the key-map to bind, use ~global-map~ instead in ~:combo~ and
+~leaf-key-override-global-map~ for leaf-key in ~:combo*~.
 
 #+begin_src emacs-lisp
   (cort-deftest-with-macroexpand leaf/key-combo
     '(((leaf key-combo
-         :key-combo (("="   . (" = " " == " " === " ))
-                     ("=>"  . " => ")
-                     ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                     ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
+         :combo (("="   . (" = " " == " " === " ))
+                 ("=>"  . " => ")
+                 ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                 ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -758,11 +758,11 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
               (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
 
       ((leaf key-combo
-         :key-combo (emacs-lisp-mode-map
-                     ("="   . (" = " " == " " === " ))
-                     ("=>"  . " => ")
-                     ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                     ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
+         :combo (emacs-lisp-mode-map
+                 ("="   . (" = " " == " " === " ))
+                 ("=>"  . " => ")
+                 ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                 ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -778,13 +778,13 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
               (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
 
       ((leaf key-combo
-         :key-combo ((("="   . (" = " " == " " === " ))
-                      ("=>"  . " => ")
-                      ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                      ("C-e" . (move-end-of-line end-of-buffer key-combo-return)))
-                     (emacs-lisp-mode-map
-                      ("."  . ("." " . "))
-                      ("="  . ("= " "eq " "equal ")))))
+         :combo ((("="   . (" = " " == " " === " ))
+                  ("=>"  . " => ")
+                  ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                  ("C-e" . (move-end-of-line end-of-buffer key-combo-return)))
+                 (emacs-lisp-mode-map
+                  ("."  . ("." " . "))
+                  ("="  . ("= " "eq " "equal ")))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -802,10 +802,10 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
 
   (cort-deftest-with-macroexpand leaf/key-combo*
     '(((leaf key-combo
-         :key-combo* (("="   . (" = " " == " " === " ))
-                      ("=>"  . " => ")
-                      ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                      ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
+         :combo* (("="   . (" = " " == " " === " ))
+                  ("=>"  . " => ")
+                  ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                  ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -820,11 +820,11 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
               (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
 
       ((leaf key-combo
-         :key-combo* (emacs-lisp-mode-map
-                      ("="   . (" = " " == " " === " ))
-                      ("=>"  . " => ")
-                      ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                      ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
+         :combo* (emacs-lisp-mode-map
+                  ("="   . (" = " " == " " === " ))
+                  ("=>"  . " => ")
+                  ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                  ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -840,13 +840,13 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:key-combo~ and
               (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
 
       ((leaf key-combo
-         :key-combo* ((("="   . (" = " " == " " === " ))
-                       ("=>"  . " => ")
-                       ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                       ("C-e" . (move-end-of-line end-of-buffer key-combo-return)))
-                      (emacs-lisp-mode-map
-                       ("."  . ("." " . "))
-                       ("="  . ("= " "eq " "equal ")))))
+         :combo* ((("="   . (" = " " == " " === " ))
+                   ("=>"  . " => ")
+                   ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                   ("C-e" . (move-end-of-line end-of-buffer key-combo-return)))
+                  (emacs-lisp-mode-map
+                   ("."  . ("." " . "))
+                   ("="  . ("= " "eq " "equal ")))))
        (prog1 'key-combo
          (autoload #'back-to-indentation "key-combo" nil t)
          (autoload #'move-beginning-of-line "key-combo" nil t)
@@ -1139,10 +1139,10 @@ to ensure that they will execute correctly into the future.
 #+begin_src emacs-lisp
   (let ((name 'leaf)
         (args '(;; << Your new leaf argument >>
-                :key-combo (("="   . (" = " " == " " === " ))
-                            ("=>"  . " => ")
-                            ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-                            ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))))
+                :combo (("="   . (" = " " == " " === " ))
+                        ("=>"  . " => ")
+                        ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+                        ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))))
 
     ;; call `leaf'
     (let* ((leaf--autoload)
@@ -1164,8 +1164,8 @@ to ensure that they will execute correctly into the future.
                 (cond
 
                  ;; << Your new normalizer >>
-                 ((memq leaf--key '(:key-combo :key-combo*))
-                  (let ((map (if (eq :key-combo leaf--key) 'global-map 'leaf-key-override-global-map))
+                 ((memq leaf--key '(:combo :combo*))
+                  (let ((map (if (eq :combo leaf--key) 'global-map 'leaf-key-override-global-map))
                         (val) (fns))
                     (setq val (mapcan
                                (lambda (elm)
@@ -1194,7 +1194,8 @@ to ensure that they will execute correctly into the future.
                                leaf--value))
                     `(,val ,(delq nil (mapcar (lambda (elm) (when (symbolp elm) elm)) fns)))))))
 
-          (pp `(========== leaf--value
+          (pp `((:dummy)
+                ========== leaf--value
                 ,leaf--value
                 (:dummy)
                 ========== leaf--body

@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.7
+;; Version: 1.0.8
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -97,12 +97,12 @@
                    `((eval-after-load 'hydra
                        '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
                      ,@leaf--body))
-     :key-combo  (progn
+     :combo      (progn
                    (leaf-register-autoload (cadr leaf--value) leaf--name)
                    `((eval-after-load 'key-combo
                        '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
                      ,@leaf--body))
-     :key-combo* (progn
+     :combo*     (progn
                    (leaf-register-autoload (cadr leaf--value) leaf--name)
                    `((eval-after-load 'key-combo
                        '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
@@ -204,8 +204,8 @@
                   leaf--value))
        `(,val ,fns)))
 
-    ((memq leaf--key '(:key-combo :key-combo*))
-     (let ((map (if (eq :key-combo leaf--key) 'global-map 'leaf-key-override-global-map))
+    ((memq leaf--key '(:combo :combo*))
+     (let ((map (if (eq :combo leaf--key) 'global-map 'leaf-key-override-global-map))
            (val) (fns))
        (setq val (mapcan
                   (lambda (elm)
@@ -442,7 +442,7 @@ NOTE: BIND can also accept list of these."
 
   ;; add additional normalize on the top
   (setq leaf-normalize
-          (append leaf-keywords-normalize leaf-keywords-raw-normalize))
+        (append leaf-keywords-normalize leaf-keywords-raw-normalize))
 
   ;; define new leaf-expand-* variable
   (eval
