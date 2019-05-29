@@ -86,6 +86,9 @@
    '(:dummy
      :diminish `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
      :delight  `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
+     :hydra    (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
      :chord    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -153,6 +156,21 @@
              (mapcan (lambda (elm)
                        (leaf-normalize-list-in-list elm 'dotlistp))
                      leaf--value)))
+
+    ((memq leaf--key '(:hydra))
+     (let ((fn (lambda (elm)
+                 (mapcar (lambda (el) (cadr el))
+                         (if (stringp (nth 2 elm)) (nthcdr 3 elm) (nthcdr 2 elm)))))
+           (val) (fns))
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((and (listp elm) (listp (car elm)))
+                      (progn (mapc (lambda (el) (setq fns (append fns (funcall fn el)))) elm) elm))
+                     ((listp elm)
+                      (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
+                  leaf--value))
+       `(,val ,fns)))
 
     ((memq leaf--key '(:delight))
      (mapcan
