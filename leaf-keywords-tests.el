@@ -493,13 +493,13 @@ Example
                    ("S"   . mc/skip-to-previous-like-this)
                    ("*"   . mc/mark-all-like-this))))
      (prog1 'multiple-cursors
-       (autoload (function mc/mark-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/mark-next-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/unmark-next-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/unmark-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/skip-to-next-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/skip-to-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/mark-all-like-this) "multiple-cursors" nil t)
+       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
+       (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
        (smartrep-define-key global-map "C-t"
          '(("C-p" . mc/mark-previous-like-this)
            ("C-n" . mc/mark-next-like-this)
@@ -515,8 +515,8 @@ Example
                   (("C-p" . mc/mark-previous-like-this)
                    ("C-n" . mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload (function mc/mark-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/mark-next-like-this) "multiple-cursors" nil t)
+       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
        (smartrep-define-key global-map "C-t"
          '(("C-p" . mc/mark-previous-like-this)
            ("C-n" . mc/mark-next-like-this)))))
@@ -527,8 +527,8 @@ Example
                   (("C-p" . 'mc/mark-previous-like-this)
                    ("C-n" . 'mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload (function mc/mark-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/mark-next-like-this) "multiple-cursors" nil t)
+       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
        (smartrep-define-key global-map "C-t"
          '(("C-p" . 'mc/mark-previous-like-this)
            ("C-n" . 'mc/mark-next-like-this)))))
@@ -539,8 +539,8 @@ Example
                   '(("C-p" . 'mc/mark-previous-like-this)
                     ("C-n" . 'mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload (function mc/mark-previous-like-this) "multiple-cursors" nil t)
-       (autoload (function mc/mark-next-like-this) "multiple-cursors" nil t)
+       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
        (smartrep-define-key global-map "C-t"
          '(("C-p" . 'mc/mark-previous-like-this)
            ("C-n" . 'mc/mark-next-like-this)))))
