@@ -533,6 +533,18 @@ Example
          '(("C-p" . 'mc/mark-previous-like-this)
            ("C-n" . 'mc/mark-next-like-this)))))
 
+    ((leaf multiple-cursors
+       :smartrep (global-map
+                  "C-t"
+                  '(("C-p" . 'mc/mark-previous-like-this)
+                    ("C-n" . 'mc/mark-next-like-this))))
+     (prog1 'multiple-cursors
+       (autoload (function mc/mark-previous-like-this) "multiple-cursors" nil t)
+       (autoload (function mc/mark-next-like-this) "multiple-cursors" nil t)
+       (smartrep-define-key global-map "C-t"
+         '(("C-p" . 'mc/mark-previous-like-this)
+           ("C-n" . 'mc/mark-next-like-this)))))
+
     ((leaf org
        :smartrep (org-mode-map
                   "C-c"
