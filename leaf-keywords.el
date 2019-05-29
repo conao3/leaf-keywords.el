@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.8
+;; Version: 1.0.9
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -53,7 +53,7 @@
     (leaf-keywords-init)))
 
 (defun leaf-keywords-set-normalize (sym val)
-  "Set SYM as VAL and modify leaf-normalize."
+  "Set SYM as VAL and modify `leaf-normalize'."
   (set-default sym val)
   (when leaf-keywords-init-frg
     (leaf-keywords-init)))
@@ -320,7 +320,8 @@ For example:
          (leaf-key [key-chord ,key2 ,key1] ,command ,keymap)))))
 
 (defmacro leaf-key-chord* (key command)
-  "Similar to `leaf-key-chord', but overrides any mode-specific bindings."
+  "Similar to `leaf-key-chord', but overrides any mode-specific bindings.
+Bind COMMAND at KEY."
   `(leaf-key-chord ,key ,command 'leaf-key-override-global-map))
 
 (defmacro leaf-key-chords (bind &optional dryrun-name)
@@ -398,7 +399,7 @@ NOTE: BIND can also accept list of these."
       (if (cdr forms) `(progn ,@(nreverse forms)) (car forms)))))
 
 (defmacro leaf-key-chords* (bind)
-  "Similar to `leaf-key-chords', but overrides any mode-specific bindings."
+  "Similar to `leaf-key-chords', but overrides any mode-specific bindings for BIND."
   (let ((binds (if (and (atom (car bind)) (atom (cdr bind)))
                    `(,bind) bind)))
     `(leaf-key-chords (:leaf-key-override-global-map ,@binds))))
