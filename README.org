@@ -20,6 +20,7 @@
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind :bind* keywords]]
   - [[#chord-chord-keywords][:chord :chord* keywords]]
+  - [[#smartrep-smartrep-keywords][:smartrep :smartrep* keywords]]
   - [[#hydra-keyword][:hydra keyword]]
 - [[#modeline-keywords][Modeline keywords]]
   - [[#diminish-keyword][:diminish keyword]]
@@ -477,6 +478,152 @@ The usage and notes are the same as for the ~:bind~ keyword.
        (progn
          (leaf-key [key-chord 106 107] 'undo nil)
          (leaf-key [key-chord 107 106] 'undo nil)))))
+#+end_src
+
+** :smartrep, :smartrep* keywords
+~:smartrep~ and ~:smartrep*~ provide frontend for [[https://github.com/myuhe/smartrep.el][smartrep]].
+
+They can process a list of arguments that the ~smartrep~ accepts, or a nested list of them.
+
+Automatically generates an ~autoload~ statement when a function symbol is passed.
+
+Quoting a function or quoting a binding list works the same way.
+
+If you omit the key-map to bind, use ~global-map~ instead in ~:smartrep~ and
+~leaf-key-override-global-map~ for leaf-key in ~:smartrep*~.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/smartrep
+    '(((leaf multiple-cursors
+         :smartrep ("C-t"
+                    (("C-p" . mc/mark-previous-like-this)
+                     ("C-n" . mc/mark-next-like-this)
+                     ("u"   . mc/unmark-next-like-this)
+                     ("U"   . mc/unmark-previous-like-this)
+                     ("s"   . mc/skip-to-next-like-this)
+                     ("S"   . mc/skip-to-previous-like-this)
+                     ("*"   . mc/mark-all-like-this))))
+       (prog1 'multiple-cursors
+         (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
+         (smartrep-define-key global-map "C-t"
+           '(("C-p" . mc/mark-previous-like-this)
+             ("C-n" . mc/mark-next-like-this)
+             ("u" . mc/unmark-next-like-this)
+             ("U" . mc/unmark-previous-like-this)
+             ("s" . mc/skip-to-next-like-this)
+             ("S" . mc/skip-to-previous-like-this)
+             ("*" . mc/mark-all-like-this)))))
+
+      ((leaf multiple-cursors
+         :smartrep (global-map
+                    "C-t"
+                    (("C-p" . mc/mark-previous-like-this)
+                     ("C-n" . mc/mark-next-like-this))))
+       (prog1 'multiple-cursors
+         (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+         (smartrep-define-key global-map "C-t"
+           '(("C-p" . mc/mark-previous-like-this)
+             ("C-n" . mc/mark-next-like-this)))))
+
+      ((leaf multiple-cursors
+         :smartrep (global-map
+                    "C-t"
+                    (("C-p" . 'mc/mark-previous-like-this)
+                     ("C-n" . 'mc/mark-next-like-this))))
+       (prog1 'multiple-cursors
+         (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+         (smartrep-define-key global-map "C-t"
+           '(("C-p" . 'mc/mark-previous-like-this)
+             ("C-n" . 'mc/mark-next-like-this)))))
+
+      ((leaf multiple-cursors
+         :smartrep (global-map
+                    "C-t"
+                    '(("C-p" . 'mc/mark-previous-like-this)
+                      ("C-n" . 'mc/mark-next-like-this))))
+       (prog1 'multiple-cursors
+         (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+         (smartrep-define-key global-map "C-t"
+           '(("C-p" . 'mc/mark-previous-like-this)
+             ("C-n" . 'mc/mark-next-like-this)))))
+
+      ((leaf org
+         :smartrep (org-mode-map
+                    "C-c"
+                    (("C-n" . (outline-next-visible-heading 1))
+                     ("C-p" . (outline-previous-visible-heading 1)))))
+       (prog1 'org
+         (smartrep-define-key org-mode-map "C-c"
+           '(("C-n" outline-next-visible-heading 1)
+             ("C-p" outline-previous-visible-heading 1)))))
+
+      ((leaf org
+         :smartrep ((org-mode-map
+                     "C-c"
+                     (("C-n" . (outline-next-visible-heading 1))
+                      ("C-p" . (outline-previous-visible-heading 1))))
+                    ("s-c"
+                     (("M-n" . (outline-next-visible-heading 1))
+                      ("M-p" . (outline-previous-visible-heading 1))))))
+       (prog1 'org
+         (smartrep-define-key org-mode-map "C-c"
+           '(("C-n" outline-next-visible-heading 1)
+             ("C-p" outline-previous-visible-heading 1)))
+         (smartrep-define-key global-map "s-c"
+           '(("M-n" outline-next-visible-heading 1)
+             ("M-p" outline-previous-visible-heading 1)))))))
+
+  (cort-deftest-with-macroexpand leaf/smartrep*
+    '(((leaf multiple-cursors
+         :smartrep* ("C-t"
+                     (("C-p" . mc/mark-previous-like-this)
+                      ("C-n" . mc/mark-next-like-this)
+                      ("u"   . mc/unmark-next-like-this)
+                      ("U"   . mc/unmark-previous-like-this)
+                      ("s"   . mc/skip-to-next-like-this)
+                      ("S"   . mc/skip-to-previous-like-this)
+                      ("*"   . mc/mark-all-like-this))))
+       (prog1 'multiple-cursors
+         (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
+         (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
+         (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
+         (smartrep-define-key leaf-key-override-global-map "C-t"
+           '(("C-p" . mc/mark-previous-like-this)
+             ("C-n" . mc/mark-next-like-this)
+             ("u" . mc/unmark-next-like-this)
+             ("U" . mc/unmark-previous-like-this)
+             ("s" . mc/skip-to-next-like-this)
+             ("S" . mc/skip-to-previous-like-this)
+             ("*" . mc/mark-all-like-this)))))
+
+      ((leaf org
+         :smartrep* ((org-mode-map
+                      "C-c"
+                      (("C-n" . (outline-next-visible-heading 1))
+                       ("C-p" . (outline-previous-visible-heading 1))))
+                     ("s-c"
+                      (("M-n" . (outline-next-visible-heading 1))
+                       ("M-p" . (outline-previous-visible-heading 1))))))
+       (prog1 'org
+         (smartrep-define-key org-mode-map "C-c"
+           '(("C-n" outline-next-visible-heading 1)
+             ("C-p" outline-previous-visible-heading 1)))
+         (smartrep-define-key leaf-key-override-global-map "s-c"
+           '(("M-n" outline-next-visible-heading 1)
+             ("M-p" outline-previous-visible-heading 1)))))))
 #+end_src
 
 ** :hydra keyword
