@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.0.4
+;; Version: 1.0.5
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4"))
 
@@ -74,7 +74,9 @@
 (defcustom leaf-keywords-after-conditions
   (cdr
    '(:dummy
-     :el-get `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)))
+     :el-get `((eval-after-load 'el-get
+                 '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
+               ,@leaf--body)))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
@@ -84,29 +86,47 @@
 (defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
-     :diminish  `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
-     :delight   `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
-     :hydra     (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+     :diminish   `((eval-after-load 'diminish
+                     '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
+                   ,@leaf--body)
+     :delight    `((eval-after-load 'delight
+                     '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
+                   ,@leaf--body)
+     :hydra      (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'hydra
+                       '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
+                     ,@leaf--body))
      :key-combo  (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'key-combo
+                       '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
+                     ,@leaf--body))
      :key-combo* (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
-     :smartrep  (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
-     :smartrep* (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
-     :chord     (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
-     :chord*    (progn
-                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))))
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'key-combo
+                       '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
+                     ,@leaf--body))
+     :smartrep   (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'smartrep
+                       '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
+                     ,@leaf--body))
+     :smartrep*  (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'smartrep
+                       '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
+                     ,@leaf--body))
+     :chord      (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'key-chord
+                       '(progn (leaf-key-chords ,(car leaf--value))))
+                     ,@leaf--body))
+     :chord*     (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `((eval-after-load 'key-chord
+                       '(progn (leaf-key-chords* ,(car leaf--value))))
+                     ,@leaf--body))))
   "Additional `leaf-keywords' after wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
