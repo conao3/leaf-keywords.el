@@ -297,7 +297,7 @@ Example
        :ensure t
        :chord (("jk" . macrostep-expand)))
      (prog1 'macrostep
-       (autoload (function macrostep-expand) "macrostep" nil t)
+       (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords (("jk" . macrostep-expand)))))
 
@@ -305,7 +305,7 @@ Example
        :ensure t
        :chord ("jk" . macrostep-expand))
      (prog1 'macrostep
-       (autoload (function macrostep-expand) "macrostep" nil t)
+       (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords (("jk" . macrostep-expand)))))
 
@@ -314,8 +314,8 @@ Example
        ("jk" . moccur)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          ("fi" . isearch-moccur)))))
 
@@ -323,8 +323,8 @@ Example
        :chord (("jk" . moccur)
                ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          ("fi" . isearch-moccur)))))
 
@@ -333,7 +333,7 @@ Example
        ("jk" . nil)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords (("jk")
                          ("fi" . isearch-moccur)))))
 
@@ -341,7 +341,7 @@ Example
        :chord (("jk" . nil)
                ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords (("jk")
                          ("fi" . isearch-moccur)))))
 
@@ -353,9 +353,9 @@ Example
         ("ji" . isearch-moccur)
         ("jo" . isearch-moccur-all)))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          (:isearch-mode-map
                           :package isearch
@@ -369,9 +369,9 @@ Example
                 ("ji" . isearch-moccur)
                 ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          (:isearch-mode-map
                           :package isearch
@@ -386,9 +386,9 @@ Example
                 ("ji" . isearch-moccur)
                 ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
        (leaf-key-chords (("jk" . moccur)
                          (isearch-mode-map
                           :package isearch
@@ -400,7 +400,7 @@ Example
        :ensure t
        :chord* (("jk" . macrostep-expand)))
      (prog1 'macrostep
-       (autoload (function macrostep-expand) "macrostep" nil t)
+       (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords* (("jk" . macrostep-expand)))))
 
@@ -408,7 +408,7 @@ Example
        :ensure t
        :chord* ("jk" . macrostep-expand))
      (prog1 'macrostep
-       (autoload (function macrostep-expand) "macrostep" nil t)
+       (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords* (("jk" . macrostep-expand)))))
 
@@ -417,8 +417,8 @@ Example
        ("jk" . moccur)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords* (("jk" . moccur)
                           ("fi" . isearch-moccur)))))
 
@@ -426,8 +426,8 @@ Example
        :chord* (("jk" . moccur)
                 ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords* (("jk" . moccur)
                           ("fi" . isearch-moccur)))))
 
@@ -436,7 +436,7 @@ Example
        ("jk" . nil)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords* (("jk")
                           ("fi" . isearch-moccur)))))
 
@@ -444,7 +444,7 @@ Example
        :chord* (("jk" . nil)
                 ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload (function isearch-moccur) "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
        (leaf-key-chords* (("jk")
                           ("fi" . isearch-moccur)))))
 
@@ -456,9 +456,9 @@ Example
         ("ji" . isearch-moccur)
         ("jo" . isearch-moccur-all)))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
        (leaf-key-chords* (("jk" . moccur)
                           (:isearch-mode-map
                            :package isearch
@@ -472,15 +472,109 @@ Example
                  ("ji" . isearch-moccur)
                  ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload (function moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur) "color-moccur" nil t)
-       (autoload (function isearch-moccur-all) "color-moccur" nil t)
+       (autoload #'moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur "color-moccur" nil t)
+       (autoload #'isearch-moccur-all "color-moccur" nil t)
        (leaf-key-chords*
         (("jk" . moccur)
          (:isearch-mode-map
           :package isearch
           ("ji" . isearch-moccur)
           ("jo" . isearch-moccur-all))))))))
+
+(cort-deftest-with-macroexpand leaf/hydra
+  '(((leaf face-remap
+       :hydra (hydra-zoom
+               (global-map "<f2>")
+               "zoom"
+               ("g" text-scale-increase "in")
+               ("l" text-scale-decrease "out")))
+     (prog1 'face-remap
+       (autoload #'text-scale-increase "face-remap" nil t)
+       (autoload #'text-scale-decrease "face-remap" nil t)
+       (defhydra hydra-zoom
+         (global-map "<f2>")
+         "zoom"
+         ("g" text-scale-increase "in")
+         ("l" text-scale-decrease "out"))))
+
+    ((leaf yasnippet
+       :bind (:yas-minor-mode-map
+              ("<f3>" . hydra-yas-primary/body)
+              ("<f2>" . hydra-yas/body))
+       :hydra ((hydra-yas-primary
+                (:hint nil)
+                "yas-primary"
+                ("i" yas-insert-snippet)
+                ("n" yas-new-snippet)
+                ("v" yas-visit-snippet-file))
+               (hydra-yas
+                (:color blue :hint nil)
+                "
+              ^YASnippets^
+--------------------------------------------
+  Modes:    Load/Visit:    Actions:
+
+ _g_lobal  _d_irectory    _i_nsert
+ _m_inor   _f_ile         _t_ryout
+ _e_xtra   _l_ist         _n_ew
+         _a_ll
+"
+                ("d" yas-load-directory)
+                ("e" yas-activate-extra-mode)
+                ("i" yas-insert-snippet)
+                ("f" yas-visit-snippet-file :color blue)
+                ("n" yas-new-snippet)
+                ("t" yas-tryout-snippet)
+                ("l" yas-describe-tables)
+                ("g" yas/global-mode)
+                ("m" yas/minor-mode)
+                ("a" yas-reload-all))))
+     (prog1 'yasnippet
+       (autoload #'yas-insert-snippet "yasnippet" nil t)
+       (autoload #'yas-new-snippet "yasnippet" nil t)
+       (autoload #'yas-visit-snippet-file "yasnippet" nil t)
+       (autoload #'yas-load-directory "yasnippet" nil t)
+       (autoload #'yas-activate-extra-mode "yasnippet" nil t)
+       (autoload #'yas-tryout-snippet "yasnippet" nil t)
+       (autoload #'yas-describe-tables "yasnippet" nil t)
+       (autoload #'yas/global-mode "yasnippet" nil t)
+       (autoload #'yas/minor-mode "yasnippet" nil t)
+       (autoload #'yas-reload-all "yasnippet" nil t)
+       (autoload #'hydra-yas-primary/body "yasnippet" nil t)
+       (autoload #'hydra-yas/body "yasnippet" nil t)
+       (leaf-keys
+        ((:yas-minor-mode-map :package yasnippet
+                              ("<f3>" . hydra-yas-primary/body)
+                              ("<f2>" . hydra-yas/body))))
+       (defhydra hydra-yas-primary
+         (:hint nil)
+         "yas-primary"
+         ("i" yas-insert-snippet)
+         ("n" yas-new-snippet)
+         ("v" yas-visit-snippet-file))
+       (defhydra hydra-yas
+         (:color blue :hint nil)
+         "
+              ^YASnippets^
+--------------------------------------------
+  Modes:    Load/Visit:    Actions:
+
+ _g_lobal  _d_irectory    _i_nsert
+ _m_inor   _f_ile         _t_ryout
+ _e_xtra   _l_ist         _n_ew
+         _a_ll
+"
+         ("d" yas-load-directory)
+         ("e" yas-activate-extra-mode)
+         ("i" yas-insert-snippet)
+         ("f" yas-visit-snippet-file :color blue)
+         ("n" yas-new-snippet)
+         ("t" yas-tryout-snippet)
+         ("l" yas-describe-tables)
+         ("g" yas/global-mode)
+         ("m" yas/minor-mode)
+         ("a" yas-reload-all))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
