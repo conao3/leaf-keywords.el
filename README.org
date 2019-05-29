@@ -13,6 +13,8 @@
 * Table of Contents
 - [[#description][Description]]
 - [[#install][Install]]
+  - [[#el-get-install][El-get install]]
+  - [[#manual-install][Manual install]]
 - [[#usage][Usage]]
 - [[#ensure-keywords][Ensure keywords]]
   - [[#package-ensure-keywords][:package, :ensure keywords]]
@@ -40,8 +42,51 @@
 * Description
 ~leaf.el~ is yet another [[https://github.com/jwiegley/use-package][use-package]].
 
-~leaf-keywords.el~ add additional keywords for ~leaf.el~
+~leaf-keywords.el~ add additional keywords for [[https://github.com/conao3/leaf.el][leaf.el]].
+
 * Install
+~leaf.el~ and ~leaf-keywords.el~ are not part of MELPA. So you need to download it.
+
+** El-get install
+#+begin_src emacs-lisp
+  (prog1 "Load leaf.el"
+    ;; this code is expansion form of `(leaf el-get :ensure t)'
+    (unless
+        (package-installed-p 'el-get)
+      (condition-case err
+          (progn
+            (unless
+                (assoc 'el-get package-archive-contents)
+              (package-refresh-contents))
+            (package-install 'el-get))
+        (error
+         (condition-case err
+             (progn
+               (package-refresh-contents)
+               (package-install 'el-get))
+           (error
+            (leaf-error "In `el-get' block, failed to :package of el-get.  Error msg: %s"
+                        (error-message-string err)))))))
+    (require 'el-get)
+
+    (el-get-bundle! leaf in conao3/leaf.el)
+    (leaf leaf
+      :doc "Symplify your init.el configuration"
+      :doc "Initialize leaf dependent packages"
+      :config
+      (leaf package
+        :custom ((package-archives . '(("org"   . "https://orgmode.org/elpa/")
+                                       ("melpa" . "https://melpa.org/packages/")
+                                       ("gnu"   . "https://elpa.gnu.org/packages/"))))
+        :config
+        (package-initialize))
+      (leaf leaf-keywords
+        :require t
+        :el-get (leaf-keywords in conao3/leaf-keywords.el)
+        :config (leaf-keywords-init))))
+#+end_src
+
+** Manual instlal
 Put ~leaf-keywords.el~ at any folder added ~load-path~.
 Then ~(require 'leaf-keywords)~.
 
