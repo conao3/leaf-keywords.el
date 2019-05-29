@@ -553,7 +553,23 @@ Example
      (prog1 'org
        (smartrep-define-key org-mode-map "C-c"
          '(("C-n" outline-next-visible-heading 1)
-           ("C-p" outline-previous-visible-heading 1)))))))
+           ("C-p" outline-previous-visible-heading 1)))))
+
+    ((leaf org
+       :smartrep ((org-mode-map
+                   "C-c"
+                   (("C-n" . (outline-next-visible-heading 1))
+                    ("C-p" . (outline-previous-visible-heading 1))))
+                  ("s-c"
+                   (("M-n" . (outline-next-visible-heading 1))
+                    ("M-p" . (outline-previous-visible-heading 1))))))
+     (prog1 'org
+       (smartrep-define-key org-mode-map "C-c"
+         '(("C-n" outline-next-visible-heading 1)
+           ("C-p" outline-previous-visible-heading 1)))
+       (smartrep-define-key global-map "s-c"
+         '(("M-n" outline-next-visible-heading 1)
+           ("M-p" outline-previous-visible-heading 1)))))))
 
 (cort-deftest-with-macroexpand leaf/hydra
   '(((leaf face-remap
