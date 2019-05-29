@@ -89,6 +89,9 @@
      :hydra    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+     :smartrep (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
      :chord    (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -171,6 +174,35 @@
                       (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
                   leaf--value))
        `(,val ,fns)))
+
+    ((memq leaf--key '(:smartrep))
+     (let ((val) (fns))
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((and (listp elm) (listp (car elm)))
+                      (mapcar
+                       (lambda (el)
+                         (let ((a (nth 0 el))
+                               (b (nth 1 el))
+                               (c (nth 2 el)))
+                           (if (stringp (car el))
+                               (progn (setq fns (append fns (mapcar #'cdr b))) `(global-map ,a ',b))
+                             (progn (setq fns (append fns (mapcar #'cdr c))) `(,a ,b ',c)))))
+                       elm))
+                     ((listp elm)
+                      (let ((a (nth 0 elm))
+                            (b (nth 1 elm))
+                            (c (nth 2 elm)))
+                        (if (stringp (car elm))
+                            (progn (setq fns (append fns (mapcar #'cdr b))) `((global-map ,a ',b)))
+                          (progn (setq fns (append fns (mapcar #'cdr c))) `((,a ,b ',c))))))))
+                  leaf--value))
+       `(,val ,(delq nil (mapcar
+                          (lambda (elm)
+                            (cond ((symbolp elm) elm)
+                                  ((and (listp elm) (eq 'quote (car elm))) (eval elm))))
+                          fns)))))
 
     ((memq leaf--key '(:delight))
      (mapcan
