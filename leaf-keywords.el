@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.1.2
+;; Version: 1.1.3
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
@@ -90,12 +90,6 @@
 (defcustom leaf-keywords-before-load
   (cdr
    '(:dummy
-     :diminish   `((eval-after-load 'diminish
-                     '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
-                   ,@leaf--body)
-     :delight    `((eval-after-load 'delight
-                     '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
-                   ,@leaf--body)
      :hydra      (progn
                    (leaf-register-autoload (cadr leaf--value) leaf--name)
                    `((eval-after-load 'hydra
@@ -146,7 +140,14 @@
   :group 'leaf-keywords)
 
 (defcustom leaf-keywords-after-require
-  (cdr nil)
+  (cdr
+   '(:dummy
+     :diminish `((eval-after-load 'diminish
+                   '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
+                 ,@leaf--body)
+     :delight  `((eval-after-load 'delight
+                   '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
+                 ,@leaf--body)))
   "Additional `leaf-keywords' after wait loading.
 :require ... <this place> :config"
   :set #'leaf-keywords-set-keywords
