@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.1.4
+;; Version: 1.1.5
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
@@ -43,6 +43,37 @@
 
 (defconst leaf-keywords-raw-normalize leaf-normalize
   "Raw `leaf-normalize' before this package change.")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Utility functions
+;;
+
+(defun leaf-insert-list-after (lst aelm targetlst)
+  "Insert TARGETLST after AELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm aelm)
+          (setq frg t
+                retlst (append `(,@(reverse targetlst) ,aelm) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" aelm)))
+    (nreverse retlst)))
+
+(defun leaf-insert-list-before (lst belm targetlst)
+  "Insert TARGETLST before BELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm belm)
+          (setq frg t
+                retlst (append `(,belm ,@(reverse targetlst)) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" belm)))
+    (nreverse retlst)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
