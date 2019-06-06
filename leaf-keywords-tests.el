@@ -332,6 +332,84 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+(cort-deftest-with-macroexpand leaf/straight
+  '(((leaf leaf
+       :init (leaf-pre-init)
+       :straight t
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package 'leaf)))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight leaf leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package 'leaf)
+            (straight-use-package 'leaf-polyfill)))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight t
+       :straight leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package 'leaf)
+            (straight-use-package 'leaf-polyfill)))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight t leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package 'leaf)
+            (straight-use-package 'leaf-polyfill)))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight (zenburn-theme :type git :host github
+                                :repo "fake/fake")
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package '(zenburn-theme :type git :host github
+                                                  :repo "fake/fake"))))
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight
+       (zenburn-theme :type git :host github :repo "fake/fake")
+       (yaicomplete :type git :host github :repo "fake/faker")
+       (mew :type git :host gitlab :repo "fake/fakest" :no-build)
+       :config (leaf-init))
+     (prog1 'leaf
+       (eval-after-load 'straight
+         '(progn
+            (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))
+            (straight-use-package '(yaicomplete :type git :host github :repo "fake/faker"))
+            (straight-use-package '(mew :type git :host gitlab :repo "fake/fakest" :no-build))))
+       (leaf-pre-init)
+       (leaf-init)))))
+
 (cort-deftest-with-macroexpand leaf/key-combo
   '(((leaf key-combo
        :combo (("="   . (" = " " == " " === " ))
