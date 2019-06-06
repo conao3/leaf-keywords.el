@@ -383,14 +383,12 @@ Example
 
     ((leaf leaf
        :init (leaf-pre-init)
-       :straight (zenburn-theme :type git :host github
-                                :repo "fake/fake")
+       :straight (zenburn-theme :type git :host github :repo "fake/fake")
        :config (leaf-init))
      (prog1 'leaf
        (eval-after-load 'straight
          '(progn
-            (straight-use-package '(zenburn-theme :type git :host github
-                                                  :repo "fake/fake"))))
+            (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))))
        (leaf-pre-init)
        (leaf-init)))
 
