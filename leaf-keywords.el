@@ -109,6 +109,9 @@
 (defcustom leaf-keywords-after-conditions
   (cdr
    '(:dummy
+     :straight `((eval-after-load 'straight
+                   '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
+                 ,@leaf--body)
      :el-get `((eval-after-load 'el-get
                  '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
                ,@leaf--body)))
@@ -327,6 +330,12 @@
      (mapcar
       (lambda (elm)
         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
+      leaf--value))
+    
+    ((memq leaf--key '(:straight))
+     (mapcar
+      (lambda (elm)
+        (if (eq t elm) leaf--name elm))
       leaf--value)))
   "Additional `leaf-normalize'."
   :set #'leaf-keywords-set-normalize
