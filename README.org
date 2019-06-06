@@ -266,6 +266,93 @@ Given a list, the arguments are passed as is to the ~el-get-bundle~.
          (leaf-init)))))
 #+end_src
 
+** :straight keyword
+~:straight~ provides a frontend for ~straight-use-package~.
+
+If you specify ~t~, leaf assumes that you specified the name of the leaf-block.
+
+Given a list, the arguments are passed as is to ~straight-use-package~.
+
+#+begin_src elisp
+  (cort-deftest-with-macroexpand leaf/straight
+    '(((leaf leaf
+         :init (leaf-pre-init)
+         :straight t
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package 'leaf)))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :straight leaf leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package 'leaf)
+              (straight-use-package 'leaf-polyfill)))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :straight t
+         :straight leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package 'leaf)
+              (straight-use-package 'leaf-polyfill)))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :straight t leaf-polyfill
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package 'leaf)
+              (straight-use-package 'leaf-polyfill)))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :straight (zenburn-theme :type git :host github
+                                  :repo "fake/fake")
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package '(zenburn-theme :type git :host github
+                                                    :repo "fake/fake"))))
+         (leaf-pre-init)
+         (leaf-init)))
+
+      ((leaf leaf
+         :init (leaf-pre-init)
+         :straight
+         (zenburn-theme :type git :host github :repo "fake/fake")
+         (yaicomplete :type git :host github :repo "fake/faker")
+         (mew :type git :host gitlab :repo "fake/fakest" :no-build)
+         :config (leaf-init))
+       (prog1 'leaf
+         (eval-after-load 'straight
+           '(progn
+              (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))
+              (straight-use-package '(yaicomplete :type git :host github :repo "fake/faker"))
+              (straight-use-package '(mew :type git :host gitlab :repo "fake/fakest" :no-build))))
+         (leaf-pre-init)
+         (leaf-init)))))
+#+end_src
+
 * Bind keywords
 ** :bind :bind* keywords
 These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#bind-bind-keywords][here]].
