@@ -1,11 +1,11 @@
-;;; leaf-keywords.el --- Additional keywords for leaf.el       -*- lexical-binding: t; -*-
+;;; leaf-keywords.el --- Additional leaf.el keywords for external packages       -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Naoya Yamashita
 
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.1.6
+;; Version: 1.1.7
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
@@ -19,9 +19,8 @@
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Affero
 ;; GNU General Public License for more details.
 
-;; You should have received a copy of the Affero GNU General Public
-;; License along with this program.  If not, see
-;; <https://www.gnu.org/licenses/>.
+;; You should have received a copy of the Affero GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
