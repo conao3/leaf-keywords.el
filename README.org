@@ -20,10 +20,10 @@
   - [[#straight-keyword][:straight keyword]]
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind, :bind* keywords]]
+  - [[#hydra-keyword][:hydra keyword]]
   - [[#chord-chord-keywords][:chord, :chord* keywords]]
   - [[#smartrep-smartrep-keywords][:smartrep, :smartrep* keywords]]
   - [[#combo-combo-keywords][:combo, :combo* keywords]]
-  - [[#hydra-keyword][:hydra keyword]]
 - [[#modeline-keywords][Modeline keywords]]
   - [[#diminish-keyword][:diminish keyword]]
   - [[#delight-keyword][:delight keyword]]
@@ -500,6 +500,113 @@ These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#bind-bin
          (define-key global-map (kbd "C-M-i") 'flyspell-correct-wrapper)))))
 #+end_src
 
+** :hydra keyword
+~:hydra~ provide frontend for [[https://github.com/abo-abo/hydra][hydra]].
+
+If you pass a list, you pass it to ~defhydra~, and if you pass a nested list, you pass each one to it.
+
+The reason for using this keyword is that it automatically creates an ~autoload~ statement.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/hydra
+    '(((leaf face-remap
+         :hydra (hydra-zoom
+                 (global-map "<f2>")
+                 "zoom"
+                 ("g" text-scale-increase "in")
+                 ("l" text-scale-decrease "out")))
+       (prog1 'face-remap
+         (autoload #'text-scale-increase "face-remap" nil t)
+         (autoload #'text-scale-decrease "face-remap" nil t)
+         (eval-after-load 'hydra
+           '(progn
+              (defhydra hydra-zoom
+                (global-map "<f2>")
+                "zoom"
+                ("g" text-scale-increase "in")
+                ("l" text-scale-decrease "out"))))))
+
+      ((leaf yasnippet
+         :bind (:yas-minor-mode-map
+                ("<f3>" . hydra-yas-primary/body)
+                ("<f2>" . hydra-yas/body))
+         :hydra ((hydra-yas-primary
+                  (:hint nil)
+                  "yas-primary"
+                  ("i" yas-insert-snippet)
+                  ("n" yas-new-snippet)
+                  ("v" yas-visit-snippet-file))
+                 (hydra-yas
+                  (:color blue :hint nil)
+                  "
+                ^YASnippets^
+  --------------------------------------------
+    Modes:    Load/Visit:    Actions:
+
+   _g_lobal  _d_irectory    _i_nsert
+   _m_inor   _f_ile         _t_ryout
+   _e_xtra   _l_ist         _n_ew
+           _a_ll
+  "
+                  ("d" yas-load-directory)
+                  ("e" yas-activate-extra-mode)
+                  ("i" yas-insert-snippet)
+                  ("f" yas-visit-snippet-file :color blue)
+                  ("n" yas-new-snippet)
+                  ("t" yas-tryout-snippet)
+                  ("l" yas-describe-tables)
+                  ("g" yas/global-mode)
+                  ("m" yas/minor-mode)
+                  ("a" yas-reload-all))))
+       (prog1 'yasnippet
+         (autoload #'yas-insert-snippet "yasnippet" nil t)
+         (autoload #'yas-new-snippet "yasnippet" nil t)
+         (autoload #'yas-visit-snippet-file "yasnippet" nil t)
+         (autoload #'yas-load-directory "yasnippet" nil t)
+         (autoload #'yas-activate-extra-mode "yasnippet" nil t)
+         (autoload #'yas-tryout-snippet "yasnippet" nil t)
+         (autoload #'yas-describe-tables "yasnippet" nil t)
+         (autoload #'yas/global-mode "yasnippet" nil t)
+         (autoload #'yas/minor-mode "yasnippet" nil t)
+         (autoload #'yas-reload-all "yasnippet" nil t)
+         (autoload #'hydra-yas-primary/body "yasnippet" nil t)
+         (autoload #'hydra-yas/body "yasnippet" nil t)
+         (leaf-keys
+          ((:yas-minor-mode-map :package yasnippet
+                                ("<f3>" . hydra-yas-primary/body)
+                                ("<f2>" . hydra-yas/body))))
+         (eval-after-load 'hydra
+           '(progn
+              (defhydra hydra-yas-primary
+                (:hint nil)
+                "yas-primary"
+                ("i" yas-insert-snippet)
+                ("n" yas-new-snippet)
+                ("v" yas-visit-snippet-file))
+              (defhydra hydra-yas
+                (:color blue :hint nil)
+                "
+                ^YASnippets^
+  --------------------------------------------
+    Modes:    Load/Visit:    Actions:
+
+   _g_lobal  _d_irectory    _i_nsert
+   _m_inor   _f_ile         _t_ryout
+   _e_xtra   _l_ist         _n_ew
+           _a_ll
+  "
+                ("d" yas-load-directory)
+                ("e" yas-activate-extra-mode)
+                ("i" yas-insert-snippet)
+                ("f" yas-visit-snippet-file :color blue)
+                ("n" yas-new-snippet)
+                ("t" yas-tryout-snippet)
+                ("l" yas-describe-tables)
+                ("g" yas/global-mode)
+                ("m" yas/minor-mode)
+                ("a" yas-reload-all))))))))
+#+end_src
+
 ** :chord :chord* keywords
 ~:chord~ and ~:chord*~ provide frontend for ~leaf-key-chord~ which bind key for [[https://github.com/emacsorphanage/key-chord][key-chord]].
 
@@ -950,113 +1057,6 @@ If you omit the key-map to bind, use ~global-map~ instead in ~:combo~ and
               (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
               (key-combo-define emacs-lisp-mode-map "." '("." " . "))
               (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))))
-#+end_src
-
-** :hydra keyword
-~:hydra~ provide frontend for [[https://github.com/abo-abo/hydra][hydra]].
-
-If you pass a list, you pass it to ~defhydra~, and if you pass a nested list, you pass each one to it.
-
-The reason for using this keyword is that it automatically creates an ~autoload~ statement.
-
-#+begin_src emacs-lisp
-  (cort-deftest-with-macroexpand leaf/hydra
-    '(((leaf face-remap
-         :hydra (hydra-zoom
-                 (global-map "<f2>")
-                 "zoom"
-                 ("g" text-scale-increase "in")
-                 ("l" text-scale-decrease "out")))
-       (prog1 'face-remap
-         (autoload #'text-scale-increase "face-remap" nil t)
-         (autoload #'text-scale-decrease "face-remap" nil t)
-         (eval-after-load 'hydra
-           '(progn
-              (defhydra hydra-zoom
-                (global-map "<f2>")
-                "zoom"
-                ("g" text-scale-increase "in")
-                ("l" text-scale-decrease "out"))))))
-
-      ((leaf yasnippet
-         :bind (:yas-minor-mode-map
-                ("<f3>" . hydra-yas-primary/body)
-                ("<f2>" . hydra-yas/body))
-         :hydra ((hydra-yas-primary
-                  (:hint nil)
-                  "yas-primary"
-                  ("i" yas-insert-snippet)
-                  ("n" yas-new-snippet)
-                  ("v" yas-visit-snippet-file))
-                 (hydra-yas
-                  (:color blue :hint nil)
-                  "
-                ^YASnippets^
-  --------------------------------------------
-    Modes:    Load/Visit:    Actions:
-
-   _g_lobal  _d_irectory    _i_nsert
-   _m_inor   _f_ile         _t_ryout
-   _e_xtra   _l_ist         _n_ew
-           _a_ll
-  "
-                  ("d" yas-load-directory)
-                  ("e" yas-activate-extra-mode)
-                  ("i" yas-insert-snippet)
-                  ("f" yas-visit-snippet-file :color blue)
-                  ("n" yas-new-snippet)
-                  ("t" yas-tryout-snippet)
-                  ("l" yas-describe-tables)
-                  ("g" yas/global-mode)
-                  ("m" yas/minor-mode)
-                  ("a" yas-reload-all))))
-       (prog1 'yasnippet
-         (autoload #'yas-insert-snippet "yasnippet" nil t)
-         (autoload #'yas-new-snippet "yasnippet" nil t)
-         (autoload #'yas-visit-snippet-file "yasnippet" nil t)
-         (autoload #'yas-load-directory "yasnippet" nil t)
-         (autoload #'yas-activate-extra-mode "yasnippet" nil t)
-         (autoload #'yas-tryout-snippet "yasnippet" nil t)
-         (autoload #'yas-describe-tables "yasnippet" nil t)
-         (autoload #'yas/global-mode "yasnippet" nil t)
-         (autoload #'yas/minor-mode "yasnippet" nil t)
-         (autoload #'yas-reload-all "yasnippet" nil t)
-         (autoload #'hydra-yas-primary/body "yasnippet" nil t)
-         (autoload #'hydra-yas/body "yasnippet" nil t)
-         (leaf-keys
-          ((:yas-minor-mode-map :package yasnippet
-                                ("<f3>" . hydra-yas-primary/body)
-                                ("<f2>" . hydra-yas/body))))
-         (eval-after-load 'hydra
-           '(progn
-              (defhydra hydra-yas-primary
-                (:hint nil)
-                "yas-primary"
-                ("i" yas-insert-snippet)
-                ("n" yas-new-snippet)
-                ("v" yas-visit-snippet-file))
-              (defhydra hydra-yas
-                (:color blue :hint nil)
-                "
-                ^YASnippets^
-  --------------------------------------------
-    Modes:    Load/Visit:    Actions:
-
-   _g_lobal  _d_irectory    _i_nsert
-   _m_inor   _f_ile         _t_ryout
-   _e_xtra   _l_ist         _n_ew
-           _a_ll
-  "
-                ("d" yas-load-directory)
-                ("e" yas-activate-extra-mode)
-                ("i" yas-insert-snippet)
-                ("f" yas-visit-snippet-file :color blue)
-                ("n" yas-new-snippet)
-                ("t" yas-tryout-snippet)
-                ("l" yas-describe-tables)
-                ("g" yas/global-mode)
-                ("m" yas/minor-mode)
-                ("a" yas-reload-all))))))))
 #+end_src
 
 * Modeline keywords
