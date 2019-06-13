@@ -1,4 +1,4 @@
-;;; leaf-keywords.el --- Additional keywords for leaf.el       -*- lexical-binding: t; -*-
+;;; leaf-keywords.el --- Additional leaf.el keywords for external packages       -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018  Naoya Yamashita
 
