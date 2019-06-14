@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.1.8
+;; Version: 1.1.9
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
@@ -346,6 +346,7 @@
 ;;  Support functions
 ;;
 
+;;;###autoload
 (defmacro leaf-key-chord (chord command &optional keymap)
   "Bind CHORD to COMMAND in KEYMAP (`global-map' if not passed).
 
@@ -368,6 +369,7 @@ For example:
 Bind COMMAND at KEY."
   `(leaf-key-chord ,key ,command 'leaf-key-override-global-map))
 
+;;;###autoload
 (defmacro leaf-key-chords (bind &optional dryrun-name)
   "Bind multiple BIND for KEYMAP defined in PKG.
 BIND is (KEY . COMMAND) or (KEY . nil) to unbind KEY.
@@ -442,6 +444,7 @@ NOTE: BIND can also accept list of these."
     (if dryrun-name `'(,(nreverse bds) ,(nreverse fns))
       (if (cdr forms) `(progn ,@(nreverse forms)) (car forms)))))
 
+;;;###autoload
 (defmacro leaf-key-chords* (bind)
   "Similar to `leaf-key-chords', but overrides any mode-specific bindings for BIND."
   (let ((binds (if (and (atom (car bind)) (atom (cdr bind)))
@@ -453,6 +456,7 @@ NOTE: BIND can also accept list of these."
 ;;  Main initializer
 ;;
 
+;;;###autoload
 (defun leaf-keywords-init ()
   "Add additional keywords to `leaf'."
   (setq leaf-keywords-init-frg t)
