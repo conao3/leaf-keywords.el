@@ -375,7 +375,7 @@ Example:
       (lambda (elm)
         (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
       leaf--value))
-    
+
     ((memq leaf--key '(:straight))
      (mapcar
       (lambda (elm)
