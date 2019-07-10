@@ -74,6 +74,51 @@
       (warn (format "%s is not found in given list" belm)))
     (nreverse retlst)))
 
+(defun leaf-keywords-normalize-list-in-list (lst &optional dotlistp distribute)
+  "Return normalized list from LST.
+
+Example:
+  - when DOTLISTP is nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => (a . b)
+    (a . nil)         => (a . nil)
+    (a)               => (a . nil)
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => ((a b c) . d)
+
+  - when DOTLISTP is non-nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => ((a . b))
+    (a . nil)         => ((a . nil))
+    (a)               => ((a . nil))
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => (((a b c) . d))
+
+  - when DISTRIBUTE is non-nil (NEED DOTLISTP is also non-nil)
+    ((a b c) . d)           => ((a . d) (b . d) (c . d))
+    ((x . y) ((a b c) . d)) => ((x . y) (a . d) (b . d) (c . d))"
+  (cond
+   ((not dotlistp)
+    (if (atom lst) (list lst) lst))
+   ((and dotlistp (not distribute))
+    (if (or (atom lst)
+            (and (leaf-pairp lst 'allow)
+                 (not (leaf-pairp (car lst) 'allow)))) ; not list of pairs
+        (list lst) lst))
+   ((and dotlistp distribute)
+    (if (and (listp lst)
+             (and (listp (car lst)) (leaf-dotlistp lst)))
+        (let ((dist (cdr lst)))
+          (mapcar (lambda (elm) `(,elm . ,dist)) (car lst)))
+      (if (or (atom lst) (leaf-dotlistp lst))
+          (list lst)
+        (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
+                 (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Additional keywords, normalize
@@ -224,7 +269,7 @@
                 (t
                  elm)))
              (mapcan (lambda (elm)
-                       (leaf-normalize-list-in-list elm 'dotlistp))
+                       (leaf-keywords-normalize-list-in-list elm 'dotlistp))
                      leaf--value)))
 
     ((memq leaf--key '(:hydra))
@@ -322,13 +367,13 @@
       (lambda (elm) (if (stringp (car elm)) `(,leaf--name ,(car elm)) elm))
       (mapcar
        (lambda (elm)
-         (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
+         (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
        leaf--value)))
 
     ((memq leaf--key '(:el-get))
      (mapcar
       (lambda (elm)
-        (leaf-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
+        (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
       leaf--value))
     
     ((memq leaf--key '(:straight))
