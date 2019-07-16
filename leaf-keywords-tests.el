@@ -131,14 +131,14 @@ Example
      (prog1 'autorevert
        (eval-after-load 'diminish
          '(progn
-            (diminish autorevert)))))
+            (diminish 'autorevert)))))
 
     ((leaf autorevert
        :diminish autorevert)
      (prog1 'autorevert
        (eval-after-load 'diminish
          '(progn
-            (diminish autorevert)))))
+            (diminish 'autorevert)))))
 
     ((leaf autorevert
        :diminish t
@@ -146,37 +146,37 @@ Example
      (prog1 'autorevert
        (eval-after-load 'diminish
          '(progn
-            (diminish autorevert)
-            (diminish autorevert-polyfill)))))
+            (diminish 'autorevert)
+            (diminish 'autorevert-polyfill)))))
 
     ((leaf autorevert
        :diminish t autorevert-polyfill)
      (prog1 'autorevert
        (eval-after-load 'diminish
          '(progn
-            (diminish autorevert)
-            (diminish autorevert-polyfill)))))
+            (diminish 'autorevert)
+            (diminish 'autorevert-polyfill)))))
 
     ((leaf go-mode
        :diminish " Go")
      (prog1 'go-mode
        (eval-after-load 'diminish
          '(progn
-            (diminish go-mode " Go")))))
+            (diminish 'go-mode " Go")))))
 
     ((leaf abbrev
        :diminish (abbrev-mode " Abv"))
      (prog1 'abbrev
        (eval-after-load 'diminish
          '(progn
-            (diminish abbrev-mode " Abv")))))
+            (diminish 'abbrev-mode " Abv")))))
 
     ((leaf projectile
        :diminish (projectile (:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
        (eval-after-load 'diminish
          '(progn
-            (diminish projectile (:eval (concat " " (projectile-project-name))))))))))
+            (diminish 'projectile (:eval (concat " " (projectile-project-name))))))))))
 
 (cort-deftest-with-macroexpand leaf/delight
   '(((leaf autorevert

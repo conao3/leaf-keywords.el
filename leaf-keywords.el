@@ -351,7 +351,7 @@ Example:
                                   ((and (listp elm) (eq 'quote (car elm))) (eval elm))))
                           fns)))))
 
-    ((memq leaf--key '(:delight))
+    ((memq leaf--key '(:delight :diminish))
      (mapcan
       (lambda (elm)
         (cond
@@ -361,14 +361,6 @@ Example:
          ((and (listp elm) (listp (car elm))) (mapcar (lambda (el) `(',(car el) ,@(cdr el))) elm))
          ((listp elm) `((',(car elm) ,@(cdr elm))))))
       leaf--value))
-
-    ((memq leaf--key '(:diminish))
-     (mapcar
-      (lambda (elm) (if (stringp (car elm)) `(,leaf--name ,(car elm)) elm))
-      (mapcar
-       (lambda (elm)
-         (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
-       leaf--value)))
 
     ((memq leaf--key '(:el-get))
      (mapcar
