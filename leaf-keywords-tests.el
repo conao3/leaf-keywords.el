@@ -1078,6 +1078,5 @@ Example
                        ("jk" . undo)
                        ("fi" . find-file))))))
 
-(provide 'leaf-keywords-tests)
+;; (provide 'leaf-keywords-tests)
 ;;; leaf-keywords-tests.el ends here
-
