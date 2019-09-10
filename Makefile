@@ -1,5 +1,7 @@
 ## Makefile
 
+# Copyright (C) 2018-2019  Naoya Yamashita <conao3@gmail.com>
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the Affero GNU General Public License as
 # published by the Free Software Foundation, either version 3 of the
@@ -7,38 +9,38 @@
 
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Affero
-# GNU General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the Affero GNU General Public License for more details.
 
 # You should have received a copy of the Affero GNU General Public
-# License along with this program.  If not, see
-# <https://www.gnu.org/licenses/>.
+# License along with this program.
+# If not, see <https://www.gnu.org/licenses/>.
 
 all:
 
 include Makefunc.mk
 
 TOP          := $(dir $(lastword $(MAKEFILE_LIST)))
-EMACS_RAW    := $(sort $(shell compgen -c emacs- | xargs))
-EXPECT_EMACS  += 24.4 24.5
-EXPECT_EMACS  += 25.1 25.2 25.3
-EXPECT_EMACS  += 26.1 26.2
 
-ALL_EMACS    := $(filter $(EMACS_RAW),$(EXPECT_EMACS:%=emacs-%))
+UUID         := $(shell ((uuidgen > /dev/null 2>&1 && uuidgen) || echo $$) | cut -c -7)
+
+UBUNTU_EMACS := 23.4 24.1 24.5 25.1
+ALPINE_EMACS := 25.3 26.1 26.2
+DOCKER_EMACS := $(UBUNTU_EMACS:%=ubuntu-min-%) $(ALPINE_EMACS:%=alpine-min-%)
 
 DEPENDS      := leaf
+
+EMACS        ?= emacs
+BATCH        := $(EMACS) -Q --batch -L $(TOP) $(DEPENDS:%=-L ./%/)
 
 TESTFILE     := leaf-keywords-tests.el
 ELS          := leaf-keywords.el
 
 CORTELS      := $(TESTFILE) cort-test.el
 
-EMACS        ?= emacs
-BATCH        := $(EMACS) -Q --batch -L $(TOP) $(DEPENDS:%=-L ./%/)
-
 ##################################################
 
-.PHONY: all git-hook build check allcheck test clean clean-v
+.PHONY: all git-hook build check allcheck test clean-soft clean
 
 all: git-hook build
 
@@ -50,11 +52,11 @@ git-hook:
 build: $(ELS:%.el=%.elc)
 
 %.elc: %.el $(DEPENDS)
-	$(BATCH) -f batch-byte-compile $<
+	$(BATCH) $(DEPENDS:%=-L %/) -f batch-byte-compile $<
 
 ##############################
 #
-#  one-time test (on top level)
+#  docker one-time test (on top level)
 #
 
 check: build
@@ -62,37 +64,43 @@ check: build
 
 ##############################
 #
-#  multi Emacs version test (on independent environment)
+#  docker multi Emacs version test (on independent environment)
 #
 
-allcheck: $(ALL_EMACS:%=.make/verbose-%)
+allcheck: $(DOCKER_EMACS:%=.make/verbose-${UUID}-emacs-test--%)
 	@echo ""
-	@cat $(^:%=%/.make-test-log) | grep =====
+	@cat $^ | grep =====
 	@rm -rf $^
 
-.make/verbose-%: $(DEPENDS)
-	mkdir -p $@
-	cp -rf $(ELS) $(CORTELS) $(DEPENDS) $@/
-	cd $@; echo $(ELS) | xargs -n1 -t $* -Q --batch -L ./ $(DEPENDS:%=-L ./%/) -f batch-byte-compile
-	cd $@; $* -Q --batch -L ./ $(DEPENDS:%=-L ./%/) -l $(TESTFILE) -f cort-test-run | tee .make-test-log
+.make/verbose-%: .make $(DEPENDS)
+	docker run -itd --name $* conao3/emacs:$(shell echo $* | sed "s/.*--//") /bin/sh
+	docker cp . $*:/test
+	docker exec $* sh -c "cd test && make clean-soft && make check -j" | tee $@
+	docker rm -f $*
 
 ##############################
 #
-#  silent `allcheck' job
+#  docker silent `allcheck' job
 #
 
-test: $(ALL_EMACS:%=.make/silent-%)
+test: $(DOCKER_EMACS:%=.make/silent-${UUID}-emacs-test--%)
 	@echo ""
-	@cat $(^:%=%/.make-test-log) | grep =====
+	@cat $^ | grep =====
 	@rm -rf $^
 
-.make/silent-%: $(DEPENDS)
-	@mkdir -p $@
-	@cp -rf $(ELS) $(CORTELS) $(DEPENDS) $@/
-	@cd $@; echo $(ELS) | xargs -n1 $* -Q --batch -L ./ $(DEPENDS:%=-L ./%/) -f batch-byte-compile
-	@cd $@; $* -Q --batch -L ./ $(DEPENDS:%=-L ./%/) -l $(TESTFILE) -f cort-test-run > .make-test-log 2>&1
+.make/silent-%: .make $(DEPENDS)
+	docker run -itd --name $* conao3/emacs:$(shell echo $* | sed "s/.*--//") /bin/sh > /dev/null
+	@docker cp . $*:/test
+	@docker exec $* sh -c "cd test && make clean-soft && make check -j" > $@ || ( docker rm -f $*; cat $@ || false )
+	@docker rm -f $* > /dev/null
+
+.make:
+	mkdir $@
 
 ##############################
+
+clean-soft:
+	rm -rf $(ELS:%.el=%.elc) .make
 
 clean:
 	rm -rf $(ELS:%.el=%.elc) $(DEPENDS) .make
