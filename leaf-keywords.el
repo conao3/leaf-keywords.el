@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.2.4
+;; Version: 1.2.5
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
 
@@ -141,6 +141,25 @@ Example:
 ;;
 ;;  Actual implementation
 ;;
+
+(defvar leaf-keywords-packages-list
+  (cdr
+   '(:dummy
+     ;; `leaf-keywords-before-conditions'
+
+
+     ;; `leaf-keywords-after-conditions'
+     straight el-get
+
+     ;; `leaf-keywords-before-load'
+     hydra key-combo smartrep key-chord
+
+     ;; `leaf-keywords-after-load'
+
+
+     ;; `leaf-keywords-after-require'
+     diminish delight))
+  "leaf-keywords dependent packages list")
 
 (defcustom leaf-keywords-before-conditions
   (cdr nil)
@@ -540,7 +559,12 @@ NOTE: BIND can also accept list of these."
                 ,(format "If nil, do not expand values for :%s." keyname)
                 :type 'boolean
                 :group 'leaf)))
-         (leaf-plist-keys leaf-keywords)))))
+         (leaf-plist-keys leaf-keywords))))
+
+  ;; require all dependent packages
+  (dolist (pkg leaf-keywords-packages-list)
+    (when (featurep pkg)
+      (require pkg))))
 
 (provide 'leaf-keywords)
 ;;; leaf-keywords.el ends here
