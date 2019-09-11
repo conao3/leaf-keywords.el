@@ -83,7 +83,7 @@
 
    ;; `leaf-keywords-after-require'
    diminish delight)
-  "list of dependent packages.")
+  "List of dependent packages.")
 
 (defcustom leaf-keywords-before-conditions nil
   "Additional `leaf-keywords' before conditional branching.
