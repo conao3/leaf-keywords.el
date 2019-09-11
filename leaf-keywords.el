@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.2.7
+;; Version: 1.2.8
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -92,12 +92,8 @@
 
 (defcustom leaf-keywords-after-conditions
   (leaf-list
-   :straight   `((eval-after-load 'straight
-                   '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
-                 ,@leaf--body)
-   :el-get     `((eval-after-load 'el-get
-                   '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
-                 ,@leaf--body))
+   :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
+   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
@@ -108,39 +104,25 @@
   (leaf-list
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'hydra
-                     '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-combo
-                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-combo
-                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
    :smartrep   (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'smartrep
-                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
    :smartrep*  (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'smartrep
-                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
    :chord      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-chord
-                     '(progn (leaf-key-chords ,(car leaf--value))))
-                   ,@leaf--body))
+                 `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-chord
-                     '(progn (leaf-key-chords* ,(car leaf--value))))
-                   ,@leaf--body)))
+                 `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body)))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
@@ -156,12 +138,8 @@
 
 (defcustom leaf-keywords-after-require
   (leaf-list
-   :diminish   `((eval-after-load 'diminish
-                   '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
-                 ,@leaf--body)
-   :delight    `((eval-after-load 'delight
-                   '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
-                 ,@leaf--body))
+   :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
