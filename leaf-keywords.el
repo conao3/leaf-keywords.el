@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.2.8
+;; Version: 1.2.9
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -71,7 +71,9 @@
 
 
    ;; `leaf-keywords-after-conditions'
-   straight el-get
+   ;; straight users require straight.el or straight-x.el
+   ;; straight
+   el-get
 
    ;; `leaf-keywords-before-load'
    hydra key-combo smartrep key-chord
@@ -81,7 +83,7 @@
 
    ;; `leaf-keywords-after-require'
    diminish delight)
-  "list of dependent packages.")
+  "List of dependent packages.")
 
 (defcustom leaf-keywords-before-conditions nil
   "Additional `leaf-keywords' before conditional branching.
