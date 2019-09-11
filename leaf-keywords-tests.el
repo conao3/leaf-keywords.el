@@ -398,11 +398,9 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define global-map "=>" " => ")
-            (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
+       (key-combo-define global-map "=>" " => ")
+       (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
 
     ((leaf key-combo
        :combo (emacs-lisp-mode-map
@@ -417,12 +415,10 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
-            (key-combo-define emacs-lisp-mode-map "=>" " => ")
-            (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
+       (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
+       (key-combo-define emacs-lisp-mode-map "=>" " => ")
+       (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
 
     ((leaf key-combo
        :combo ((("="   . (" = " " == " " === " ))
@@ -439,13 +435,11 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define global-map "=>" " => ")
-            (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
-            (key-combo-define emacs-lisp-mode-map "." '("." " . "))
-            (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))))
+       (key-combo-define global-map "=>" " => ")
+       (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
+       (key-combo-define emacs-lisp-mode-map "." '("." " . "))
+       (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))
 
 (cort-deftest-with-macroexpand leaf/key-combo*
   '(((leaf key-combo
@@ -460,11 +454,9 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define leaf-key-override-global-map "=>" " => ")
-            (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
+       (key-combo-define leaf-key-override-global-map "=>" " => ")
+       (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
 
     ((leaf key-combo
        :combo* (emacs-lisp-mode-map
@@ -479,12 +471,10 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
-            (key-combo-define emacs-lisp-mode-map "=>" " => ")
-            (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))))
+       (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
+       (key-combo-define emacs-lisp-mode-map "=>" " => ")
+       (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define emacs-lisp-mode-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
 
     ((leaf key-combo
        :combo* ((("="   . (" = " " == " " === " ))
@@ -501,13 +491,11 @@ Example
        (autoload #'key-combo-return "key-combo" nil t)
        (autoload #'move-end-of-line "key-combo" nil t)
        (autoload #'end-of-buffer "key-combo" nil t)
-       (eval-after-load 'key-combo
-         '(progn
-            (key-combo-define leaf-key-override-global-map "=>" " => ")
-            (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
-            (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
-            (key-combo-define emacs-lisp-mode-map "." '("." " . "))
-            (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))))
+       (key-combo-define leaf-key-override-global-map "=>" " => ")
+       (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
+       (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
+       (key-combo-define emacs-lisp-mode-map "." '("." " . "))
+       (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))
 
 (cort-deftest-with-macroexpand leaf/chord
   '(((leaf macrostep
@@ -516,10 +504,8 @@ Example
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . macrostep-expand)))))))
+       (leaf-key-chords
+        (("jk" . macrostep-expand)))))
 
     ((leaf macrostep
        :ensure t
@@ -527,10 +513,8 @@ Example
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . macrostep-expand)))))))
+       (leaf-key-chords
+        (("jk" . macrostep-expand)))))
 
     ((leaf color-moccur
        :chord
@@ -539,11 +523,9 @@ Example
      (prog1 'color-moccur
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . moccur)
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords
+        (("jk" . moccur)
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord (("jk" . moccur)
@@ -551,11 +533,9 @@ Example
      (prog1 'color-moccur
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . moccur)
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords
+        (("jk" . moccur)
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord
@@ -563,22 +543,18 @@ Example
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk")
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords
+        (("jk")
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord (("jk" . nil)
                ("fi" . isearch-moccur)))
      (prog1 'color-moccur
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk")
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords
+        (("jk")
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord
@@ -591,14 +567,12 @@ Example
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
        (autoload #'isearch-moccur-all "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . moccur)
-              (:isearch-mode-map
-               :package isearch
-               ("ji" . isearch-moccur)
-               ("jo" . isearch-moccur-all))))))))
+       (leaf-key-chords
+        (("jk" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all))))))
 
     ((leaf color-moccur
        :chord (("jk" . moccur)
@@ -610,14 +584,12 @@ Example
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
        (autoload #'isearch-moccur-all "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . moccur)
-              (:isearch-mode-map
-               :package isearch
-               ("ji" . isearch-moccur)
-               ("jo" . isearch-moccur-all))))))))
+       (leaf-key-chords
+        (("jk" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all))))))
 
     ;; you also use symbol instead of keyword to specify keymap
     ((leaf color-moccur
@@ -630,14 +602,12 @@ Example
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
        (autoload #'isearch-moccur-all "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords
-             (("jk" . moccur)
-              (isearch-mode-map
-               :package isearch
-               ("ji" . isearch-moccur)
-               ("jo" . isearch-moccur-all))))))))))
+       (leaf-key-chords
+        (("jk" . moccur)
+         (isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/chord*
   '(((leaf macrostep
@@ -646,10 +616,8 @@ Example
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . macrostep-expand)))))))
+       (leaf-key-chords*
+        (("jk" . macrostep-expand)))))
 
     ((leaf macrostep
        :ensure t
@@ -657,10 +625,8 @@ Example
      (prog1 'macrostep
        (autoload #'macrostep-expand "macrostep" nil t)
        (leaf-handler-package macrostep macrostep nil)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . macrostep-expand)))))))
+       (leaf-key-chords*
+        (("jk" . macrostep-expand)))))
 
     ((leaf color-moccur
        :chord*
@@ -669,11 +635,9 @@ Example
      (prog1 'color-moccur
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . moccur)
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords*
+        (("jk" . moccur)
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord* (("jk" . moccur)
@@ -681,11 +645,9 @@ Example
      (prog1 'color-moccur
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . moccur)
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords*
+        (("jk" . moccur)
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord*
@@ -693,22 +655,18 @@ Example
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk")
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords*
+        (("jk")
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord* (("jk" . nil)
                 ("fi" . isearch-moccur)))
      (prog1 'color-moccur
        (autoload #'isearch-moccur "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk")
-              ("fi" . isearch-moccur)))))))
+       (leaf-key-chords*
+        (("jk")
+         ("fi" . isearch-moccur)))))
 
     ((leaf color-moccur
        :chord*
@@ -721,14 +679,12 @@ Example
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
        (autoload #'isearch-moccur-all "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . moccur)
-              (:isearch-mode-map
-               :package isearch
-               ("ji" . isearch-moccur)
-               ("jo" . isearch-moccur-all))))))))
+       (leaf-key-chords*
+        (("jk" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all))))))
 
     ((leaf color-moccur
        :chord* (("jk" . moccur)
@@ -740,14 +696,12 @@ Example
        (autoload #'moccur "color-moccur" nil t)
        (autoload #'isearch-moccur "color-moccur" nil t)
        (autoload #'isearch-moccur-all "color-moccur" nil t)
-       (eval-after-load 'key-chord
-         '(progn
-            (leaf-key-chords*
-             (("jk" . moccur)
-              (:isearch-mode-map
-               :package isearch
-               ("ji" . isearch-moccur)
-               ("jo" . isearch-moccur-all))))))))))
+       (leaf-key-chords*
+        (("jk" . moccur)
+         (:isearch-mode-map
+          :package isearch
+          ("ji" . isearch-moccur)
+          ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/smartrep
   '(((leaf multiple-cursors
@@ -767,16 +721,14 @@ Example
        (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
        (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
        (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key global-map "C-t"
-              '(("C-p" . mc/mark-previous-like-this)
-                ("C-n" . mc/mark-next-like-this)
-                ("u" . mc/unmark-next-like-this)
-                ("U" . mc/unmark-previous-like-this)
-                ("s" . mc/skip-to-next-like-this)
-                ("S" . mc/skip-to-previous-like-this)
-                ("*" . mc/mark-all-like-this)))))))
+       (smartrep-define-key global-map "C-t"
+                            '(("C-p" . mc/mark-previous-like-this)
+                              ("C-n" . mc/mark-next-like-this)
+                              ("u" . mc/unmark-next-like-this)
+                              ("U" . mc/unmark-previous-like-this)
+                              ("s" . mc/skip-to-next-like-this)
+                              ("S" . mc/skip-to-previous-like-this)
+                              ("*" . mc/mark-all-like-this)))))
 
     ((leaf multiple-cursors
        :smartrep (global-map
@@ -786,11 +738,9 @@ Example
      (prog1 'multiple-cursors
        (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
        (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key global-map "C-t"
-              '(("C-p" . mc/mark-previous-like-this)
-                ("C-n" . mc/mark-next-like-this)))))))
+       (smartrep-define-key global-map "C-t"
+                            '(("C-p" . mc/mark-previous-like-this)
+                              ("C-n" . mc/mark-next-like-this)))))
 
     ((leaf multiple-cursors
        :smartrep (global-map
@@ -800,11 +750,9 @@ Example
      (prog1 'multiple-cursors
        (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
        (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key global-map "C-t"
-              '(("C-p" quote mc/mark-previous-like-this)
-                ("C-n" quote mc/mark-next-like-this)))))))
+       (smartrep-define-key global-map "C-t"
+                            '(("C-p" quote mc/mark-previous-like-this)
+                              ("C-n" quote mc/mark-next-like-this)))))
 
     ((leaf multiple-cursors
        :smartrep (global-map
@@ -814,11 +762,9 @@ Example
      (prog1 'multiple-cursors
        (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
        (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key global-map "C-t"
-              '(("C-p" quote mc/mark-previous-like-this)
-                ("C-n" quote mc/mark-next-like-this)))))))
+       (smartrep-define-key global-map "C-t"
+                            '(("C-p" quote mc/mark-previous-like-this)
+                              ("C-n" quote mc/mark-next-like-this)))))
 
     ((leaf org
        :smartrep (org-mode-map
@@ -826,11 +772,9 @@ Example
                   (("C-n" . (outline-next-visible-heading 1))
                    ("C-p" . (outline-previous-visible-heading 1)))))
      (prog1 'org
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key org-mode-map "C-c"
-              '(("C-n" outline-next-visible-heading 1)
-                ("C-p" outline-previous-visible-heading 1)))))))
+       (smartrep-define-key org-mode-map "C-c"
+                            '(("C-n" outline-next-visible-heading 1)
+                              ("C-p" outline-previous-visible-heading 1)))))
 
     ((leaf org
        :smartrep ((org-mode-map
@@ -841,14 +785,12 @@ Example
                    (("M-n" . (outline-next-visible-heading 1))
                     ("M-p" . (outline-previous-visible-heading 1))))))
      (prog1 'org
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key org-mode-map "C-c"
-              '(("C-n" outline-next-visible-heading 1)
-                ("C-p" outline-previous-visible-heading 1)))
-            (smartrep-define-key global-map "s-c"
-              '(("M-n" outline-next-visible-heading 1)
-                ("M-p" outline-previous-visible-heading 1)))))))))
+       (smartrep-define-key org-mode-map "C-c"
+                            '(("C-n" outline-next-visible-heading 1)
+                              ("C-p" outline-previous-visible-heading 1)))
+       (smartrep-define-key global-map "s-c"
+                            '(("M-n" outline-next-visible-heading 1)
+                              ("M-p" outline-previous-visible-heading 1)))))))
 
 (cort-deftest-with-macroexpand leaf/smartrep*
   '(((leaf multiple-cursors
@@ -868,16 +810,14 @@ Example
        (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
        (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
        (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key leaf-key-override-global-map "C-t"
-              '(("C-p" . mc/mark-previous-like-this)
-                ("C-n" . mc/mark-next-like-this)
-                ("u" . mc/unmark-next-like-this)
-                ("U" . mc/unmark-previous-like-this)
-                ("s" . mc/skip-to-next-like-this)
-                ("S" . mc/skip-to-previous-like-this)
-                ("*" . mc/mark-all-like-this)))))))
+       (smartrep-define-key leaf-key-override-global-map "C-t"
+                            '(("C-p" . mc/mark-previous-like-this)
+                              ("C-n" . mc/mark-next-like-this)
+                              ("u" . mc/unmark-next-like-this)
+                              ("U" . mc/unmark-previous-like-this)
+                              ("s" . mc/skip-to-next-like-this)
+                              ("S" . mc/skip-to-previous-like-this)
+                              ("*" . mc/mark-all-like-this)))))
 
     ((leaf org
        :smartrep* ((org-mode-map
@@ -888,14 +828,12 @@ Example
                     (("M-n" . (outline-next-visible-heading 1))
                      ("M-p" . (outline-previous-visible-heading 1))))))
      (prog1 'org
-       (eval-after-load 'smartrep
-         '(progn
-            (smartrep-define-key org-mode-map "C-c"
-              '(("C-n" outline-next-visible-heading 1)
-                ("C-p" outline-previous-visible-heading 1)))
-            (smartrep-define-key leaf-key-override-global-map "s-c"
-              '(("M-n" outline-next-visible-heading 1)
-                ("M-p" outline-previous-visible-heading 1)))))))))
+       (smartrep-define-key org-mode-map "C-c"
+                            '(("C-n" outline-next-visible-heading 1)
+                              ("C-p" outline-previous-visible-heading 1)))
+       (smartrep-define-key leaf-key-override-global-map "s-c"
+                            '(("M-n" outline-next-visible-heading 1)
+                              ("M-p" outline-previous-visible-heading 1)))))))
 
 (cort-deftest-with-macroexpand leaf/hydra
   '(((leaf face-remap
@@ -907,13 +845,11 @@ Example
      (prog1 'face-remap
        (autoload #'text-scale-increase "face-remap" nil t)
        (autoload #'text-scale-decrease "face-remap" nil t)
-       (eval-after-load 'hydra
-         '(progn
-            (defhydra hydra-zoom
-              (global-map "<f2>")
-              "zoom"
-              ("g" text-scale-increase "in")
-              ("l" text-scale-decrease "out"))))))
+       (defhydra hydra-zoom
+         (global-map "<f2>")
+         "zoom"
+         ("g" text-scale-increase "in")
+         ("l" text-scale-decrease "out"))))
 
     ((leaf yasnippet
        :bind (:yas-minor-mode-map
@@ -964,17 +900,15 @@ Example
         ((:yas-minor-mode-map :package yasnippet
                               ("<f3>" . hydra-yas-primary/body)
                               ("<f2>" . hydra-yas/body))))
-       (eval-after-load 'hydra
-         '(progn
-            (defhydra hydra-yas-primary
-              (:hint nil)
-              "yas-primary"
-              ("i" yas-insert-snippet)
-              ("n" yas-new-snippet)
-              ("v" yas-visit-snippet-file))
-            (defhydra hydra-yas
-              (:color blue :hint nil)
-              "
+       (defhydra hydra-yas-primary
+         (:hint nil)
+         "yas-primary"
+         ("i" yas-insert-snippet)
+         ("n" yas-new-snippet)
+         ("v" yas-visit-snippet-file))
+       (defhydra hydra-yas
+         (:color blue :hint nil)
+         "
               ^YASnippets^
 --------------------------------------------
   Modes:    Load/Visit:    Actions:
@@ -984,16 +918,16 @@ Example
  _e_xtra   _l_ist         _n_ew
          _a_ll
 "
-              ("d" yas-load-directory)
-              ("e" yas-activate-extra-mode)
-              ("i" yas-insert-snippet)
-              ("f" yas-visit-snippet-file :color blue)
-              ("n" yas-new-snippet)
-              ("t" yas-tryout-snippet)
-              ("l" yas-describe-tables)
-              ("g" yas/global-mode)
-              ("m" yas/minor-mode)
-              ("a" yas-reload-all))))))))
+         ("d" yas-load-directory)
+         ("e" yas-activate-extra-mode)
+         ("i" yas-insert-snippet)
+         ("f" yas-visit-snippet-file :color blue)
+         ("n" yas-new-snippet)
+         ("t" yas-tryout-snippet)
+         ("l" yas-describe-tables)
+         ("g" yas/global-mode)
+         ("m" yas/minor-mode)
+         ("a" yas-reload-all))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

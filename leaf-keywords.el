@@ -104,39 +104,25 @@
   (leaf-list
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'hydra
-                     '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-combo
-                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-combo
-                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
    :smartrep   (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'smartrep
-                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
    :smartrep*  (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'smartrep
-                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                   ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
    :chord      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-chord
-                     '(progn (leaf-key-chords ,(car leaf--value))))
-                   ,@leaf--body))
+                 `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `((eval-after-load 'key-chord
-                     '(progn (leaf-key-chords* ,(car leaf--value))))
-                   ,@leaf--body)))
+                 `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body)))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
