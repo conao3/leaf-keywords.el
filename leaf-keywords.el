@@ -71,7 +71,9 @@
 
 
    ;; `leaf-keywords-after-conditions'
-   straight el-get
+   ;; straight users require straight.el or straight-x.el
+   ;; straight
+   el-get
 
    ;; `leaf-keywords-before-load'
    hydra key-combo smartrep key-chord
