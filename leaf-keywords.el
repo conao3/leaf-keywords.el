@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.2.9
+;; Version: 1.3.0
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -138,12 +138,19 @@
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-after-require
+(defcustom leaf-keywords-after-require nil
+  "Additional `leaf-keywords' after require.
+:require <this place> :config"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
+
+(defcustom leaf-keywords-after-config
   (leaf-list
    :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
-  "Additional `leaf-keywords' after require.
-:require <this place> :config"
+  "Additional `leaf-keywords' after config.
+:config <this place> :setq"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -511,6 +518,11 @@ NOTE: BIND can also accept list of these."
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :config
           leaf-keywords-after-require))
+
+  ;; :config <this place> :setq
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :setq
+          leaf-keywords-after-config))
 
   ;; add additional normalize on the top
   (setq leaf-normalize
