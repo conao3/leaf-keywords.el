@@ -92,12 +92,8 @@
 
 (defcustom leaf-keywords-after-conditions
   (leaf-list
-   :straight   `((eval-after-load 'straight
-                   '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
-                 ,@leaf--body)
-   :el-get     `((eval-after-load 'el-get
-                   '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
-                 ,@leaf--body))
+   :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
+   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords

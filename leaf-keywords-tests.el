@@ -254,9 +254,7 @@ Example
        :el-get t
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle leaf)))
+       (el-get-bundle leaf)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -265,10 +263,8 @@ Example
        :el-get leaf leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle leaf)
-            (el-get-bundle leaf-polyfill)))
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -278,10 +274,8 @@ Example
        :el-get leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle leaf)
-            (el-get-bundle leaf-polyfill)))
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -290,10 +284,8 @@ Example
        :el-get t leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle leaf)
-            (el-get-bundle leaf-polyfill)))
+       (el-get-bundle leaf)
+       (el-get-bundle leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -304,10 +296,8 @@ Example
                 (load-theme 'zenburn t))
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
-              (load-theme 'zenburn t))))
+       (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+         (load-theme 'zenburn t))
        (leaf-pre-init)
        (leaf-init)))
 
@@ -323,12 +313,11 @@ Example
        (kazu-yamamoto/Mew :name mew :build ("./configure" "make"))
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'el-get
-         '(progn
-            (el-get-bundle yaicomplete :url "https://github.com/tarao/elisp.git" :features yaicomplete)
-            (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
-              (load-theme 'zenburn t))
-            (el-get-bundle kazu-yamamoto/Mew :name mew :build ("./configure" "make"))))
+       (el-get-bundle yaicomplete :url "https://github.com/tarao/elisp.git" :features yaicomplete)
+       (el-get-bundle zenburn-theme :url "https://raw.githubusercontent.com/bbatsov/zenburn-emacs/master/zenburn-theme.el"
+         (load-theme 'zenburn t))
+       (el-get-bundle kazu-yamamoto/Mew :name mew :build
+         ("./configure" "make"))
        (leaf-pre-init)
        (leaf-init)))))
 
@@ -338,9 +327,7 @@ Example
        :straight t
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package 'leaf)))
+       (straight-use-package 'leaf)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -349,10 +336,8 @@ Example
        :straight leaf leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package 'leaf)
-            (straight-use-package 'leaf-polyfill)))
+       (straight-use-package 'leaf)
+       (straight-use-package 'leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -362,10 +347,8 @@ Example
        :straight leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package 'leaf)
-            (straight-use-package 'leaf-polyfill)))
+       (straight-use-package 'leaf)
+       (straight-use-package 'leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -374,10 +357,8 @@ Example
        :straight t leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package 'leaf)
-            (straight-use-package 'leaf-polyfill)))
+       (straight-use-package 'leaf)
+       (straight-use-package 'leaf-polyfill)
        (leaf-pre-init)
        (leaf-init)))
 
@@ -386,9 +367,7 @@ Example
        :straight (zenburn-theme :type git :host github :repo "fake/fake")
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))))
+       (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))
        (leaf-pre-init)
        (leaf-init)))
 
@@ -400,11 +379,9 @@ Example
        (mew :type git :host gitlab :repo "fake/fakest" :no-build)
        :config (leaf-init))
      (prog1 'leaf
-       (eval-after-load 'straight
-         '(progn
-            (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))
-            (straight-use-package '(yaicomplete :type git :host github :repo "fake/faker"))
-            (straight-use-package '(mew :type git :host gitlab :repo "fake/fakest" :no-build))))
+       (straight-use-package '(zenburn-theme :type git :host github :repo "fake/fake"))
+       (straight-use-package '(yaicomplete :type git :host github :repo "fake/faker"))
+       (straight-use-package '(mew :type git :host gitlab :repo "fake/fakest" :no-build))
        (leaf-pre-init)
        (leaf-init)))))
 
