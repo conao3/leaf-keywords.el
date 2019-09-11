@@ -558,4 +558,9 @@ NOTE: BIND can also accept list of these."
     (require pkg nil 'no-error)))
 
 (provide 'leaf-keywords)
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
+
 ;;; leaf-keywords.el ends here
