@@ -39,90 +39,18 @@
   "Additional keywords for `leaf'."
   :group 'lisp)
 
+;;; save original `leaf' handlers and normalizers
+
 (defconst leaf-keywords-raw-keywords leaf-keywords
   "Raw `leaf-keywords' before this package change.")
 
 (defconst leaf-keywords-raw-normalize leaf-normalize
   "Raw `leaf-normalize' before this package change.")
 
-
-;;;; Utility functions
-
-(defun leaf-insert-list-after (lst aelm targetlst)
-  "Insert TARGETLST after AELM in LST."
-  (declare (indent 2))
-  (let ((retlst) (frg))
-    (dolist (elm lst)
-      (if (eq elm aelm)
-          (setq frg t
-                retlst (append `(,@(reverse targetlst) ,aelm) retlst))
-        (setq retlst (cons elm retlst))))
-    (unless frg
-      (warn (format "%s is not found in given list" aelm)))
-    (nreverse retlst)))
-
-(defun leaf-insert-list-before (lst belm targetlst)
-  "Insert TARGETLST before BELM in LST."
-  (declare (indent 2))
-  (let ((retlst) (frg))
-    (dolist (elm lst)
-      (if (eq elm belm)
-          (setq frg t
-                retlst (append `(,belm ,@(reverse targetlst)) retlst))
-        (setq retlst (cons elm retlst))))
-    (unless frg
-      (warn (format "%s is not found in given list" belm)))
-    (nreverse retlst)))
-
-(defun leaf-keywords-normalize-list-in-list (lst &optional dotlistp distribute)
-  "Return normalized list from LST.
-
-Example:
-  - when DOTLISTP is nil
-    a                 => (a)
-    (a b c)           => (a b c)
-    (a . b)           => (a . b)
-    (a . nil)         => (a . nil)
-    (a)               => (a . nil)
-    ((a . b) (c . d)) => ((a . b) (c . d))
-    ((a) (b) (c))     => ((a) (b) (c))
-    ((a b c) . d)     => ((a b c) . d)
-
-  - when DOTLISTP is non-nil
-    a                 => (a)
-    (a b c)           => (a b c)
-    (a . b)           => ((a . b))
-    (a . nil)         => ((a . nil))
-    (a)               => ((a . nil))
-    ((a . b) (c . d)) => ((a . b) (c . d))
-    ((a) (b) (c))     => ((a) (b) (c))
-    ((a b c) . d)     => (((a b c) . d))
-
-  - when DISTRIBUTE is non-nil (NEED DOTLISTP is also non-nil)
-    ((a b c) . d)           => ((a . d) (b . d) (c . d))
-    ((x . y) ((a b c) . d)) => ((x . y) (a . d) (b . d) (c . d))"
-  (cond
-   ((not dotlistp)
-    (if (atom lst) (list lst) lst))
-   ((and dotlistp (not distribute))
-    (if (or (atom lst)
-            (and (leaf-pairp lst 'allow)
-                 (not (leaf-pairp (car lst) 'allow)))) ; not list of pairs
-        (list lst) lst))
-   ((and dotlistp distribute)
-    (if (and (listp lst)
-             (and (listp (car lst)) (leaf-dotlistp lst)))
-        (let ((dist (cdr lst)))
-          (mapcar (lambda (elm) `(,elm . ,dist)) (car lst)))
-      (if (or (atom lst) (leaf-dotlistp lst))
-          (list lst)
-        (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
-                 (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
-
-
-;;;; Additional keywords, normalize
+;;; custom variable setters
 
 (defvar leaf-keywords-init-frg nil)
+
 (defun leaf-keywords-set-keywords (sym val)
   "Set SYM as VAL and modify `leaf-keywords'."
   (set-default sym val)
@@ -134,7 +62,6 @@ Example:
   (set-default sym val)
   (when leaf-keywords-init-frg
     (leaf-keywords-init)))
-
 
 ;;; implementation
 
@@ -165,12 +92,12 @@ Example:
 
 (defcustom leaf-keywords-after-conditions
   (leaf-list
-   :straight `((eval-after-load 'straight
-                 '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
-               ,@leaf--body)
-   :el-get `((eval-after-load 'el-get
-               '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
-             ,@leaf--body))
+   :straight   `((eval-after-load 'straight
+                   '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
+                 ,@leaf--body)
+   :el-get     `((eval-after-load 'el-get
+                   '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
+                 ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
@@ -229,12 +156,12 @@ Example:
 
 (defcustom leaf-keywords-after-require
   (leaf-list
-   :diminish `((eval-after-load 'diminish
-                 '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
-               ,@leaf--body)
-   :delight  `((eval-after-load 'delight
-                 '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
-               ,@leaf--body))
+   :diminish   `((eval-after-load 'diminish
+                   '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
+                 ,@leaf--body)
+   :delight    `((eval-after-load 'delight
+                   '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
+                 ,@leaf--body))
   "Additional `leaf-keywords' after wait loading.
 :require ... <this place> :config"
   :set #'leaf-keywords-set-keywords
@@ -386,6 +313,80 @@ Example:
   :set #'leaf-keywords-set-normalize
   :type 'sexp
   :group 'leaf-keywords)
+
+
+;;;; Utility functions
+
+(defun leaf-insert-list-after (lst aelm targetlst)
+  "Insert TARGETLST after AELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm aelm)
+          (setq frg t
+                retlst (append `(,@(reverse targetlst) ,aelm) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" aelm)))
+    (nreverse retlst)))
+
+(defun leaf-insert-list-before (lst belm targetlst)
+  "Insert TARGETLST before BELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm belm)
+          (setq frg t
+                retlst (append `(,belm ,@(reverse targetlst)) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" belm)))
+    (nreverse retlst)))
+
+(defun leaf-keywords-normalize-list-in-list (lst &optional dotlistp distribute)
+  "Return normalized list from LST.
+
+Example:
+  - when DOTLISTP is nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => (a . b)
+    (a . nil)         => (a . nil)
+    (a)               => (a . nil)
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => ((a b c) . d)
+
+  - when DOTLISTP is non-nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => ((a . b))
+    (a . nil)         => ((a . nil))
+    (a)               => ((a . nil))
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => (((a b c) . d))
+
+  - when DISTRIBUTE is non-nil (NEED DOTLISTP is also non-nil)
+    ((a b c) . d)           => ((a . d) (b . d) (c . d))
+    ((x . y) ((a b c) . d)) => ((x . y) (a . d) (b . d) (c . d))"
+  (cond
+   ((not dotlistp)
+    (if (atom lst) (list lst) lst))
+   ((and dotlistp (not distribute))
+    (if (or (atom lst)
+            (and (leaf-pairp lst 'allow)
+                 (not (leaf-pairp (car lst) 'allow)))) ; not list of pairs
+        (list lst) lst))
+   ((and dotlistp distribute)
+    (if (and (listp lst)
+             (and (listp (car lst)) (leaf-dotlistp lst)))
+        (let ((dist (cdr lst)))
+          (mapcar (lambda (elm) `(,elm . ,dist)) (car lst)))
+      (if (or (atom lst) (leaf-dotlistp lst))
+          (list lst)
+        (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
+                 (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
 
 
 ;;;; Support functions
