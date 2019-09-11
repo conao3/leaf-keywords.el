@@ -30,6 +30,7 @@
 ;;
 ;; More information is [[https://github.com/conao3/leaf-keywords.el][here]]
 
+
 ;;; Code:
 
 (require 'leaf)
@@ -44,10 +45,8 @@
 (defconst leaf-keywords-raw-normalize leaf-normalize
   "Raw `leaf-normalize' before this package change.")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Utility functions
-;;
+
+;;;; Utility functions
 
 (defun leaf-insert-list-after (lst aelm targetlst)
   "Insert TARGETLST after AELM in LST."
@@ -120,10 +119,8 @@ Example:
         (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
                  (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Additional keywords, normalize
-;;
+
+;;;; Additional keywords, normalize
 
 (defvar leaf-keywords-init-frg nil)
 (defun leaf-keywords-set-keywords (sym val)
@@ -138,10 +135,8 @@ Example:
   (when leaf-keywords-init-frg
     (leaf-keywords-init)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Actual implementation
-;;
+
+;;; implementation
 
 (defvar leaf-keywords-packages-list
   (cdr
@@ -398,10 +393,8 @@ Example:
   :type 'sexp
   :group 'leaf-keywords)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Support functions
-;;
+
+;;;; Support functions
 
 ;;;###autoload
 (defmacro leaf-key-chord (chord command &optional keymap)
@@ -508,10 +501,8 @@ NOTE: BIND can also accept list of these."
                    `(,bind) bind)))
     `(leaf-key-chords (:leaf-key-override-global-map ,@binds))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Main initializer
-;;
+
+;;;; Main initializer
 
 ;;;###autoload
 (defun leaf-keywords-init ()
