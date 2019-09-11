@@ -1,6 +1,6 @@
 ;;; leaf-keywords.el --- Additional leaf.el keywords for external packages       -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018  Naoya Yamashita
+;; Copyright (C) 2018-2019  Naoya Yamashita <conao3@gmail.com>
 
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
