@@ -563,8 +563,7 @@ NOTE: BIND can also accept list of these."
 
   ;; require all dependent packages
   (dolist (pkg leaf-keywords-packages-list)
-    (when (featurep pkg)
-      (require pkg))))
+    (require pkg nil 'no-error)))
 
 (provide 'leaf-keywords)
 ;;; leaf-keywords.el ends here
