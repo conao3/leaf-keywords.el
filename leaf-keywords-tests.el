@@ -129,107 +129,79 @@ Example
   '(((leaf autorevert
        :diminish t)
      (prog1 'autorevert
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'autorevert)))))
+       (diminish 'autorevert)))
 
     ((leaf autorevert
        :diminish autorevert)
      (prog1 'autorevert
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'autorevert)))))
+       (diminish 'autorevert)))
 
     ((leaf autorevert
        :diminish t
        :diminish autorevert-polyfill)
      (prog1 'autorevert
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'autorevert)
-            (diminish 'autorevert-polyfill)))))
+       (diminish 'autorevert)
+       (diminish 'autorevert-polyfill)))
 
     ((leaf autorevert
        :diminish t autorevert-polyfill)
      (prog1 'autorevert
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'autorevert)
-            (diminish 'autorevert-polyfill)))))
+       (diminish 'autorevert)
+       (diminish 'autorevert-polyfill)))
 
     ((leaf go-mode
        :diminish " Go")
      (prog1 'go-mode
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'go-mode " Go")))))
+       (diminish 'go-mode " Go")))
 
     ((leaf abbrev
        :diminish (abbrev-mode " Abv"))
      (prog1 'abbrev
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'abbrev-mode " Abv")))))
+       (diminish 'abbrev-mode " Abv")))
 
     ((leaf projectile
        :diminish (projectile (:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
-       (eval-after-load 'diminish
-         '(progn
-            (diminish 'projectile (:eval (concat " " (projectile-project-name))))))))))
+       (diminish 'projectile (:eval (concat " " (projectile-project-name))))))))
 
 (cort-deftest-with-macroexpand leaf/delight
   '(((leaf autorevert
        :delight t)
      (prog1 'autorevert
-       (eval-after-load 'delight
-         '(progn
-            (delight 'autorevert)))))
+       (delight 'autorevert)))
 
     ((leaf autorevert
        :delight autorevert)
      (prog1 'autorevert
-       (eval-after-load 'delight
-         '(progn
-            (delight 'autorevert)))))
+       (delight 'autorevert)))
 
     ((leaf autorevert
        :delight t
        :delight autorevert-polyfill)
      (prog1 'autorevert
-       (eval-after-load 'delight
-         '(progn
-            (delight 'autorevert)
-            (delight 'autorevert-polyfill)))))
+       (delight 'autorevert)
+       (delight 'autorevert-polyfill)))
 
     ((leaf autorevert
        :delight t autorevert-polyfill)
      (prog1 'autorevert
-       (eval-after-load 'delight
-         '(progn
-            (delight 'autorevert)
-            (delight 'autorevert-polyfill)))))
+       (delight 'autorevert)
+       (delight 'autorevert-polyfill)))
 
     ((leaf go-mode
        :delight " Go")
      (prog1 'go-mode
-       (eval-after-load 'delight
-         '(progn
-            (delight 'go-mode " Go")))))
+       (delight 'go-mode " Go")))
 
     ((leaf abbrev
        :delight (abbrev-mode " Abv"))
      (prog1 'abbrev
-       (eval-after-load 'delight
-         '(progn
-            (delight 'abbrev-mode " Abv")))))
+       (delight 'abbrev-mode " Abv")))
 
     ((leaf projectile
        :delight (projectile (:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
-       (eval-after-load 'delight
-         '(progn
-            (delight 'projectile (:eval (concat " " (projectile-project-name))))))))
+       (delight 'projectile (:eval (concat " " (projectile-project-name))))))
 
     ((leaf delight
        :delight ((abbrev-mode " Abv" "abbrev")
@@ -239,14 +211,12 @@ Example
                  (overwrite-mode " Ov" t)
                  (emacs-lisp-mode "Elisp" :major)))
      (prog1 'delight
-       (eval-after-load 'delight
-         '(progn
-            (delight 'abbrev-mode " Abv" "abbrev")
-            (delight 'smart-tab-mode " \\t" "smart-tab")
-            (delight 'eldoc-mode nil "eldoc")
-            (delight 'rainbow-mode)
-            (delight 'overwrite-mode " Ov" t)
-            (delight 'emacs-lisp-mode "Elisp" :major)))))))
+       (delight 'abbrev-mode " Abv" "abbrev")
+       (delight 'smart-tab-mode " \\t" "smart-tab")
+       (delight 'eldoc-mode nil "eldoc")
+       (delight 'rainbow-mode)
+       (delight 'overwrite-mode " Ov" t)
+       (delight 'emacs-lisp-mode "Elisp" :major)))))
 
 (cort-deftest-with-macroexpand leaf/el-get
   '(((leaf leaf

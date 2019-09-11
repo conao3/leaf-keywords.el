@@ -138,12 +138,8 @@
 
 (defcustom leaf-keywords-after-require
   (leaf-list
-   :diminish   `((eval-after-load 'diminish
-                   '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
-                 ,@leaf--body)
-   :delight    `((eval-after-load 'delight
-                   '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
-                 ,@leaf--body))
+   :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
