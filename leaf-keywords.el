@@ -1,13 +1,13 @@
 ;;; leaf-keywords.el --- Additional leaf.el keywords for external packages       -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2018  Naoya Yamashita
+;; Copyright (C) 2018-2019  Naoya Yamashita <conao3@gmail.com>
 
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.2.6
+;; Version: 1.2.7
 ;; URL: https://github.com/conao3/leaf-keywords.el
-;; Package-Requires: ((emacs "24.4") (leaf "3.1.0"))
+;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the Affero GNU General Public License as
@@ -16,11 +16,12 @@
 
 ;; This program is distributed in the hope that it will be useful, but
 ;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the Affero
-;; GNU General Public License for more details.
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+;; See the Affero GNU General Public License for more details.
 
-;; You should have received a copy of the Affero GNU General Public License
-;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+;; You should have received a copy of the Affero GNU General Public
+;; License along with this program.
+;; If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -29,6 +30,7 @@
 ;;
 ;; More information is [[https://github.com/conao3/leaf-keywords.el][here]]
 
+
 ;;; Code:
 
 (require 'leaf)
@@ -37,94 +39,18 @@
   "Additional keywords for `leaf'."
   :group 'lisp)
 
+;;; save original `leaf' handlers and normalizers
+
 (defconst leaf-keywords-raw-keywords leaf-keywords
-  "Raw `leaf-keywords' before this package change.")
+  "Raw `leaf-keywords' before being modified by this package.")
 
 (defconst leaf-keywords-raw-normalize leaf-normalize
-  "Raw `leaf-normalize' before this package change.")
+  "Raw `leaf-normalize' before being odified by this package.")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Utility functions
-;;
-
-(defun leaf-insert-list-after (lst aelm targetlst)
-  "Insert TARGETLST after AELM in LST."
-  (declare (indent 2))
-  (let ((retlst) (frg))
-    (dolist (elm lst)
-      (if (eq elm aelm)
-          (setq frg t
-                retlst (append `(,@(reverse targetlst) ,aelm) retlst))
-        (setq retlst (cons elm retlst))))
-    (unless frg
-      (warn (format "%s is not found in given list" aelm)))
-    (nreverse retlst)))
-
-(defun leaf-insert-list-before (lst belm targetlst)
-  "Insert TARGETLST before BELM in LST."
-  (declare (indent 2))
-  (let ((retlst) (frg))
-    (dolist (elm lst)
-      (if (eq elm belm)
-          (setq frg t
-                retlst (append `(,belm ,@(reverse targetlst)) retlst))
-        (setq retlst (cons elm retlst))))
-    (unless frg
-      (warn (format "%s is not found in given list" belm)))
-    (nreverse retlst)))
-
-(defun leaf-keywords-normalize-list-in-list (lst &optional dotlistp distribute)
-  "Return normalized list from LST.
-
-Example:
-  - when DOTLISTP is nil
-    a                 => (a)
-    (a b c)           => (a b c)
-    (a . b)           => (a . b)
-    (a . nil)         => (a . nil)
-    (a)               => (a . nil)
-    ((a . b) (c . d)) => ((a . b) (c . d))
-    ((a) (b) (c))     => ((a) (b) (c))
-    ((a b c) . d)     => ((a b c) . d)
-
-  - when DOTLISTP is non-nil
-    a                 => (a)
-    (a b c)           => (a b c)
-    (a . b)           => ((a . b))
-    (a . nil)         => ((a . nil))
-    (a)               => ((a . nil))
-    ((a . b) (c . d)) => ((a . b) (c . d))
-    ((a) (b) (c))     => ((a) (b) (c))
-    ((a b c) . d)     => (((a b c) . d))
-
-  - when DISTRIBUTE is non-nil (NEED DOTLISTP is also non-nil)
-    ((a b c) . d)           => ((a . d) (b . d) (c . d))
-    ((x . y) ((a b c) . d)) => ((x . y) (a . d) (b . d) (c . d))"
-  (cond
-   ((not dotlistp)
-    (if (atom lst) (list lst) lst))
-   ((and dotlistp (not distribute))
-    (if (or (atom lst)
-            (and (leaf-pairp lst 'allow)
-                 (not (leaf-pairp (car lst) 'allow)))) ; not list of pairs
-        (list lst) lst))
-   ((and dotlistp distribute)
-    (if (and (listp lst)
-             (and (listp (car lst)) (leaf-dotlistp lst)))
-        (let ((dist (cdr lst)))
-          (mapcar (lambda (elm) `(,elm . ,dist)) (car lst)))
-      (if (or (atom lst) (leaf-dotlistp lst))
-          (list lst)
-        (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
-                 (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Additional keywords, normalize
-;;
+;;; custom variable setters
 
 (defvar leaf-keywords-init-frg nil)
+
 (defun leaf-keywords-set-keywords (sym val)
   "Set SYM as VAL and modify `leaf-keywords'."
   (set-default sym val)
@@ -137,32 +63,27 @@ Example:
   (when leaf-keywords-init-frg
     (leaf-keywords-init)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Actual implementation
-;;
+;;; implementation
 
 (defvar leaf-keywords-packages-list
-  (cdr
-   '(:dummy
-     ;; `leaf-keywords-before-conditions'
+  (leaf-list
+   ;; `leaf-keywords-before-conditions'
 
 
-     ;; `leaf-keywords-after-conditions'
-     straight el-get
+   ;; `leaf-keywords-after-conditions'
+   straight el-get
 
-     ;; `leaf-keywords-before-load'
-     hydra key-combo smartrep key-chord
+   ;; `leaf-keywords-before-load'
+   hydra key-combo smartrep key-chord
 
-     ;; `leaf-keywords-after-load'
+   ;; `leaf-keywords-after-load'
 
 
-     ;; `leaf-keywords-after-require'
-     diminish delight))
-  "leaf-keywords dependent packages list")
+   ;; `leaf-keywords-after-require'
+   diminish delight)
+  "list of dependent packages.")
 
-(defcustom leaf-keywords-before-conditions
-  (cdr nil)
+(defcustom leaf-keywords-before-conditions nil
   "Additional `leaf-keywords' before conditional branching.
 :disabled :leaf-protect ... :preface <this place> :when :unless :if"
   :set #'leaf-keywords-set-keywords
@@ -170,14 +91,13 @@ Example:
   :group 'leaf-keywords)
 
 (defcustom leaf-keywords-after-conditions
-  (cdr
-   '(:dummy
-     :straight `((eval-after-load 'straight
+  (leaf-list
+   :straight   `((eval-after-load 'straight
                    '(progn ,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value)))
                  ,@leaf--body)
-     :el-get `((eval-after-load 'el-get
-                 '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
-               ,@leaf--body)))
+   :el-get     `((eval-after-load 'el-get
+                   '(progn ,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value)))
+                 ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
@@ -185,68 +105,65 @@ Example:
   :group 'leaf-keywords)
 
 (defcustom leaf-keywords-before-load
-  (cdr
-   '(:dummy
-     :hydra      (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'hydra
-                       '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
-                     ,@leaf--body))
-     :combo      (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'key-combo
-                       '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                     ,@leaf--body))
-     :combo*     (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'key-combo
-                       '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
-                     ,@leaf--body))
-     :smartrep   (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'smartrep
-                       '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                     ,@leaf--body))
-     :smartrep*  (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'smartrep
-                       '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
-                     ,@leaf--body))
-     :chord      (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'key-chord
-                       '(progn (leaf-key-chords ,(car leaf--value))))
-                     ,@leaf--body))
-     :chord*     (progn
-                   (leaf-register-autoload (cadr leaf--value) leaf--name)
-                   `((eval-after-load 'key-chord
-                       '(progn (leaf-key-chords* ,(car leaf--value))))
-                     ,@leaf--body))))
-  "Additional `leaf-keywords' after wait loading.
+  (leaf-list
+   :hydra      (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'hydra
+                     '(progn ,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value))))
+                   ,@leaf--body))
+   :combo      (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'key-combo
+                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
+                   ,@leaf--body))
+   :combo*     (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'key-combo
+                     '(progn ,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value))))
+                   ,@leaf--body))
+   :smartrep   (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'smartrep
+                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
+                   ,@leaf--body))
+   :smartrep*  (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'smartrep
+                     '(progn ,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value))))
+                   ,@leaf--body))
+   :chord      (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'key-chord
+                     '(progn (leaf-key-chords ,(car leaf--value))))
+                   ,@leaf--body))
+   :chord*     (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((eval-after-load 'key-chord
+                     '(progn (leaf-key-chords* ,(car leaf--value))))
+                   ,@leaf--body)))
+  "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-after-load
-  (cdr nil)
+(defcustom leaf-keywords-after-load nil
   "Additional `leaf-keywords' after wait loading.
-:leaf-defer ... <this place> :init :require"
+:leaf-defer <this place> :init :require"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
 
 (defcustom leaf-keywords-after-require
-  (cdr
-   '(:dummy
-     :diminish `((eval-after-load 'diminish
+  (leaf-list
+   :diminish   `((eval-after-load 'diminish
                    '(progn ,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value)))
                  ,@leaf--body)
-     :delight  `((eval-after-load 'delight
+   :delight    `((eval-after-load 'delight
                    '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
-                 ,@leaf--body)))
-  "Additional `leaf-keywords' after wait loading.
-:require ... <this place> :config"
+                 ,@leaf--body))
+  "Additional `leaf-keywords' after require.
+:require <this place> :config"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -397,10 +314,82 @@ Example:
   :type 'sexp
   :group 'leaf-keywords)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Support functions
-;;
+
+;;;; Utility functions
+
+(defun leaf-insert-list-after (lst aelm targetlst)
+  "Insert TARGETLST after AELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm aelm)
+          (setq frg t
+                retlst (append `(,@(reverse targetlst) ,aelm) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" aelm)))
+    (nreverse retlst)))
+
+(defun leaf-insert-list-before (lst belm targetlst)
+  "Insert TARGETLST before BELM in LST."
+  (declare (indent 2))
+  (let ((retlst) (frg))
+    (dolist (elm lst)
+      (if (eq elm belm)
+          (setq frg t
+                retlst (append `(,belm ,@(reverse targetlst)) retlst))
+        (setq retlst (cons elm retlst))))
+    (unless frg
+      (warn (format "%s is not found in given list" belm)))
+    (nreverse retlst)))
+
+(defun leaf-keywords-normalize-list-in-list (lst &optional dotlistp distribute)
+  "Return normalized list from LST.
+
+Example:
+  - when DOTLISTP is nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => (a . b)
+    (a . nil)         => (a . nil)
+    (a)               => (a . nil)
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => ((a b c) . d)
+
+  - when DOTLISTP is non-nil
+    a                 => (a)
+    (a b c)           => (a b c)
+    (a . b)           => ((a . b))
+    (a . nil)         => ((a . nil))
+    (a)               => ((a . nil))
+    ((a . b) (c . d)) => ((a . b) (c . d))
+    ((a) (b) (c))     => ((a) (b) (c))
+    ((a b c) . d)     => (((a b c) . d))
+
+  - when DISTRIBUTE is non-nil (NEED DOTLISTP is also non-nil)
+    ((a b c) . d)           => ((a . d) (b . d) (c . d))
+    ((x . y) ((a b c) . d)) => ((x . y) (a . d) (b . d) (c . d))"
+  (cond
+   ((not dotlistp)
+    (if (atom lst) (list lst) lst))
+   ((and dotlistp (not distribute))
+    (if (or (atom lst)
+            (and (leaf-pairp lst 'allow)
+                 (not (leaf-pairp (car lst) 'allow)))) ; not list of pairs
+        (list lst) lst))
+   ((and dotlistp distribute)
+    (if (and (listp lst)
+             (and (listp (car lst)) (leaf-dotlistp lst)))
+        (let ((dist (cdr lst)))
+          (mapcar (lambda (elm) `(,elm . ,dist)) (car lst)))
+      (if (or (atom lst) (leaf-dotlistp lst))
+          (list lst)
+        (funcall (if (fboundp 'mapcan) #'mapcan #'leaf-mapcaappend)
+                 (lambda (elm) (leaf-keywords-normalize-list-in-list elm t t)) lst))))))
+
+
+;;;; Support functions
 
 ;;;###autoload
 (defmacro leaf-key-chord (chord command &optional keymap)
@@ -507,10 +496,8 @@ NOTE: BIND can also accept list of these."
                    `(,bind) bind)))
     `(leaf-key-chords (:leaf-key-override-global-map ,@binds))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;  Main initializer
-;;
+
+;;;; Main initializer
 
 ;;;###autoload
 (defun leaf-keywords-init ()
@@ -566,4 +553,9 @@ NOTE: BIND can also accept list of these."
     (require pkg nil 'no-error)))
 
 (provide 'leaf-keywords)
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
+
 ;;; leaf-keywords.el ends here

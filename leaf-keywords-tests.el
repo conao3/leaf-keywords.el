@@ -1079,4 +1079,9 @@ Example
                        ("fi" . find-file))))))
 
 ;; (provide 'leaf-keywords-tests)
+
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
+
 ;;; leaf-keywords-tests.el ends here
