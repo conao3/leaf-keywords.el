@@ -42,10 +42,10 @@
 ;;; save original `leaf' handlers and normalizers
 
 (defconst leaf-keywords-raw-keywords leaf-keywords
-  "Raw `leaf-keywords' before this package change.")
+  "Raw `leaf-keywords' before being modified by this package.")
 
 (defconst leaf-keywords-raw-normalize leaf-normalize
-  "Raw `leaf-normalize' before this package change.")
+  "Raw `leaf-normalize' before being odified by this package.")
 
 ;;; custom variable setters
 
@@ -81,7 +81,7 @@
 
    ;; `leaf-keywords-after-require'
    diminish delight)
-  "leaf-keywords dependent packages list")
+  "list of dependent packages.")
 
 (defcustom leaf-keywords-before-conditions nil
   "Additional `leaf-keywords' before conditional branching.
@@ -141,7 +141,7 @@
                  `((eval-after-load 'key-chord
                      '(progn (leaf-key-chords* ,(car leaf--value))))
                    ,@leaf--body)))
-  "Additional `leaf-keywords' after wait loading.
+  "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
@@ -149,7 +149,7 @@
 
 (defcustom leaf-keywords-after-load nil
   "Additional `leaf-keywords' after wait loading.
-:leaf-defer ... <this place> :init :require"
+:leaf-defer <this place> :init :require"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -162,8 +162,8 @@
    :delight    `((eval-after-load 'delight
                    '(progn ,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value)))
                  ,@leaf--body))
-  "Additional `leaf-keywords' after wait loading.
-:require ... <this place> :config"
+  "Additional `leaf-keywords' after require.
+:require <this place> :config"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
