@@ -362,12 +362,18 @@ Example
                ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
                ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define global-map "=>" " => ")
        (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
        (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
@@ -379,12 +385,18 @@ Example
                ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
                ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
        (key-combo-define emacs-lisp-mode-map "=>" " => ")
        (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
@@ -399,12 +411,18 @@ Example
                 ("."  . ("." " . "))
                 ("="  . ("= " "eq " "equal ")))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define global-map "=>" " => ")
        (key-combo-define global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
        (key-combo-define global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
@@ -418,12 +436,18 @@ Example
                 ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
                 ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define leaf-key-override-global-map "=>" " => ")
        (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
        (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))))
@@ -435,12 +459,18 @@ Example
                 ("C-a" . (back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
                 ("C-e" . (move-end-of-line end-of-buffer key-combo-return))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define emacs-lisp-mode-map "=" '(" = " " == " " === "))
        (key-combo-define emacs-lisp-mode-map "=>" " => ")
        (key-combo-define emacs-lisp-mode-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
@@ -455,12 +485,18 @@ Example
                  ("."  . ("." " . "))
                  ("="  . ("= " "eq " "equal ")))))
      (prog1 'key-combo
-       (autoload #'back-to-indentation "key-combo" nil t)
-       (autoload #'move-beginning-of-line "key-combo" nil t)
-       (autoload #'beginning-of-buffer "key-combo" nil t)
-       (autoload #'key-combo-return "key-combo" nil t)
-       (autoload #'move-end-of-line "key-combo" nil t)
-       (autoload #'end-of-buffer "key-combo" nil t)
+       (unless (fboundp 'back-to-indentation) (autoload #'back-to-indentation "key-combo" nil t))
+       (unless (fboundp 'move-beginning-of-line) (autoload #'move-beginning-of-line "key-combo" nil t))
+       (unless (fboundp 'beginning-of-buffer) (autoload #'beginning-of-buffer "key-combo" nil t))
+       (unless (fboundp 'key-combo-return) (autoload #'key-combo-return "key-combo" nil t))
+       (unless (fboundp 'move-end-of-line) (autoload #'move-end-of-line "key-combo" nil t))
+       (unless (fboundp 'end-of-buffer) (autoload #'end-of-buffer "key-combo" nil t))
+       (declare-function back-to-indentation "key-combo")
+       (declare-function move-beginning-of-line "key-combo")
+       (declare-function beginning-of-buffer "key-combo")
+       (declare-function key-combo-return "key-combo")
+       (declare-function move-end-of-line "key-combo")
+       (declare-function end-of-buffer "key-combo")
        (key-combo-define leaf-key-override-global-map "=>" " => ")
        (key-combo-define leaf-key-override-global-map "C-a" '(back-to-indentation move-beginning-of-line beginning-of-buffer key-combo-return))
        (key-combo-define leaf-key-override-global-map "C-e" '(move-end-of-line end-of-buffer key-combo-return))
@@ -472,7 +508,8 @@ Example
        :ensure t
        :chord (("jk" . macrostep-expand)))
      (prog1 'macrostep
-       (autoload #'macrostep-expand "macrostep" nil t)
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords
         (("jk" . macrostep-expand)))))
@@ -481,7 +518,8 @@ Example
        :ensure t
        :chord ("jk" . macrostep-expand))
      (prog1 'macrostep
-       (autoload #'macrostep-expand "macrostep" nil t)
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords
         (("jk" . macrostep-expand)))))
@@ -491,8 +529,10 @@ Example
        ("jk" . moccur)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords
         (("jk" . moccur)
          ("fi" . isearch-moccur)))))
@@ -501,8 +541,10 @@ Example
        :chord (("jk" . moccur)
                ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords
         (("jk" . moccur)
          ("fi" . isearch-moccur)))))
@@ -512,7 +554,8 @@ Example
        ("jk" . nil)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords
         (("jk")
          ("fi" . isearch-moccur)))))
@@ -521,7 +564,8 @@ Example
        :chord (("jk" . nil)
                ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords
         (("jk")
          ("fi" . isearch-moccur)))))
@@ -534,15 +578,17 @@ Example
         ("ji" . isearch-moccur)
         ("jo" . isearch-moccur-all)))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur-all) (autoload #'isearch-moccur-all "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
+       (declare-function isearch-moccur-all "color-moccur")
        (leaf-key-chords
         (("jk" . moccur)
-         (:isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all))))))
+         (:isearch-mode-map :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))
 
     ((leaf color-moccur
        :chord (("jk" . moccur)
@@ -551,15 +597,17 @@ Example
                 ("ji" . isearch-moccur)
                 ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur-all) (autoload #'isearch-moccur-all "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
+       (declare-function isearch-moccur-all "color-moccur")
        (leaf-key-chords
         (("jk" . moccur)
-         (:isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all))))))
+         (:isearch-mode-map :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))
 
     ;; you also use symbol instead of keyword to specify keymap
     ((leaf color-moccur
@@ -569,22 +617,25 @@ Example
                 ("ji" . isearch-moccur)
                 ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur-all) (autoload #'isearch-moccur-all "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
+       (declare-function isearch-moccur-all "color-moccur")
        (leaf-key-chords
         (("jk" . moccur)
-         (isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all))))))))
+         (isearch-mode-map :package isearch
+                           ("ji" . isearch-moccur)
+                           ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/chord*
   '(((leaf macrostep
        :ensure t
        :chord* (("jk" . macrostep-expand)))
      (prog1 'macrostep
-       (autoload #'macrostep-expand "macrostep" nil t)
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords*
         (("jk" . macrostep-expand)))))
@@ -593,7 +644,8 @@ Example
        :ensure t
        :chord* ("jk" . macrostep-expand))
      (prog1 'macrostep
-       (autoload #'macrostep-expand "macrostep" nil t)
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
        (leaf-handler-package macrostep macrostep nil)
        (leaf-key-chords*
         (("jk" . macrostep-expand)))))
@@ -603,8 +655,10 @@ Example
        ("jk" . moccur)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords*
         (("jk" . moccur)
          ("fi" . isearch-moccur)))))
@@ -613,8 +667,10 @@ Example
        :chord* (("jk" . moccur)
                 ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords*
         (("jk" . moccur)
          ("fi" . isearch-moccur)))))
@@ -624,7 +680,8 @@ Example
        ("jk" . nil)
        ("fi" . isearch-moccur))
      (prog1 'color-moccur
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords*
         (("jk")
          ("fi" . isearch-moccur)))))
@@ -633,7 +690,8 @@ Example
        :chord* (("jk" . nil)
                 ("fi" . isearch-moccur)))
      (prog1 'color-moccur
-       (autoload #'isearch-moccur "color-moccur" nil t)
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (declare-function isearch-moccur "color-moccur")
        (leaf-key-chords*
         (("jk")
          ("fi" . isearch-moccur)))))
@@ -646,15 +704,17 @@ Example
         ("ji" . isearch-moccur)
         ("jo" . isearch-moccur-all)))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur-all) (autoload #'isearch-moccur-all "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
+       (declare-function isearch-moccur-all "color-moccur")
        (leaf-key-chords*
         (("jk" . moccur)
-         (:isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all))))))
+         (:isearch-mode-map :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))
 
     ((leaf color-moccur
        :chord* (("jk" . moccur)
@@ -663,15 +723,17 @@ Example
                  ("ji" . isearch-moccur)
                  ("jo" . isearch-moccur-all))))
      (prog1 'color-moccur
-       (autoload #'moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur "color-moccur" nil t)
-       (autoload #'isearch-moccur-all "color-moccur" nil t)
+       (unless (fboundp 'moccur) (autoload #'moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur) (autoload #'isearch-moccur "color-moccur" nil t))
+       (unless (fboundp 'isearch-moccur-all) (autoload #'isearch-moccur-all "color-moccur" nil t))
+       (declare-function moccur "color-moccur")
+       (declare-function isearch-moccur "color-moccur")
+       (declare-function isearch-moccur-all "color-moccur")
        (leaf-key-chords*
         (("jk" . moccur)
-         (:isearch-mode-map
-          :package isearch
-          ("ji" . isearch-moccur)
-          ("jo" . isearch-moccur-all))))))))
+         (:isearch-mode-map :package isearch
+                            ("ji" . isearch-moccur)
+                            ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/smartrep
   '(((leaf multiple-cursors
@@ -684,13 +746,20 @@ Example
                    ("S"   . mc/skip-to-previous-like-this)
                    ("*"   . mc/mark-all-like-this))))
      (prog1 'multiple-cursors
-       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
+       (unless (fboundp 'mc/mark-previous-like-this) (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-next-like-this) (autoload #'mc/mark-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/unmark-next-like-this) (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/unmark-previous-like-this) (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/skip-to-next-like-this) (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/skip-to-previous-like-this) (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-all-like-this) (autoload #'mc/mark-all-like-this "multiple-cursors" nil t))
+       (declare-function mc/mark-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-next-like-this "multiple-cursors")
+       (declare-function mc/unmark-next-like-this "multiple-cursors")
+       (declare-function mc/unmark-previous-like-this "multiple-cursors")
+       (declare-function mc/skip-to-next-like-this "multiple-cursors")
+       (declare-function mc/skip-to-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-all-like-this "multiple-cursors")
        (smartrep-define-key global-map "C-t"
                             '(("C-p" . mc/mark-previous-like-this)
                               ("C-n" . mc/mark-next-like-this)
@@ -706,8 +775,10 @@ Example
                   (("C-p" . mc/mark-previous-like-this)
                    ("C-n" . mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+       (unless (fboundp 'mc/mark-previous-like-this) (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-next-like-this) (autoload #'mc/mark-next-like-this "multiple-cursors" nil t))
+       (declare-function mc/mark-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-next-like-this "multiple-cursors")
        (smartrep-define-key global-map "C-t"
                             '(("C-p" . mc/mark-previous-like-this)
                               ("C-n" . mc/mark-next-like-this)))))
@@ -718,8 +789,10 @@ Example
                   (("C-p" . 'mc/mark-previous-like-this)
                    ("C-n" . 'mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+       (unless (fboundp 'mc/mark-previous-like-this) (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-next-like-this) (autoload #'mc/mark-next-like-this "multiple-cursors" nil t))
+       (declare-function mc/mark-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-next-like-this "multiple-cursors")
        (smartrep-define-key global-map "C-t"
                             '(("C-p" quote mc/mark-previous-like-this)
                               ("C-n" quote mc/mark-next-like-this)))))
@@ -730,8 +803,10 @@ Example
                   '(("C-p" . 'mc/mark-previous-like-this)
                     ("C-n" . 'mc/mark-next-like-this))))
      (prog1 'multiple-cursors
-       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
+       (unless (fboundp 'mc/mark-previous-like-this) (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-next-like-this) (autoload #'mc/mark-next-like-this "multiple-cursors" nil t))
+       (declare-function mc/mark-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-next-like-this "multiple-cursors")
        (smartrep-define-key global-map "C-t"
                             '(("C-p" quote mc/mark-previous-like-this)
                               ("C-n" quote mc/mark-next-like-this)))))
@@ -773,13 +848,20 @@ Example
                     ("S"   . mc/skip-to-previous-like-this)
                     ("*"   . mc/mark-all-like-this))))
      (prog1 'multiple-cursors
-       (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t)
-       (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t)
-       (autoload #'mc/mark-all-like-this "multiple-cursors" nil t)
+       (unless (fboundp 'mc/mark-previous-like-this) (autoload #'mc/mark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-next-like-this) (autoload #'mc/mark-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/unmark-next-like-this) (autoload #'mc/unmark-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/unmark-previous-like-this) (autoload #'mc/unmark-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/skip-to-next-like-this) (autoload #'mc/skip-to-next-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/skip-to-previous-like-this) (autoload #'mc/skip-to-previous-like-this "multiple-cursors" nil t))
+       (unless (fboundp 'mc/mark-all-like-this) (autoload #'mc/mark-all-like-this "multiple-cursors" nil t))
+       (declare-function mc/mark-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-next-like-this "multiple-cursors")
+       (declare-function mc/unmark-next-like-this "multiple-cursors")
+       (declare-function mc/unmark-previous-like-this "multiple-cursors")
+       (declare-function mc/skip-to-next-like-this "multiple-cursors")
+       (declare-function mc/skip-to-previous-like-this "multiple-cursors")
+       (declare-function mc/mark-all-like-this "multiple-cursors")
        (smartrep-define-key leaf-key-override-global-map "C-t"
                             '(("C-p" . mc/mark-previous-like-this)
                               ("C-n" . mc/mark-next-like-this)
@@ -813,8 +895,10 @@ Example
                ("g" text-scale-increase "in")
                ("l" text-scale-decrease "out")))
      (prog1 'face-remap
-       (autoload #'text-scale-increase "face-remap" nil t)
-       (autoload #'text-scale-decrease "face-remap" nil t)
+       (unless (fboundp 'text-scale-increase) (autoload #'text-scale-increase "face-remap" nil t))
+       (unless (fboundp 'text-scale-decrease) (autoload #'text-scale-decrease "face-remap" nil t))
+       (declare-function text-scale-increase "face-remap")
+       (declare-function text-scale-decrease "face-remap")
        (defhydra hydra-zoom
          (global-map "<f2>")
          "zoom"
@@ -854,18 +938,31 @@ Example
                 ("m" yas/minor-mode)
                 ("a" yas-reload-all))))
      (prog1 'yasnippet
-       (autoload #'yas-insert-snippet "yasnippet" nil t)
-       (autoload #'yas-new-snippet "yasnippet" nil t)
-       (autoload #'yas-visit-snippet-file "yasnippet" nil t)
-       (autoload #'yas-load-directory "yasnippet" nil t)
-       (autoload #'yas-activate-extra-mode "yasnippet" nil t)
-       (autoload #'yas-tryout-snippet "yasnippet" nil t)
-       (autoload #'yas-describe-tables "yasnippet" nil t)
-       (autoload #'yas/global-mode "yasnippet" nil t)
-       (autoload #'yas/minor-mode "yasnippet" nil t)
-       (autoload #'yas-reload-all "yasnippet" nil t)
-       (autoload #'hydra-yas-primary/body "yasnippet" nil t)
-       (autoload #'hydra-yas/body "yasnippet" nil t)
+       (unless (fboundp 'yas-insert-snippet) (autoload #'yas-insert-snippet "yasnippet" nil t))
+       (unless (fboundp 'yas-new-snippet) (autoload #'yas-new-snippet "yasnippet" nil t))
+       (unless (fboundp 'yas-visit-snippet-file) (autoload #'yas-visit-snippet-file "yasnippet" nil t))
+       (unless (fboundp 'yas-load-directory) (autoload #'yas-load-directory "yasnippet" nil t))
+       (unless (fboundp 'yas-activate-extra-mode) (autoload #'yas-activate-extra-mode "yasnippet" nil t))
+       (unless (fboundp 'yas-tryout-snippet) (autoload #'yas-tryout-snippet "yasnippet" nil t))
+       (unless (fboundp 'yas-describe-tables) (autoload #'yas-describe-tables "yasnippet" nil t))
+       (unless (fboundp 'yas/global-mode) (autoload #'yas/global-mode "yasnippet" nil t))
+       (unless (fboundp 'yas/minor-mode) (autoload #'yas/minor-mode "yasnippet" nil t))
+       (unless (fboundp 'yas-reload-all) (autoload #'yas-reload-all "yasnippet" nil t))
+       (unless (fboundp 'hydra-yas-primary/body) (autoload #'hydra-yas-primary/body "yasnippet" nil t))
+       (unless (fboundp 'hydra-yas/body) (autoload #'hydra-yas/body "yasnippet" nil t))
+       (declare-function yas-insert-snippet "yasnippet")
+       (declare-function yas-new-snippet "yasnippet")
+       (declare-function yas-visit-snippet-file "yasnippet")
+       (declare-function yas-load-directory "yasnippet")
+       (declare-function yas-activate-extra-mode "yasnippet")
+       (declare-function yas-tryout-snippet "yasnippet")
+       (declare-function yas-describe-tables "yasnippet")
+       (declare-function yas/global-mode "yasnippet")
+       (declare-function yas/minor-mode "yasnippet")
+       (declare-function yas-reload-all "yasnippet")
+       (declare-function hydra-yas-primary/body "yasnippet")
+       (declare-function hydra-yas/body "yasnippet")
+       (defvar yas-minor-mode-map)
        (leaf-keys
         ((:yas-minor-mode-map :package yasnippet
                               ("<f3>" . hydra-yas-primary/body)
