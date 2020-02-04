@@ -23,6 +23,7 @@
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind, :bind* keywords]]
   - [[#hydra-keyword][:hydra keyword]]
+  - [[#hydra-keyword][:transient keyword]]
   - [[#chord-chord-keywords][:chord, :chord* keywords]]
   - [[#smartrep-smartrep-keywords][:smartrep, :smartrep* keywords]]
   - [[#combo-combo-keywords][:combo, :combo* keywords]]
@@ -609,6 +610,55 @@ The reason for using this keyword is that it automatically creates an ~autoload~
                 ("a" yas-reload-all))))))))
 #+end_src
 
+** :transient keyword
+~:transient~ provide frontend for [[https://github.com/magit/transient][transient]].
+
+If you pass a list, you pass it to ~define-transient-command~, and if you pass a nested list, you pass each one to it.
+
+# The reason for using this keyword is that it automatically creates an ~autoload~ statement.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/transient
+    '(((leaf dired-git
+         :transient
+         (transient-dwim-dired-mode--git
+          ()
+          "Transient-dwim for `dired-mode--git'."
+          [["Worktree"
+            ("c" "Commit" dired-git-commit)
+            ("S" "Stage" dired-git-stage)
+            ("U" "Unstage" dired-git-unstage)
+            ("zz" "Stash" dired-git-stash)
+            ("zp" "Stash pop" dired-git-stash-pop)
+            ("X" "Reset --hard" dired-git-reset-hard)]
+           ["Branch"
+            ("b" "Branch" dired-git-branch)
+            ("t" "Tag" dired-git-tag)
+            ("f" "Fetch" dired-git-fetch)
+            ("F" "Pull" dired-git-pull)
+            ("m" "Merge" dired-git-merge)
+            ("P" "Push" dired-git-push)
+            ("!" "Run" dired-git-run)]]))
+
+       (prog1 'dired-git
+         (define-transient-command transient-dwim-dired-mode--git ()
+           "Transient-dwim for `dired-mode--git'."
+           [["Worktree"
+             ("c" "Commit" dired-git-commit)
+             ("S" "Stage" dired-git-stage)
+             ("U" "Unstage" dired-git-unstage)
+             ("zz" "Stash" dired-git-stash)
+             ("zp" "Stash pop" dired-git-stash-pop)
+             ("X" "Reset --hard" dired-git-reset-hard)]
+            ["Branch"
+             ("b" "Branch" dired-git-branch)
+             ("t" "Tag" dired-git-tag)
+             ("f" "Fetch" dired-git-fetch)
+             ("F" "Pull" dired-git-pull)
+             ("m" "Merge" dired-git-merge)
+             ("P" "Push" dired-git-push)
+             ("!" "Run" dired-git-run)]])))))
+#+end_src
 ** :chord :chord* keywords
 ~:chord~ and ~:chord*~ provide frontend for ~leaf-key-chord~ which bind key for [[https://github.com/emacsorphanage/key-chord][key-chord]].
 
