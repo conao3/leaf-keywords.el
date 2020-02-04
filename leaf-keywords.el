@@ -107,6 +107,9 @@
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+   :transient  (progn
+                 ;; (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `(,@(mapcar (lambda (elm) `(define-transient-command ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
@@ -207,6 +210,23 @@
                       (progn (mapc (lambda (el) (setq fns (append fns (funcall fn el)))) elm) elm))
                      ((listp elm)
                       (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
+                  leaf--value))
+       `(,val ,fns)))
+
+    ((memq leaf--key '(:transient))
+     ;; TODO: parse transient argument and get functions
+     (let (val fns)
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((and (listp elm) (listp (car elm)))
+                      (progn
+                        ;; (mapc (lambda (el) (setq fns (append fns (funcall fn el)))) elm)
+                        elm))
+                     ((listp elm)
+                      (progn
+                        ;; (setq fns (append fns (funcall fn elm)))
+                        `(,elm)))))
                   leaf--value))
        `(,val ,fns)))
 

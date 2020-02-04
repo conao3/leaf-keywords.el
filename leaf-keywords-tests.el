@@ -996,6 +996,47 @@ Example
          ("m" yas/minor-mode)
          ("a" yas-reload-all))))))
 
+(cort-deftest-with-macroexpand leaf/transient
+  '(((leaf dired-git
+       :transient
+       (transient-dwim-dired-mode--git
+        ()
+        "Transient-dwim for `dired-mode--git'."
+        [["Worktree"
+          ("c" "Commit" dired-git-commit)
+          ("S" "Stage" dired-git-stage)
+          ("U" "Unstage" dired-git-unstage)
+          ("zz" "Stash" dired-git-stash)
+          ("zp" "Stash pop" dired-git-stash-pop)
+          ("X" "Reset --hard" dired-git-reset-hard)]
+         ["Branch"
+          ("b" "Branch" dired-git-branch)
+          ("t" "Tag" dired-git-tag)
+          ("f" "Fetch" dired-git-fetch)
+          ("F" "Pull" dired-git-pull)
+          ("m" "Merge" dired-git-merge)
+          ("P" "Push" dired-git-push)
+          ("!" "Run" dired-git-run)]]))
+
+     (prog1 'dired-git
+       (define-transient-command transient-dwim-dired-mode--git ()
+         "Transient-dwim for `dired-mode--git'."
+         [["Worktree"
+           ("c" "Commit" dired-git-commit)
+           ("S" "Stage" dired-git-stage)
+           ("U" "Unstage" dired-git-unstage)
+           ("zz" "Stash" dired-git-stash)
+           ("zp" "Stash pop" dired-git-stash-pop)
+           ("X" "Reset --hard" dired-git-reset-hard)]
+          ["Branch"
+           ("b" "Branch" dired-git-branch)
+           ("t" "Tag" dired-git-tag)
+           ("f" "Fetch" dired-git-fetch)
+           ("F" "Pull" dired-git-pull)
+           ("m" "Merge" dired-git-merge)
+           ("P" "Push" dired-git-push)
+           ("!" "Run" dired-git-run)]])))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Support leaf macros
