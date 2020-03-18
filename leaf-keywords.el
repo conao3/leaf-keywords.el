@@ -74,7 +74,7 @@
    ;; `leaf-keywords-after-conditions'
    ;; straight users require straight.el or straight-x.el
    ;; straight
-   el-get
+   feather el-get
 
    ;; `leaf-keywords-before-load'
    hydra key-combo smartrep key-chord
@@ -95,6 +95,8 @@
 
 (defcustom leaf-keywords-after-conditions
   (leaf-list
+   :feather    `(,@(mapcar (lambda (elm) `(leaf-handler-package ,leaf--name ,(car elm) ,(cdr elm))) leaf--value)
+                 (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
    :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
@@ -179,7 +181,7 @@
      ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
      (eval `(leaf-key-chords ,leaf--value ,leaf--name)))
 
-    ((memq leaf--key '())
+    ((memq leaf--key '(:feather))
      ;; Accept: (sym . val), ((sym sym ...) . val), (sym sym ... . val)
      ;; Return: list of pair (sym . val)
      ;; Note  : atom ('t, 'nil, symbol) is just ignored
@@ -188,7 +190,7 @@
                (cond
                 ((leaf-pairp elm)
                  (if (eq t (car elm)) `(,leaf--name . (cdr elm)) elm))
-                ((memq leaf--key '())
+                ((memq leaf--key '(:feather))
                  (if (eq t elm) `(,leaf--name . nil) `(,elm . nil)))
                 ((memq leaf--key '())
                  `(,elm . ,leaf--name))
