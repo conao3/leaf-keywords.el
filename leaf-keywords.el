@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.3.5
+;; Version: 1.3.6
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -189,18 +189,20 @@
      (mapcar (lambda (elm)
                (cond
                 ((leaf-pairp elm)
-                 (if (eq t (car elm)) `(,leaf--name . (cdr elm)) elm))
+                 (if (eq t (car elm)) `(,leaf--name . ,(cdr elm)) elm))
                 ((memq leaf--key '(:feather))
-                 (if (eq t elm) `(,leaf--name . nil) `(,elm . nil)))
+                 (if (equal '(t) elm) `(,leaf--name . nil) `(,@elm . nil)))
                 ((memq leaf--key '())
-                 `(,elm . ,leaf--name))
+                 `(,@elm . ,leaf--name))
+                ((memq leaf--key '())
+                 `(,@elm . leaf-default-plstore))
                 ((memq leaf--key '())
                  elm)
                 (t
                  elm)))
-             (mapcan (lambda (elm)
-                       (leaf-keywords-normalize-list-in-list elm 'dotlistp))
-                     leaf--value)))
+             (mapcan
+              (lambda (elm) (leaf-normalize-list-in-list elm 'dotlistp))
+              leaf--value)))
 
     ((memq leaf--key '(:hydra))
      (let ((fn (lambda (elm)
