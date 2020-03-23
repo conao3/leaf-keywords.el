@@ -40,14 +40,6 @@
   "Additional keywords for `leaf'."
   :group 'lisp)
 
-;;; save original `leaf' handlers and normalizers
-
-(defconst leaf-keywords-raw-keywords leaf-keywords
-  "Raw `leaf-keywords' before being modified by this package.")
-
-(defconst leaf-keywords-raw-normalize leaf-normalize
-  "Raw `leaf-normalize' before being odified by this package.")
-
 ;;; custom variable setters
 
 (defvar leaf-keywords-init-frg nil)
@@ -584,13 +576,28 @@ NOTE: BIND can also accept list of these."
 
 ;;;; Main initializer
 
+(defvar leaf-keywords-raw-keywords nil
+  "Raw `leaf-keywords' before being modified by this package.")
+
+(defvar leaf-keywords-raw-normalize nil
+  "Raw `leaf-normalize' before being modified by this package.")
+
 ;;;###autoload
-(defun leaf-keywords-init ()
-  "Add additional keywords to `leaf'."
+(defun leaf-keywords-init (&optional renew)
+  "Add additional keywords to `leaf'.
+If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
   (setq leaf-keywords-init-frg t)
+
+  (when renew
+    (setq leaf-keywords-raw-keywords nil)
+    (setq leaf-keywords-raw-normalize nil))
+
+  (unless leaf-keywords-raw-keywords (setq leaf-keywords-raw-keywords leaf-keywords))
+  (unless leaf-keywords-raw-normalize (setq leaf-keywords-raw-normalize leaf-normalize))
 
   ;; restore raw `leaf-keywords'
   (setq leaf-keywords leaf-keywords-raw-keywords)
+  (setq leaf-normalize leaf-keywords-raw-normalize)
 
   ;; :disabled :doc ... :url <this place> :leaf-protect
   (setq leaf-keywords
