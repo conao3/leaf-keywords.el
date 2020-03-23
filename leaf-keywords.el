@@ -86,7 +86,9 @@
    diminish delight)
   "List of dependent packages.")
 
-(defcustom leaf-keywords-before-protection nil
+(defcustom leaf-keywords-before-protection
+  (leaf-list
+   :added `(,@leaf--body))
   "Additional `leaf-keywords' before protection.
 :disabled :doc ... :url <this place> :leaf-protect"
   :set #'leaf-keywords-set-keywords
