@@ -86,9 +86,16 @@
    diminish delight)
   "List of dependent packages.")
 
+(defcustom leaf-keywords-before-protection nil
+  "Additional `leaf-keywords' before protection.
+:disabled :doc ... :url <this place> :leaf-protect"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
+
 (defcustom leaf-keywords-before-conditions nil
   "Additional `leaf-keywords' before conditional branching.
-:disabled :leaf-protect ... :preface <this place> :when :unless :if"
+:leaf-protect ... :preface <this place> :when :unless :if"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -583,7 +590,12 @@ NOTE: BIND can also accept list of these."
   ;; restore raw `leaf-keywords'
   (setq leaf-keywords leaf-keywords-raw-keywords)
 
-  ;; :disabled :leaf-protect ... :preface <this place> :when :unless :if
+  ;; :disabled :doc ... :url <this place> :leaf-protect
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :leaf-protect
+          leaf-keywords-before-protection))
+
+  ;; :leaf-protect ... :preface <this place> :when :unless :if
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :when
           leaf-keywords-before-conditions))
