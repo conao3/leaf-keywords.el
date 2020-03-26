@@ -128,7 +128,7 @@ Example
   '(((leaf autorevert
        :diminish t)
      (prog1 'autorevert
-       (diminish 'autorevert)))
+       (diminish 'autorevert-mode)))
 
     ((leaf autorevert
        :diminish autorevert)
@@ -139,13 +139,13 @@ Example
        :diminish t
        :diminish autorevert-polyfill)
      (prog1 'autorevert
-       (diminish 'autorevert)
+       (diminish 'autorevert-mode)
        (diminish 'autorevert-polyfill)))
 
     ((leaf autorevert
        :diminish t autorevert-polyfill)
      (prog1 'autorevert
-       (diminish 'autorevert)
+       (diminish 'autorevert-mode)
        (diminish 'autorevert-polyfill)))
 
     ((leaf go-mode
@@ -159,15 +159,18 @@ Example
        (diminish 'abbrev-mode " Abv")))
 
     ((leaf projectile
-       :diminish (projectile (:eval (concat " " (projectile-project-name)))))
+       :diminish (projectile-mode (:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
-       (diminish 'projectile (:eval (concat " " (projectile-project-name))))))))
+       (diminish 'projectile-mode
+                 (:eval
+                  (concat " "
+                          (projectile-project-name))))))))
 
 (cort-deftest-with-macroexpand leaf/delight
   '(((leaf autorevert
        :delight t)
      (prog1 'autorevert
-       (delight 'autorevert)))
+       (delight 'autorevert-mode)))
 
     ((leaf autorevert
        :delight autorevert)
@@ -178,13 +181,13 @@ Example
        :delight t
        :delight autorevert-polyfill)
      (prog1 'autorevert
-       (delight 'autorevert)
+       (delight 'autorevert-mode)
        (delight 'autorevert-polyfill)))
 
     ((leaf autorevert
        :delight t autorevert-polyfill)
      (prog1 'autorevert
-       (delight 'autorevert)
+       (delight 'autorevert-mode)
        (delight 'autorevert-polyfill)))
 
     ((leaf go-mode
@@ -198,9 +201,12 @@ Example
        (delight 'abbrev-mode " Abv")))
 
     ((leaf projectile
-       :delight (projectile (:eval (concat " " (projectile-project-name)))))
+       :delight (projectile-mode (:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
-       (delight 'projectile (:eval (concat " " (projectile-project-name))))))
+       (delight 'projectile-mode
+                (:eval
+                 (concat " "
+                         (projectile-project-name))))))
 
     ((leaf delight
        :delight ((abbrev-mode " Abv" "abbrev")

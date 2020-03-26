@@ -305,9 +305,9 @@
      (mapcan
       (lambda (elm)
         (cond
-         ((eq t elm) `((',leaf--name)))
+         ((eq t elm) `((',(leaf-mode-sym leaf--name))))
          ((symbolp elm) `((',elm)))
-         ((stringp elm) `((',leaf--name ,elm)))
+         ((stringp elm) `((',(leaf-mode-sym leaf--name) ,elm)))
          ((and (listp elm) (listp (car elm))) (mapcar (lambda (el) `(',(car el) ,@(cdr el))) elm))
          ((listp elm) `((',(car elm) ,@(cdr elm))))))
       leaf--value))
