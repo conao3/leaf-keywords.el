@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.3.8
+;; Version: 1.3.9
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -305,9 +305,9 @@
      (mapcan
       (lambda (elm)
         (cond
-         ((eq t elm) `((',leaf--name)))
+         ((eq t elm) `((',(leaf-mode-sym leaf--name))))
          ((symbolp elm) `((',elm)))
-         ((stringp elm) `((',leaf--name ,elm)))
+         ((stringp elm) `((',(leaf-mode-sym leaf--name) ,elm)))
          ((and (listp elm) (listp (car elm))) (mapcar (lambda (el) `(',(car el) ,@(cdr el))) elm))
          ((listp elm) `((',(car elm) ,@(cdr elm))))))
       leaf--value))
