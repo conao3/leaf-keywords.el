@@ -1126,9 +1126,9 @@ Example
        (declare-function hydra-yas/body "yasnippet")
        (defvar yas-minor-mode-map)
        (leaf-keys
-        ((:yas-minor-mode-map :package yasnippet
-                              ("<f3>" . hydra-yas-primary/body)
-                              ("<f2>" . hydra-yas/body))))
+        ((yas-minor-mode-map :package yasnippet
+                             ("<f3>" . hydra-yas-primary/body)
+                             ("<f2>" . hydra-yas/body))))
        (defhydra hydra-yas-primary
          (:hint nil)
          "yas-primary"
