@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.3
+;; Version: 1.4.4
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -155,8 +155,8 @@
 
 (defcustom leaf-keywords-after-require
   (leaf-list
-   :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
+   :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
@@ -190,7 +190,7 @@
      ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
      (eval `(leaf-key-chords ,leaf--value ,leaf--name)))
 
-    ((memq leaf--key '(:feather :blackout))
+    ((memq leaf--key '(:feather :diminish :blackout))
      ;; Accept: (sym . val), ((sym sym ...) . val), (sym sym ... . val)
      ;; Return: list of pair (sym . val)
      ;; Note  : atom ('t, 'nil, symbol) is just ignored
@@ -205,7 +205,7 @@
                  `(,@elm . ,leaf--name))
                 ((memq leaf--key '())
                  `(,@elm . leaf-default-plstore))
-                ((memq leaf--key '(:blackout))
+                ((memq leaf--key '(:diminish :blackout))
                  (let ((elm* (car elm)))
                    (cond
                     ((equal t elm*) `(,(leaf-mode-sym leaf--name) . nil))
@@ -313,7 +313,7 @@
                                   ((and (listp elm) (eq 'quote (car elm))) (eval elm))))
                           fns)))))
 
-    ((memq leaf--key '(:delight :diminish))
+    ((memq leaf--key '(:delight))
      (mapcan
       (lambda (elm)
         (cond
