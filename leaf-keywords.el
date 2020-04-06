@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.0
+;; Version: 1.4.1
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -72,10 +72,10 @@
    hydra key-combo smartrep key-chord
 
    ;; `leaf-keywords-after-load'
-
+   diminish delight
 
    ;; `leaf-keywords-after-require'
-   diminish delight)
+   )
   "List of dependent packages.")
 
 (defcustom leaf-keywords-before-protection
@@ -146,17 +146,17 @@
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-after-require nil
+(defcustom leaf-keywords-after-require
+  (leaf-list
+   :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
+   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-after-config
-  (leaf-list
-   :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
-   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
+(defcustom leaf-keywords-after-config nil
   "Additional `leaf-keywords' after config.
 :config <this place> :setq"
   :set #'leaf-keywords-set-keywords
