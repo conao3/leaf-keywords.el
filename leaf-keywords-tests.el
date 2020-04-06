@@ -128,43 +128,48 @@ Example
   '(((leaf autorevert
        :diminish t)
      (prog1 'autorevert
-       (diminish 'autorevert-mode)))
+       (with-eval-after-load 'autorevert
+         (diminish 'autorevert-mode nil))))
 
     ((leaf autorevert
-       :diminish autorevert)
+       :diminish autorevert-mode)
      (prog1 'autorevert
-       (diminish 'autorevert)))
+       (with-eval-after-load 'autorevert
+         (diminish 'autorevert-mode nil))))
 
     ((leaf autorevert
        :diminish t
        :diminish autorevert-polyfill)
      (prog1 'autorevert
-       (diminish 'autorevert-mode)
-       (diminish 'autorevert-polyfill)))
+       (with-eval-after-load 'autorevert
+         (diminish 'autorevert-mode nil)
+         (diminish 'autorevert-polyfill-mode nil))))
 
     ((leaf autorevert
        :diminish t autorevert-polyfill)
      (prog1 'autorevert
-       (diminish 'autorevert-mode)
-       (diminish 'autorevert-polyfill)))
+       (with-eval-after-load 'autorevert
+         (diminish 'autorevert-mode nil)
+         (diminish 'autorevert-polyfill-mode nil))))
 
     ((leaf go-mode
        :diminish " Go")
      (prog1 'go-mode
-       (diminish 'go-mode " Go")))
+       (with-eval-after-load 'go-mode
+         (diminish 'go-mode " Go"))))
 
     ((leaf abbrev
-       :diminish (abbrev-mode " Abv"))
+       :diminish (abbrev-mode . " Abv"))
      (prog1 'abbrev
-       (diminish 'abbrev-mode " Abv")))
+       (with-eval-after-load 'abbrev
+         (diminish 'abbrev-mode " Abv"))))
 
     ((leaf projectile
-       :diminish (projectile-mode (:eval (concat " " (projectile-project-name)))))
+       :diminish (projectile-mode . '(:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
-       (diminish 'projectile-mode
-                 (:eval
-                  (concat " "
-                          (projectile-project-name))))))))
+       (with-eval-after-load 'projectile
+         (diminish 'projectile-mode
+                   '(:eval (concat " " (projectile-project-name)))))))))
 
 (cort-deftest-with-macroexpand leaf/delight
   '(((leaf autorevert
