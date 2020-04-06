@@ -30,6 +30,7 @@
   - [[#combo-combo-keywords][:combo, :combo* keywords]]
   - [[#mode-hook-keyword][:mode-hook keyword]]
 - [[#modeline-keywords][Modeline keywords]]
+  - [[#blackout-keyword][:blackout keyword]]
   - [[#diminish-keyword][:diminish keyword]]
   - [[#delight-keyword][:delight keyword]]
 - [[#information][Information]]
@@ -1521,6 +1522,86 @@ Given a list, the arguments are passed as is to ~straight-use-package~.
 #+end_src
 
 * Modeline keywords
+** :blackout keyword
+~:blackout~ keyword provide frontend for [[https://github.com/raxod502/blackout][blackout]].
+
+There are three packages that change the display of the modeline:
+~deminish~, ~delight~ and ~blackout~, but the most recent
+developed is ~blackout~, and the developer of ~leaf~ recommend
+that you use ~blackout~.
+
+This package allows you to change the display of the major mode
+as well as the minor mode.  And it also requires two arguments,
+so it can be set in the cons-cell and has a high affinity with
+other keywords in ~leaf~.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/blackout
+    '(
+      ;; t will be converted leaf--name
+      ((leaf foo-mode
+         :blackout t)
+       (prog1 'foo-mode
+         (with-eval-after-load 'foo-mode
+           (blackout 'foo-mode nil))))
+
+      ;; guess leaf--name as mode-name
+      ((leaf foo
+         :blackout t)
+       (prog1 'foo
+         (with-eval-after-load 'foo
+           (blackout 'foo-mode nil))))
+
+      ;; blackout if specify symbol only
+      ((leaf simple
+         :blackout auto-fill-mode)
+       (prog1 'simple
+         (with-eval-after-load 'simple
+           (blackout 'auto-fill-mode nil))))
+
+      ;; expect cons-cell to change display of a mode
+      ((leaf simple
+         :blackout (auto-fill-mode . " Auto-Fill"))
+       (prog1 'simple
+         (with-eval-after-load 'simple
+           (blackout 'auto-fill-mode " Auto-Fill"))))
+
+      ;; change major-mode display by same way
+      ((leaf elisp-mode
+         :blackout (emacs-lisp-mode . "Elisp"))
+       (prog1 'elisp-mode
+         (with-eval-after-load 'elisp-mode
+           (blackout 'emacs-lisp-mode "Elisp"))))
+
+      ;; cons-cell list also accepted
+      ((leaf simple
+         :blackout ((auto-fill-mode . " Auto-Fill")
+                    (overwrite-mode . " Overwrite")))
+       (prog1 'simple
+         (with-eval-after-load 'simple
+           (blackout 'auto-fill-mode " Auto-Fill")
+           (blackout 'overwrite-mode " Overwrite"))))
+
+      ;; multi cons-cell also accepted
+      ((leaf simple
+         :blackout
+         (auto-fill-mode . " Auto-Fill")
+         (overwrite-mode . " Overwrite"))
+       (prog1 'simple
+         (with-eval-after-load 'simple
+           (blackout 'auto-fill-mode " Auto-Fill")
+           (blackout 'overwrite-mode " Overwrite"))))
+
+      ;; multi keyword also accepted
+      ((leaf simple
+         :blackout (auto-fill-mode . " Auto-Fill")
+         :blackout (overwrite-mode . " Overwrite"))
+       (prog1 'simple
+         (with-eval-after-load 'simple
+           (blackout 'auto-fill-mode " Auto-Fill")
+           (blackout 'overwrite-mode " Overwrite"))))))
+#+end_src
+
 ** :diminish keyword
 ~:diminish~ keyword provide frontend for [[https://github.com/myrjola/diminish.el/tree/master][diminish]].
 
