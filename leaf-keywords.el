@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.1
+;; Version: 1.4.2
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -78,11 +78,18 @@
    )
   "List of dependent packages.")
 
-(defcustom leaf-keywords-before-protection
+(defcustom leaf-keywords-before-protection nil
+  "Additional `leaf-keywords' before protection.
+:disabled <this place> :leaf-protect"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
+
+(defcustom leaf-keywords-documentation-keywords
   (leaf-list
    :added `(,@leaf--body))
-  "Additional `leaf-keywords' before protection.
-:disabled :doc ... :url <this place> :leaf-protect"
+  "Additional `leaf-keywords' documentation keywords.
+:doc :req :tag <this place> :file :url"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -599,7 +606,7 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
   (setq leaf-keywords leaf-keywords-raw-keywords)
   (setq leaf-normalize leaf-keywords-raw-normalize)
 
-  ;; :disabled :doc ... :url <this place> :leaf-protect
+  ;; :disabled <this place> :leaf-protect
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :leaf-protect
           leaf-keywords-before-protection))
@@ -608,6 +615,11 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :when
           leaf-keywords-before-conditions))
+
+  ;; :doc :req :tag <this place> :file :url
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :file
+          leaf-keywords-documentation-keywords))
 
   ;; :when :unless :if :ensure <this place> :after
   (setq leaf-keywords
