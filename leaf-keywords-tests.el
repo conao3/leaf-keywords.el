@@ -223,6 +223,71 @@ Example
        (delight 'overwrite-mode " Ov" t)
        (delight 'emacs-lisp-mode "Elisp" :major)))))
 
+(cort-deftest-with-macroexpand leaf/blackout
+  '(
+    ;; t will be converted leaf--name
+    ((leaf foo-mode
+       :blackout t)
+     (prog1 'foo-mode
+       (with-eval-after-load 'foo-mode
+         (blackout 'foo-mode nil))))
+
+    ;; guess leaf--name as mode-name
+    ((leaf foo
+       :blackout t)
+     (prog1 'foo
+       (with-eval-after-load 'foo
+         (blackout 'foo-mode nil))))
+
+    ;; blackout if specify symbol only
+    ((leaf simple
+       :blackout auto-fill-mode)
+     (prog1 'simple
+       (with-eval-after-load 'simple
+         (blackout 'auto-fill-mode nil))))
+
+    ;; expect cons-cell to change display of a mode
+    ((leaf simple
+       :blackout (auto-fill-mode . " Auto-Fill"))
+     (prog1 'simple
+       (with-eval-after-load 'simple
+         (blackout 'auto-fill-mode " Auto-Fill"))))
+
+    ;; change major-mode display by same way
+    ((leaf elisp-mode
+       :blackout (emacs-lisp-mode . "Elisp"))
+     (prog1 'elisp-mode
+       (with-eval-after-load 'elisp-mode
+         (blackout 'emacs-lisp-mode "Elisp"))))
+
+    ;; cons-cell list also accepted
+    ((leaf simple
+       :blackout ((auto-fill-mode . " Auto-Fill")
+                  (overwrite-mode . " Overwrite")))
+     (prog1 'simple
+       (with-eval-after-load 'simple
+         (blackout 'auto-fill-mode " Auto-Fill")
+         (blackout 'overwrite-mode " Overwrite"))))
+
+    ;; multi cons-cell also accepted
+    ((leaf simple
+       :blackout
+       (auto-fill-mode . " Auto-Fill")
+       (overwrite-mode . " Overwrite"))
+     (prog1 'simple
+       (with-eval-after-load 'simple
+         (blackout 'auto-fill-mode " Auto-Fill")
+         (blackout 'overwrite-mode " Overwrite"))))
+
+    ;; multi keyword also accepted
+    ((leaf simple
+       :blackout (auto-fill-mode . " Auto-Fill")
+       :blackout (overwrite-mode . " Overwrite"))
+     (prog1 'simple
+       (with-eval-after-load 'simple
+         (blackout 'auto-fill-mode " Auto-Fill")
+         (blackout 'overwrite-mode " Overwrite"))))))
+
 (cort-deftest-with-macroexpand leaf/feather
   '(
     ;; 't will be converted leaf--name

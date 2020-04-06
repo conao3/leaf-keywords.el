@@ -156,7 +156,8 @@
 (defcustom leaf-keywords-after-require
   (leaf-list
    :diminish   `(,@(mapcar (lambda (elm) `(diminish ,@elm)) leaf--value) ,@leaf--body)
-   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body))
+   :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
+   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
@@ -189,7 +190,7 @@
      ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind . func))
      (eval `(leaf-key-chords ,leaf--value ,leaf--name)))
 
-    ((memq leaf--key '(:feather))
+    ((memq leaf--key '(:feather :blackout))
      ;; Accept: (sym . val), ((sym sym ...) . val), (sym sym ... . val)
      ;; Return: list of pair (sym . val)
      ;; Note  : atom ('t, 'nil, symbol) is just ignored
@@ -204,8 +205,12 @@
                  `(,@elm . ,leaf--name))
                 ((memq leaf--key '())
                  `(,@elm . leaf-default-plstore))
-                ((memq leaf--key '())
-                 elm)
+                ((memq leaf--key '(:blackout))
+                 (let ((elm* (car elm)))
+                   (cond
+                    ((equal t elm*) `(,(leaf-mode-sym leaf--name) . nil))
+                    ((symbolp elm*) `(,(leaf-mode-sym elm*) . nil))
+                    ((stringp elm*) `(,(leaf-mode-sym leaf--name) . ,elm*)))))
                 (t
                  elm)))
              (mapcan
