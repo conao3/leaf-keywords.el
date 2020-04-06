@@ -180,20 +180,20 @@ Example
     ((leaf autorevert
        :delight autorevert)
      (prog1 'autorevert
-       (delight 'autorevert)))
+       (delight 'autorevert-mode)))
 
     ((leaf autorevert
        :delight t
        :delight autorevert-polyfill)
      (prog1 'autorevert
        (delight 'autorevert-mode)
-       (delight 'autorevert-polyfill)))
+       (delight 'autorevert-polyfill-mode)))
 
     ((leaf autorevert
        :delight t autorevert-polyfill)
      (prog1 'autorevert
        (delight 'autorevert-mode)
-       (delight 'autorevert-polyfill)))
+       (delight 'autorevert-polyfill-mode)))
 
     ((leaf go-mode
        :delight " Go")
@@ -206,12 +206,12 @@ Example
        (delight 'abbrev-mode " Abv")))
 
     ((leaf projectile
-       :delight (projectile-mode (:eval (concat " " (projectile-project-name)))))
+       :delight (projectile-mode '(:eval (concat " " (projectile-project-name)))))
      (prog1 'projectile
        (delight 'projectile-mode
-                (:eval
-                 (concat " "
-                         (projectile-project-name))))))
+                '(:eval
+                  (concat " "
+                          (projectile-project-name))))))
 
     ((leaf delight
        :delight ((abbrev-mode " Abv" "abbrev")
