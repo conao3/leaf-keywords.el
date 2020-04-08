@@ -87,7 +87,8 @@
 
 (defcustom leaf-keywords-documentation-keywords
   (leaf-list
-   :added `(,@leaf--body))
+   :added `(,@leaf--body)
+   :comment    `(,@leaf--body))
   "Additional `leaf-keywords' documentation keywords.
 :doc :req :tag <this place> :file :url"
   :set #'leaf-keywords-set-keywords
