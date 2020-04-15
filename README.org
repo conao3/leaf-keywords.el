@@ -1828,7 +1828,7 @@ Note: ~macrostep~ return ~function~ instead of #', replace it via follow regexp 
 ** Migration
 ** License
 #+begin_example
-  Affero General Public License Version 3 (AGPLv3)
+  General Public License Version 3 (GPLv3)
   Copyright (c) Naoya Yamashita - https://conao3.com
   https://github.com/conao3/leaf-keywords.el/blob/master/LICENSE
 #+end_example
