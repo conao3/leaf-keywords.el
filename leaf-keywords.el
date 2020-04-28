@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.7
+;; Version: 1.4.8
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -325,16 +325,18 @@
       leaf--value))
 
     ((memq leaf--key '(:el-get))
-     (mapcar
-      (lambda (elm)
-        (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
-      leaf--value))
+     (unless (eq (car-safe leaf--value) nil)
+       (mapcar
+        (lambda (elm)
+          (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
+        leaf--value)))
 
     ((memq leaf--key '(:straight))
-     (mapcar
-      (lambda (elm)
-        (if (eq t elm) leaf--name elm))
-      leaf--value))
+     (unless (eq (car-safe leaf--value) nil)
+       (mapcar
+        (lambda (elm)
+          (if (eq t elm) leaf--name elm))
+        leaf--value)))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar
