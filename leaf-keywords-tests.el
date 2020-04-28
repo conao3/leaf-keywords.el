@@ -367,6 +367,14 @@ Example
 
     ((leaf leaf
        :init (leaf-pre-init)
+       :el-get nil leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
        :el-get leaf leaf-polyfill
        :config (leaf-init))
      (prog1 'leaf
@@ -435,6 +443,14 @@ Example
        :config (leaf-init))
      (prog1 'leaf
        (straight-use-package 'leaf)
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :straight nil t
+       :config (leaf-init))
+     (prog1 'leaf
        (leaf-pre-init)
        (leaf-init)))
 
