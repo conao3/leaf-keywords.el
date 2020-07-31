@@ -68,7 +68,7 @@
    feather el-get
 
    ;; `leaf-keywords-before-load'
-   hydra key-combo smartrep key-chord
+   hydra key-combo smartrep key-chord grugru
 
    ;; `leaf-keywords-after-load'
    diminish delight
@@ -139,6 +139,7 @@
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
