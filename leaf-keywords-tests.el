@@ -888,6 +888,60 @@ Example
                             ("ji" . isearch-moccur)
                             ("jo" . isearch-moccur-all))))))))
 
+(cort-deftest-with-macroexpand leaf/grugru
+  '(((leaf macrostep
+       :ensure t
+       :grugru ((word "one" "two" "three")))
+     (prog1 'macrostep
+       (leaf-handler-package macrostep macrostep nil)
+       (grugru-define-multiple ((word "one" "two" "three")))))
+
+    ((leaf macrostep
+       :ensure t
+       :grugru (word "one" "two" "three"))
+     (prog1 'macrostep
+       (leaf-handler-package macrostep macrostep nil)
+       (grugru-define-multiple (word "one" "two" "three"))))
+
+    ((leaf color-moccur
+       :ensure t
+       :grugru ((word "one" "two" "three")
+                (symbol "color-moccur" "occur")))
+     (prog1 'color-moccur
+       (leaf-handler-package color-moccur color-moccur nil)
+       (grugru-define-multiple ((word "one" "two" "three")
+                                (symbol "color-moccur" "occur")))))
+
+    ((leaf color-moccur
+       :ensure t
+       :grugru
+       (word "this" "that")
+       (isearch-mode
+        (word "one" "two" "three")
+        (symbol "color-moccur" "occur")))
+     (prog1 'color-moccur
+       (leaf-handler-package color-moccur color-moccur nil)
+       (grugru-define-multiple
+        (word "this" "that")
+        (isearch-mode
+         (word "one" "two" "three")
+         (symbol "color-moccur" "occur")))))
+
+    ((leaf color-moccur
+       :ensure t
+       :grugru
+       ((word "this" "that")
+        (isearch-mode
+         (word "one" "two" "three")
+         (symbol "color-moccur" "occur"))))
+     (prog1 'color-moccur
+       (leaf-handler-package color-moccur color-moccur nil)
+       (grugru-define-multiple
+        ((word "this" "that")
+         (isearch-mode
+          (word "one" "two" "three")
+          (symbol "color-moccur" "occur"))))))))
+
 (cort-deftest-with-macroexpand leaf/mode-hook
   '((;; you can place sexp(s) like :config
      (leaf cc-mode
