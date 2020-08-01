@@ -139,7 +139,20 @@
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
-   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
+   :grugru     `((grugru-define-multiple ,@(mapcar
+                                            (lambda (arg)
+                                              (if (grugru--strings-or-function-p (cdr arg))
+                                                  (list leaf--name arg)
+                                                arg))
+                                            (if (or
+                                                 (grugru--strings-or-function-p (cdar leaf--value))
+                                                 (and
+                                                  (not
+                                                   (or (grugru--strings-or-function-p (cdr-safe (caar leaf--value)))
+                                                       (grugru--strings-or-function-p (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
+                                                  (grugru--strings-or-function-p (cdadar leaf--value))))
+                                                leaf--value (car leaf--value))))
+                 ,@leaf--body)
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
