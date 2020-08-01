@@ -889,58 +889,71 @@ Example
                             ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/grugru
-  '(((leaf macrostep
-       :ensure t
-       :grugru ((word "one" "two" "three")))
-     (prog1 'macrostep
-       (leaf-handler-package macrostep macrostep nil)
-       (grugru-define-multiple ((word "one" "two" "three")))))
-
-    ((leaf macrostep
-       :ensure t
-       :grugru (word "one" "two" "three"))
-     (prog1 'macrostep
-       (leaf-handler-package macrostep macrostep nil)
-       (grugru-define-multiple (word "one" "two" "three"))))
-
-    ((leaf color-moccur
-       :ensure t
-       :grugru ((word "one" "two" "three")
-                (symbol "color-moccur" "occur")))
-     (prog1 'color-moccur
-       (leaf-handler-package color-moccur color-moccur nil)
-       (grugru-define-multiple ((word "one" "two" "three")
-                                (symbol "color-moccur" "occur")))))
-
-    ((leaf color-moccur
-       :ensure t
+  '(((leaf cc-mode
        :grugru
-       (word "this" "that")
-       (isearch-mode
-        (word "one" "two" "three")
-        (symbol "color-moccur" "occur")))
-     (prog1 'color-moccur
-       (leaf-handler-package color-moccur color-moccur nil)
+       (c-mode
+        (symbol "true" "false")))
+     (prog1 'cc-mode
        (grugru-define-multiple
-        (word "this" "that")
-        (isearch-mode
-         (word "one" "two" "three")
-         (symbol "color-moccur" "occur")))))
-
-    ((leaf color-moccur
-       :ensure t
+        (c-mode (symbol "true" "false")))))
+    ((leaf cc-mode
        :grugru
-       ((word "this" "that")
-        (isearch-mode
-         (word "one" "two" "three")
-         (symbol "color-moccur" "occur"))))
-     (prog1 'color-moccur
-       (leaf-handler-package color-moccur color-moccur nil)
+       ((c-mode
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
        (grugru-define-multiple
-        ((word "this" "that")
-         (isearch-mode
-          (word "one" "two" "three")
-          (symbol "color-moccur" "occur"))))))))
+        (c-mode (symbol "true" "false")))))
+    ((leaf cc-mode
+       :grugru
+       ((c-mode c++-mode)
+        (symbol "true" "false")))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode)
+         (symbol "true" "false")))))
+    ((leaf cc-mode
+       :grugru
+       (((c-mode c++-mode)
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode) (symbol "true" "false")))))
+    ((leaf lisp-mode
+       :grugru
+       (symbol "nil" "t")
+       (emacs-lisp-mode
+        (word "add" "remove")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+    ((leaf lisp-mode
+       :grugru
+       ((symbol "nil" "t")
+        (emacs-lisp-mode
+         (word "add" "remove"))))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+    ((leaf lisp-mode
+       :grugru
+       (emacs-lisp-mode
+        (word "add" "remove"))
+       (symbol "nil" "t"))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))
+    ((leaf lisp-mode
+       :grugru
+       ((emacs-lisp-mode
+         (word "add" "remove"))
+        (symbol "nil" "t")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))))
 
 (cort-deftest-with-macroexpand leaf/mode-hook
   '((;; you can place sexp(s) like :config
