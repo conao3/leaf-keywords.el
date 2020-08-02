@@ -150,7 +150,7 @@
                                                   (not
                                                    (or (grugru--strings-or-function-p (cdr-safe (caar leaf--value)))
                                                        (grugru--strings-or-function-p (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
-                                                  (grugru--strings-or-function-p (cdadar leaf--value))))
+                                                  (grugru--strings-or-function-p (cdar (cdar leaf--value)))))
                                                 leaf--value (car leaf--value))))
                  ,@leaf--body)
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
