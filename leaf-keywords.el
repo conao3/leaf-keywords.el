@@ -139,7 +139,6 @@
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
-   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :leaf-defer"
@@ -158,7 +157,8 @@
   (leaf-list
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body))
+   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
