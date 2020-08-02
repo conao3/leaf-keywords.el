@@ -343,7 +343,7 @@
      (mapcar
       (lambda (arg)
         (if (grugru--strings-or-function-p (cdr arg))
-            (list leaf--name arg)
+            (list (leaf-mode-sym leaf--name) arg)
           arg))
       (if (or
            (grugru--strings-or-function-p (cdar leaf--value))

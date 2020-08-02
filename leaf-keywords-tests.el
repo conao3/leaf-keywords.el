@@ -949,6 +949,18 @@ Example
         (lisp-mode (symbol "nil" "t"))
         (emacs-lisp-mode (word "add" "remove")))))
 
+    ;; assume major-mode name from leaf--name
+    ((leaf gnuplot
+       :grugru
+       ((symbol "sin" "cos" "tan")
+        (symbol "log" "log10")))
+     (prog1 'gnuplot
+       (grugru-define-multiple
+        (gnuplot-mode
+         (symbol "sin" "cos" "tan"))
+        (gnuplot-mode
+         (symbol "log" "log10")))))
+
     ;; shuffle variation
     ((leaf lisp-mode
        :grugru
