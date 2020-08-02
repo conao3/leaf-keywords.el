@@ -7,5 +7,4 @@
 
 (development
  ;; (depends-on "elsa")
- (depends-on "buttercup")
- (depends-on "grugru"))
+ (depends-on "buttercup"))

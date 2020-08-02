@@ -340,19 +340,25 @@
         leaf--value)))
 
     ((memq leaf--key '(:grugru))
-     (mapcar
-      (lambda (arg)
-        (if (grugru--strings-or-function-p (cdr arg))
-            (list (leaf-mode-sym leaf--name) arg)
-          arg))
-      (if (or
-           (grugru--strings-or-function-p (cdar leaf--value))
-           (and
-            (not
-             (or (grugru--strings-or-function-p (cdr-safe (caar leaf--value)))
-                 (grugru--strings-or-function-p (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
-            (grugru--strings-or-function-p (cdar (cdar leaf--value)))))
-          leaf--value (car leaf--value))))
+     (cl-flet ((rightvaluep
+                (obj)
+                (when obj
+                  (or
+                   (functionp obj)
+                   (and (listp obj) (cl-every #'stringp obj))))))
+       (mapcar
+        (lambda (arg)
+          (if (rightvaluep (cdr arg))
+              (list (leaf-mode-sym leaf--name) arg)
+            arg))
+        (if (or
+             (rightvaluep (cdar leaf--value))
+             (and
+              (not
+               (or (rightvaluep (cdr-safe (caar leaf--value)))
+                   (rightvaluep (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
+              (rightvaluep (cdar (cdar leaf--value)))))
+            leaf--value (car leaf--value)))))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar
