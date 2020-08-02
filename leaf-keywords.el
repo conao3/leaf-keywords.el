@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.8
+;; Version: 1.4.9
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -68,7 +68,7 @@
    feather el-get
 
    ;; `leaf-keywords-before-load'
-   hydra key-combo smartrep key-chord
+   hydra key-combo smartrep key-chord grugru
 
    ;; `leaf-keywords-after-load'
    diminish delight
@@ -157,7 +157,8 @@
   (leaf-list
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body))
+   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
@@ -337,6 +338,27 @@
         (lambda (elm)
           (if (eq t elm) leaf--name elm))
         leaf--value)))
+
+    ((memq leaf--key '(:grugru))
+     (cl-flet ((rightvaluep
+                (obj)
+                (when obj
+                  (or
+                   (functionp obj)
+                   (and (listp obj) (cl-every #'stringp obj))))))
+       (mapcar
+        (lambda (arg)
+          (if (rightvaluep (cdr arg))
+              (list (leaf-mode-sym leaf--name) arg)
+            arg))
+        (if (or
+             (rightvaluep (cdar leaf--value))
+             (and
+              (not
+               (or (rightvaluep (cdr-safe (caar leaf--value)))
+                   (rightvaluep (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
+              (rightvaluep (cdar (cdar leaf--value)))))
+            leaf--value (car leaf--value)))))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar

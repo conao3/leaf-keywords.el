@@ -888,6 +888,101 @@ Example
                             ("ji" . isearch-moccur)
                             ("jo" . isearch-moccur-all))))))))
 
+(cort-deftest-with-macroexpand leaf/grugru
+  '(
+    ;; grugru difinition with :grugru keyword
+    ((leaf cc-mode
+       :grugru
+       (c-mode
+        (symbol "true" "false")))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        (c-mode (symbol "true" "false")))))
+
+    ;; definition list also accepted
+    ((leaf cc-mode
+       :grugru
+       ((c-mode
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        (c-mode (symbol "true" "false")))))
+
+    ;; grugru definition with major-mode list
+    ((leaf cc-mode
+       :grugru
+       ((c-mode c++-mode)
+        (symbol "true" "false")))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode)
+         (symbol "true" "false")))))
+
+    ;; definition list with major-mode list
+    ((leaf cc-mode
+       :grugru
+       (((c-mode c++-mode)
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode) (symbol "true" "false")))))
+
+    ;; simple listed definition are inferred to be for leaf--name
+    ((leaf lisp-mode
+       :grugru
+       (symbol "nil" "t")
+       (emacs-lisp-mode
+        (word "add" "remove")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; simple listed definition list are inferred to be for leaf--name
+    ((leaf lisp-mode
+       :grugru
+       ((symbol "nil" "t")
+        (emacs-lisp-mode
+         (word "add" "remove"))))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; assume major-mode name from leaf--name
+    ((leaf gnuplot
+       :grugru
+       ((symbol "sin" "cos" "tan")
+        (symbol "log" "log10")))
+     (prog1 'gnuplot
+       (grugru-define-multiple
+        (gnuplot-mode
+         (symbol "sin" "cos" "tan"))
+        (gnuplot-mode
+         (symbol "log" "log10")))))
+
+    ;; shuffle variation
+    ((leaf lisp-mode
+       :grugru
+       (emacs-lisp-mode
+        (word "add" "remove"))
+       (symbol "nil" "t"))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))
+
+    ;; shuffle variation
+    ((leaf lisp-mode
+       :grugru
+       ((emacs-lisp-mode
+         (word "add" "remove"))
+        (symbol "nil" "t")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))))
+
 (cort-deftest-with-macroexpand leaf/mode-hook
   '((;; you can place sexp(s) like :config
      (leaf cc-mode
