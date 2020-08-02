@@ -33,6 +33,8 @@
   - [[#blackout-keyword][:blackout keyword]]
   - [[#diminish-keyword][:diminish keyword]]
   - [[#delight-keyword][:delight keyword]]
+- [[#misc-keywords][Misc keywords]]
+  - [[#grugru-keyword][:grugru keyword]]
 - [[#information][Information]]
   - [[#donation][Donation]]
   - [[#community][Community]]
@@ -1716,6 +1718,94 @@ other keywords in ~leaf~.
          (delight 'emacs-lisp-mode "Elisp" :major)))))
 #+end_src
 
+* Misc keywords
+** :grugru keyword
+~:grugru~ keyword provide frontend for [[https://github.com/ROCKTAKEY/grugru][grugru]].
+
+=grugru= allows you to define conversion rules for symbols based on
+the =major-mode=.  This =:grugru= keyword defines a conversion rule
+for =grugru= and, if you omit the measure mode specification, it
+assumes that =leaf--name= is the target =major-mode=.
+
+If =leaf--name= is not suffixed with =-mode=, it is automatically
+compensated for.  If your intended =major-mode= does not follow
+these rules, you cannot omit target =major-mode=.
+(e.g. =c-mode= in =cc-mode=)
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/grugru
+    '(
+      ;; grugru difinition with :grugru keyword
+      ((leaf cc-mode
+         :grugru
+         (c-mode
+          (symbol "true" "false")))
+       (prog1 'cc-mode
+         (grugru-define-multiple
+          (c-mode (symbol "true" "false")))))
+
+      ;; definition list also accepted
+      ((leaf cc-mode
+         :grugru
+         ((c-mode
+           (symbol "true" "false"))))
+       (prog1 'cc-mode
+         (grugru-define-multiple
+          (c-mode (symbol "true" "false")))))
+
+      ;; grugru definition with major-mode list
+      ((leaf cc-mode
+         :grugru
+         ((c-mode c++-mode)
+          (symbol "true" "false")))
+       (prog1 'cc-mode
+         (grugru-define-multiple
+          ((c-mode c++-mode)
+           (symbol "true" "false")))))
+
+      ;; definition list with major-mode list
+      ((leaf cc-mode
+         :grugru
+         (((c-mode c++-mode)
+           (symbol "true" "false"))))
+       (prog1 'cc-mode
+         (grugru-define-multiple
+          ((c-mode c++-mode) (symbol "true" "false")))))
+
+      ;; simple listed definition are inferred to be for leaf--name
+      ((leaf lisp-mode
+         :grugru
+         (symbol "nil" "t")
+         (emacs-lisp-mode
+          (word "add" "remove")))
+       (prog1 'lisp-mode
+         (grugru-define-multiple
+          (lisp-mode (symbol "nil" "t"))
+          (emacs-lisp-mode (word "add" "remove")))))
+
+      ;; simple listed definition list are inferred to be for leaf--name
+      ((leaf lisp-mode
+         :grugru
+         ((symbol "nil" "t")
+          (emacs-lisp-mode
+           (word "add" "remove"))))
+       (prog1 'lisp-mode
+         (grugru-define-multiple
+          (lisp-mode (symbol "nil" "t"))
+          (emacs-lisp-mode (word "add" "remove")))))
+
+      ;; assume major-mode name from leaf--name
+      ((leaf gnuplot
+         :grugru
+         ((symbol "sin" "cos" "tan")
+          (symbol "log" "log10")))
+       (prog1 'gnuplot
+         (grugru-define-multiple
+          (gnuplot-mode
+           (symbol "sin" "cos" "tan"))
+          (gnuplot-mode
+           (symbol "log" "log10")))))))
+#+end_src
 * Information
 ** Donation
 I love OSS and I am dreaming of working on it as *full-time* job.
