@@ -889,13 +889,17 @@ Example
                             ("jo" . isearch-moccur-all))))))))
 
 (cort-deftest-with-macroexpand leaf/grugru
-  '(((leaf cc-mode
+  '(
+    ;; grugru difinition with :grugru keyword
+    ((leaf cc-mode
        :grugru
        (c-mode
         (symbol "true" "false")))
      (prog1 'cc-mode
        (grugru-define-multiple
         (c-mode (symbol "true" "false")))))
+
+    ;; definition list also accepted
     ((leaf cc-mode
        :grugru
        ((c-mode
@@ -903,6 +907,8 @@ Example
      (prog1 'cc-mode
        (grugru-define-multiple
         (c-mode (symbol "true" "false")))))
+
+    ;; grugru definition with major-mode list
     ((leaf cc-mode
        :grugru
        ((c-mode c++-mode)
@@ -911,6 +917,8 @@ Example
        (grugru-define-multiple
         ((c-mode c++-mode)
          (symbol "true" "false")))))
+
+    ;; definition list with major-mode list
     ((leaf cc-mode
        :grugru
        (((c-mode c++-mode)
@@ -918,6 +926,8 @@ Example
      (prog1 'cc-mode
        (grugru-define-multiple
         ((c-mode c++-mode) (symbol "true" "false")))))
+
+    ;; simple listed definition are inferred to be for leaf--name
     ((leaf lisp-mode
        :grugru
        (symbol "nil" "t")
@@ -927,6 +937,8 @@ Example
        (grugru-define-multiple
         (lisp-mode (symbol "nil" "t"))
         (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; simple listed definition list are inferred to be for leaf--name
     ((leaf lisp-mode
        :grugru
        ((symbol "nil" "t")
@@ -936,6 +948,8 @@ Example
        (grugru-define-multiple
         (lisp-mode (symbol "nil" "t"))
         (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; shuffle variation
     ((leaf lisp-mode
        :grugru
        (emacs-lisp-mode
@@ -945,6 +959,8 @@ Example
        (grugru-define-multiple
         (emacs-lisp-mode (word "add" "remove"))
         (lisp-mode (symbol "nil" "t")))))
+
+    ;; shuffle variation
     ((leaf lisp-mode
        :grugru
        ((emacs-lisp-mode
