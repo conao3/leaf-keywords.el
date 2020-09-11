@@ -120,7 +120,7 @@
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
    :transient  (progn
                  ;; (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(define-transient-command ,@elm)) (car leaf--value)) ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(transient-define-prefix ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))

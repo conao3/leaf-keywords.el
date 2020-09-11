@@ -1361,7 +1361,7 @@ Example
           ("!" "Run" dired-git-run)]]))
 
      (prog1 'dired-git
-       (define-transient-command transient-dwim-dired-mode--git ()
+       (transient-define-prefix transient-dwim-dired-mode--git ()
          "Transient-dwim for `dired-mode--git'."
          [["Worktree"
            ("c" "Commit" dired-git-commit)
