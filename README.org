@@ -717,7 +717,7 @@ If you pass a list, you pass it to ~define-transient-command~, and if you pass a
             ("!" "Run" dired-git-run)]]))
 
        (prog1 'dired-git
-         (define-transient-command transient-dwim-dired-mode--git ()
+         (transient-define-prefix transient-dwim-dired-mode--git ()
            "Transient-dwim for `dired-mode--git'."
            [["Worktree"
              ("c" "Commit" dired-git-commit)
@@ -1928,6 +1928,7 @@ Note: ~macrostep~ return ~function~ instead of #', replace it via follow regexp 
 
 ** Contributors
 - Leo Gaskin ([[https://github.com/leotaku][leotaku]])
+- Nasy ([[https://github.com/nasyxx][Nasy]])
 
 ** Special Thanks
 Advice and comments given by [[http://emacs-jp.github.io/][Emacs-JP]]'s forum member has been a great help

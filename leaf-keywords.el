@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.5.0
+;; Version: 1.5.1
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -120,7 +120,7 @@
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
    :transient  (progn
                  ;; (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(define-transient-command ,@elm)) (car leaf--value)) ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(transient-define-prefix ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
