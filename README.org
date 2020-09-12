@@ -1928,6 +1928,7 @@ Note: ~macrostep~ return ~function~ instead of #', replace it via follow regexp 
 
 ** Contributors
 - Leo Gaskin ([[https://github.com/leotaku][leotaku]])
+- Nasy ([[https://github.com/nasyxx][Nasy]])
 
 ** Special Thanks
 Advice and comments given by [[http://emacs-jp.github.io/][Emacs-JP]]'s forum member has been a great help
