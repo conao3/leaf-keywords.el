@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.5.1
+;; Version: 1.5.2
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -106,7 +106,8 @@
    :feather    `(,@(mapcar (lambda (elm) `(leaf-handler-package ,leaf--name ,(car elm) ,(cdr elm))) leaf--value)
                  (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
-   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body))
+   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
+   :defaults   `(,@(mapcar (lambda (elm) `(,elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
 :when :unless :if :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
@@ -338,6 +339,20 @@
         (lambda (elm)
           (if (eq t elm) leaf--name elm))
         leaf--value)))
+
+    ((memq leaf--key '(:defaults))
+     (let ((ret (leaf-flatten leaf--value)))
+       (if (eq nil (car ret))
+           nil
+         (mapcar
+          (lambda (elm)
+            (intern
+             (apply
+              #'concat
+              "leaf-defaults--"
+              (symbol-name leaf--name)
+              (unless (eq t elm) `("--" ,(symbol-name elm))))))
+          (delete-dups ret)))))
 
     ((memq leaf--key '(:grugru))
      (cl-flet ((rightvaluep

@@ -436,6 +436,55 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+(cort-deftest-with-macroexpand leaf/defaults
+  '(((leaf helm
+       :ensure t
+       :defaults t)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-defaults--helm)))
+
+    ((leaf helm
+       :when nil
+       :ensure t
+       :defaults t)
+     (prog1 'helm
+       (when nil
+         (leaf-handler-package helm helm nil)
+         (leaf-defaults--helm))))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-defaults--helm--conao3)))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3 garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-defaults--helm--conao3)
+       (leaf-defaults--helm--garario3)))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3
+       :defaults garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-defaults--helm--conao3)
+       (leaf-defaults--helm--garario3)))
+
+    ((leaf helm
+       :ensure t
+       :defaults nil
+       :defaults conao3
+       :defaults garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)))))
+
 (cort-deftest-with-macroexpand leaf/straight
   '(((leaf leaf
        :init (leaf-pre-init)
