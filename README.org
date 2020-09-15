@@ -35,6 +35,7 @@
   - [[#delight-keyword][:delight keyword]]
 - [[#misc-keywords][Misc keywords]]
   - [[#grugru-keyword][:grugru keyword]]
+  - [[#defaults-keyword][:defaults keyword]]
 - [[#information][Information]]
   - [[#donation][Donation]]
   - [[#community][Community]]
@@ -1806,6 +1807,68 @@ these rules, you cannot omit target =major-mode=.
           (gnuplot-mode
            (symbol "log" "log10")))))))
 #+end_src
+
+** :defaults keyword
+This is a keyword that calls a dynamically named function.
+
+If you define various settings for this function in a separate
+file, you may be able to reduce the number of lines in
+init.el.  This is a one of use case of this.
+
+Also, if you distribute the functions to be used, someone can use
+your recommended settings.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/defaults
+    '(((leaf helm
+         :ensure t
+         :defaults t)
+       (prog1 'helm
+         (leaf-handler-package helm helm nil)
+         (leaf-defaults--helm)))
+
+      ((leaf helm
+         :when nil
+         :ensure t
+         :defaults t)
+       (prog1 'helm
+         (when nil
+           (leaf-handler-package helm helm nil)
+           (leaf-defaults--helm))))
+
+      ((leaf helm
+         :ensure t
+         :defaults conao3)
+       (prog1 'helm
+         (leaf-handler-package helm helm nil)
+         (leaf-defaults--helm--conao3)))
+
+      ((leaf helm
+         :ensure t
+         :defaults conao3 garario3)
+       (prog1 'helm
+         (leaf-handler-package helm helm nil)
+         (leaf-defaults--helm--conao3)
+         (leaf-defaults--helm--garario3)))
+
+      ((leaf helm
+         :ensure t
+         :defaults conao3
+         :defaults garario3)
+       (prog1 'helm
+         (leaf-handler-package helm helm nil)
+         (leaf-defaults--helm--conao3)
+         (leaf-defaults--helm--garario3)))
+
+      ((leaf helm
+         :ensure t
+         :defaults nil
+         :defaults conao3
+         :defaults garario3)
+       (prog1 'helm
+         (leaf-handler-package helm helm nil)))))
+#+end_src
+
 * Information
 ** Donation
 I love OSS and I am dreaming of working on it as *full-time* job.
