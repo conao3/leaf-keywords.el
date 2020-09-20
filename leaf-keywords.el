@@ -347,11 +347,12 @@
          (mapcar
           (lambda (elm)
             (intern
-             (apply
+             (funcall
               #'concat
-              "leaf-defaults--"
-              (symbol-name leaf--name)
-              (unless (eq t elm) `("--" ,(symbol-name elm))))))
+              "leaf-keywords-defaults--"
+              (if (eq t elm) "leaf" (symbol-name elm))
+              "/"
+              (symbol-name leaf--name))))
           (delete-dups ret)))))
 
     ((memq leaf--key '(:grugru))

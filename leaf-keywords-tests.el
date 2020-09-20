@@ -442,7 +442,7 @@ Example
        :defaults t)
      (prog1 'helm
        (leaf-handler-package helm helm nil)
-       (leaf-defaults--helm)))
+       (leaf-keywords-defaults--leaf/helm)))
 
     ((leaf helm
        :when nil
@@ -451,22 +451,22 @@ Example
      (prog1 'helm
        (when nil
          (leaf-handler-package helm helm nil)
-         (leaf-defaults--helm))))
+         (leaf-keywords-defaults--leaf/helm))))
 
     ((leaf helm
        :ensure t
        :defaults conao3)
      (prog1 'helm
        (leaf-handler-package helm helm nil)
-       (leaf-defaults--helm--conao3)))
+       (leaf-keywords-defaults--conao3/helm)))
 
     ((leaf helm
        :ensure t
        :defaults conao3 garario3)
      (prog1 'helm
        (leaf-handler-package helm helm nil)
-       (leaf-defaults--helm--conao3)
-       (leaf-defaults--helm--garario3)))
+       (leaf-keywords-defaults--conao3/helm)
+       (leaf-keywords-defaults--garario3/helm)))
 
     ((leaf helm
        :ensure t
@@ -474,8 +474,8 @@ Example
        :defaults garario3)
      (prog1 'helm
        (leaf-handler-package helm helm nil)
-       (leaf-defaults--helm--conao3)
-       (leaf-defaults--helm--garario3)))
+       (leaf-keywords-defaults--conao3/helm)
+       (leaf-keywords-defaults--garario3/helm)))
 
     ((leaf helm
        :ensure t
