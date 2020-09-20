@@ -77,7 +77,9 @@
    )
   "List of dependent packages.")
 
-(defcustom leaf-keywords-before-protection nil
+(defcustom leaf-keywords-before-protection
+  (leaf-list
+   :convert-defaults `((defun ,(car leaf--value) () ,(cdr leaf--value) ,@leaf--body)))
   "Additional `leaf-keywords' before protection.
 :disabled <this place> :leaf-protect"
   :set #'leaf-keywords-set-keywords
@@ -375,6 +377,15 @@
                    (rightvaluep (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
               (rightvaluep (cdar (cdar leaf--value)))))
             leaf--value (car leaf--value)))))
+
+    ((memq leaf--key '(:convert-defaults))
+     (let ((key (car leaf--value)))
+       `(,(intern (concat
+                   "leaf-keywords-defaults--"
+                   (if (eq t key) "leaf" (symbol-name key))
+                   "/"
+                   (symbol-name leaf--name)))
+         . "Default config for leaf/base.")))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar
