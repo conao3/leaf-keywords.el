@@ -485,6 +485,27 @@ Example
      (prog1 'helm
        (leaf-handler-package helm helm nil)))))
 
+(cort-deftest-with-macroexpand leaf/convert-defaults
+  '(((leaf leaf
+       :convert-defaults t
+       :preface
+       (leaf-pre-init)
+       (leaf-pre-init-after)
+       :when (some-condition)
+       :require t
+       :init (package-preconfig)
+       :config (package-init))
+     (prog1 'leaf
+       (defun leaf-keywords-defaults--leaf/leaf ()
+         "Default config for leaf/base."
+         (leaf-pre-init)
+         (leaf-pre-init-after)
+         (when
+             (some-condition)
+           (package-preconfig)
+           (require 'leaf)
+           (package-init)))))))
+
 (cort-deftest-with-macroexpand leaf/straight
   '(((leaf leaf
        :init (leaf-pre-init)
