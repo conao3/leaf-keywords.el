@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.5.3
+;; Version: 1.5.4
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -347,11 +347,12 @@
          (mapcar
           (lambda (elm)
             (intern
-             (apply
+             (funcall
               #'concat
-              "leaf-defaults--"
-              (symbol-name leaf--name)
-              (unless (eq t elm) `("--" ,(symbol-name elm))))))
+              "leaf-keywords-defaults--"
+              (if (eq t elm) "leaf" (symbol-name elm))
+              "/"
+              (symbol-name leaf--name))))
           (delete-dups ret)))))
 
     ((memq leaf--key '(:grugru))
