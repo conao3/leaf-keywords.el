@@ -149,7 +149,20 @@
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-after-load nil
+(defcustom leaf-keywords-after-load
+  (leaf-list
+   :init/el-patch (progn
+                    ;; make sure the `el-patch-feature' is only.
+                    (setq leaf--body (delete (eval `'(el-patch-feature ,leaf--name)) leaf--body))
+                    `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+                                              (cons (or
+                                                     (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                     (intern (format "el-patch-%S" (car elm))))
+                                                    (cdr elm))
+                                            elm))
+                                `,leaf--value)
+                      (el-patch-feature ,leaf--name)
+                      ,@leaf--body)))
   "Additional `leaf-keywords' after wait loading.
 :leaf-defer <this place> :init :require"
   :set #'leaf-keywords-set-keywords
@@ -161,7 +174,15 @@
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
+   :config/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+                                              (cons (or
+                                                     (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                     (intern (format "el-patch-%S" (car elm))))
+                                                    (cdr elm))
+                                            elm))
+                                `,leaf--value)
+                      ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
