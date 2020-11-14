@@ -157,7 +157,19 @@
    :chord*     (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
-   :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
+   :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body)
+
+   :el-patch/feature (if (leaf-list-memq '(:init/el-patch :config/el-patch) (leaf-plist-keys leaf--raw))
+                         `((el-patch-feature ,leaf--name) ,@leaf--body)
+                       `,@leaf--body)
+   :init/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+                                            (cons (or
+                                                   (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                   (intern (format "el-patch-%S" (car elm))))
+                                                  (cdr elm))
+                                          elm))
+                              leaf--value)
+                    ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
 :after ... <this place> :require"
   :set #'leaf-keywords-set-keywords
@@ -169,7 +181,15 @@
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
+   :config/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+                                              (cons (or
+                                                     (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                     (intern (format "el-patch-%S" (car elm))))
+                                                    (cdr elm))
+                                            elm))
+                                leaf--value)
+                      ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
@@ -642,6 +662,9 @@ NOTE: BIND can also accept list of these."
 (defvar leaf-keywords-raw-normalize nil
   "Raw `leaf-normalize' before being modified by this package.")
 
+(defvar leaf-keywords-raw-defaults nil
+  "Raw `leaf-defaults' before being modified by this package.")
+
 ;;;###autoload
 (defun leaf-keywords-init (&optional renew)
   "Add additional keywords to `leaf'.
@@ -650,14 +673,17 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
 
   (when renew
     (setq leaf-keywords-raw-keywords nil)
-    (setq leaf-keywords-raw-normalize nil))
+    (setq leaf-keywords-raw-normalize nil)
+    (setq leaf-keywords-raw-defaults nil))
 
   (unless leaf-keywords-raw-keywords (setq leaf-keywords-raw-keywords leaf-keywords))
   (unless leaf-keywords-raw-normalize (setq leaf-keywords-raw-normalize leaf-normalize))
+  (unless leaf-keywords-raw-defaults (setq leaf-keywords-raw-defaults leaf-defaults))
 
   ;; restore raw `leaf-keywords'
   (setq leaf-keywords leaf-keywords-raw-keywords)
   (setq leaf-normalize leaf-keywords-raw-normalize)
+  (setq leaf-defaults leaf-keywords-raw-defaults)
 
   ;; :disabled <this place> :leaf-protect
   (setq leaf-keywords
@@ -697,6 +723,9 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
   ;; add additional normalize on the top
   (setq leaf-normalize
         (append leaf-keywords-normalize leaf-keywords-raw-normalize))
+
+  ;; add keywords to `leaf-defaults'
+  (setq leaf-defaults (append '(:el-patch/feature t) leaf-defaults))
 
   ;; define new leaf-expand-* variable
   (eval

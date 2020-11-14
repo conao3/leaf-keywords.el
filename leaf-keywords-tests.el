@@ -1701,6 +1701,37 @@ Example
            ("P" "Push" dired-git-push)
            ("!" "Run" dired-git-run)]])))))
 
+(defvar el-patch-deftype-alist '((defvar nil)))
+(cort-deftest-with-macroexpand leaf/init/el-patch
+  '(((leaf autorevert
+       :init/el-patch
+       (defvar var-test-el-patch nil))
+     (prog1 'autorevert
+       (el-patch-feature autorevert)
+       (el-patch-defvar var-test-el-patch nil)))
+
+    ((leaf autorevert
+       :init/el-patch
+       (myfun parm))
+     (prog1 'autorevert
+       (el-patch-feature autorevert)
+       (myfun parm)))))
+
+(cort-deftest-with-macroexpand leaf/config/el-patch
+  '(((leaf autorevert
+       :config/el-patch
+       (defvar var-test-el-patch t))
+     (prog1 'autorevert
+       (el-patch-feature autorevert)
+       (el-patch-defvar var-test-el-patch t)))
+
+    ((leaf autorevert
+       :config/el-patch
+       (myfun parm))
+     (prog1 'autorevert
+       (el-patch-feature autorevert)
+       (myfun parm)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;  Support leaf macros
