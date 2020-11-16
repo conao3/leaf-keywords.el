@@ -1979,6 +1979,14 @@ Note: ~macrostep~ return ~function~ instead of #', replace it via follow regexp 
 #+end_quote
 
 ** Migration
+*** leaf-keywords v1.0 to v2.0
+**** Remove leaf-keywords-after-load
+We also have ~leaf-keywords-after-require~, it's confusing.
+Plsease use ~leaf-keywords-after-require~.
+**** Rename leaf-keyowrds-before-load to leaf-keyowrds-before-require
+We also have ~leaf-keyowrds-after-require~,
+we should use ~leaf-keyowrds-before-require~ to consistency.
+
 ** License
 #+begin_example
   General Public License Version 3 (GPLv3)
