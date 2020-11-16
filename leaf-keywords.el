@@ -67,13 +67,11 @@
    ;; straight
    feather el-get
 
-   ;; `leaf-keywords-before-load'
+   ;; `leaf-keywords-before-require'
    hydra key-combo smartrep key-chord grugru
 
-   ;; `leaf-keywords-after-load'
-   diminish delight
-
    ;; `leaf-keywords-after-require'
+   diminish delight
    )
   "List of dependent packages.")
 
@@ -111,12 +109,12 @@
    :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
    :defaults   `(,@(mapcar (lambda (elm) `(,elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
-:when :unless :if :ensure <this place> :after"
+:when :unless :if ... :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-before-load
+(defcustom leaf-keywords-before-require
   (leaf-list
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
@@ -144,14 +142,7 @@
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
-:after ... <this place> :leaf-defer"
-  :set #'leaf-keywords-set-keywords
-  :type 'sexp
-  :group 'leaf-keywords)
-
-(defcustom leaf-keywords-after-load nil
-  "Additional `leaf-keywords' after wait loading.
-:leaf-defer <this place> :init :require"
+:after ... <this place> :require"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -682,19 +673,14 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
         (leaf-insert-list-before leaf-keywords :after
           leaf-keywords-after-conditions))
 
-  ;; :after ... <this place> :leaf-defer
+  ;; :after ... <this place> :require
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :require
+          leaf-keywords-before-require))
+
+  ;; :require ... <this place> :leaf-defer
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :leaf-defer
-          leaf-keywords-before-load))
-
-  ;; :leaf-defer ... <this place> :init :require
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :init
-          leaf-keywords-after-load))
-
-  ;; :require ... <this place> :config
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :config
           leaf-keywords-after-require))
 
   ;; :config <this place> :setq
