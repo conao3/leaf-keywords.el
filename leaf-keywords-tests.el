@@ -1134,6 +1134,328 @@ Example
                             '(("M-n" outline-next-visible-heading 1)
                               ("M-p" outline-previous-visible-heading 1)))))))
 
+(cort-deftest-with-macroexpand leaf/mykie
+  '(((leaf macrostep
+       :ensure t
+       :mykie (("C-z" :default macrostep-expand :C-u macrostep-collapse)))
+     (prog1 'macrostep
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (unless (fboundp 'macrostep-collapse) (autoload #'macrostep-collapse "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
+       (declare-function macrostep-collapse "macrostep")
+       (leaf-handler-package macrostep macrostep nil)
+       (leaf-key-mykies
+        (("C-z" :default macrostep-expand :C-u macrostep-collapse)))))
+
+    ((leaf macrostep
+       :ensure t
+       :mykie ("C-z" :default macrostep-expand :C-u macrostep-collapse))
+     (prog1 'macrostep
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (unless (fboundp 'macrostep-collapse) (autoload #'macrostep-collapse "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
+       (declare-function macrostep-collapse "macrostep")
+       (leaf-handler-package macrostep macrostep nil)
+       (leaf-key-mykies
+        (("C-z" :default macrostep-expand :C-u macrostep-collapse)))))
+
+    ((leaf org
+       :mykie
+       ("M-c" :default org-capture :C-u org-agenda)
+       ("M-s" :default org-schedule :C-u org-deadline))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (leaf-key-mykies
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)))))
+
+    ((leaf org
+       :mykie
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (leaf-key-mykies
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)))))
+
+    ((leaf org
+       :mykie
+       ("M-c" :default org-capture :C-u org-agenda)
+       ("M-s" :default org-schedule :C-u org-deadline)
+       (:text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (:text-mode-map :package text-mode
+                         ("C-t" :default transpose-chars :C-u org-time-stamp)
+                         ("M-t" :default transpose-words :C-u org-time-stamp-inactive))))))
+
+    ((leaf org
+       :mykie
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline))
+       (:text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (:text-mode-map :package text-mode
+                         ("C-t" :default transpose-chars :C-u org-time-stamp)
+                         ("M-t" :default transpose-words :C-u org-time-stamp-inactive))))))
+
+    ;; you also use symbol instead of keyword to specify keymap
+    ((leaf org
+       :mykie
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline))
+       (text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (text-mode-map :package text-mode
+                        ("C-t" :default transpose-chars :C-u org-time-stamp)
+                        ("M-t" :default transpose-words :C-u org-time-stamp-inactive))))))))
+
+(cort-deftest-with-macroexpand leaf/mykie*
+  '(((leaf macrostep
+       :ensure t
+       :mykie* (("C-z" :default macrostep-expand :C-u macrostep-collapse)))
+     (prog1 'macrostep
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (unless (fboundp 'macrostep-collapse) (autoload #'macrostep-collapse "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
+       (declare-function macrostep-collapse "macrostep")
+       (leaf-handler-package macrostep macrostep nil)
+       (leaf-key-mykies*
+        (("C-z" :default macrostep-expand :C-u macrostep-collapse)))))
+
+    ((leaf macrostep
+       :ensure t
+       :mykie* ("C-z" :default macrostep-expand :C-u macrostep-collapse))
+     (prog1 'macrostep
+       (unless (fboundp 'macrostep-expand) (autoload #'macrostep-expand "macrostep" nil t))
+       (unless (fboundp 'macrostep-collapse) (autoload #'macrostep-collapse "macrostep" nil t))
+       (declare-function macrostep-expand "macrostep")
+       (declare-function macrostep-collapse "macrostep")
+       (leaf-handler-package macrostep macrostep nil)
+       (leaf-key-mykies*
+        (("C-z" :default macrostep-expand :C-u macrostep-collapse)))))
+
+    ((leaf org
+       :mykie*
+       ("M-c" :default org-capture :C-u org-agenda)
+       ("M-s" :default org-schedule :C-u org-deadline))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (leaf-key-mykies*
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)))))
+
+    ((leaf org
+       :mykie*
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (leaf-key-mykies*
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)))))
+
+    ((leaf org
+       :mykie*
+       ("M-c" :default org-capture :C-u org-agenda)
+       ("M-s" :default org-schedule :C-u org-deadline)
+       (:text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies*
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (:text-mode-map :package text-mode
+                         ("C-t" :default transpose-words :C-u org-time-stamp)
+                         ("M-t" :default transpose-chars :C-u org-time-stamp-inactive))))))
+
+    ((leaf org
+       :mykie*
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline))
+       (:text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies*
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (:text-mode-map :package text-mode
+                         ("C-t" :default transpose-chars :C-u org-time-stamp)
+                         ("M-t" :default transpose-words :C-u org-time-stamp-inactive))))))
+
+    ;; you also use symbol instead of keyword to specify keymap
+    ((leaf org
+       :mykie*
+       (("M-c" :default org-capture :C-u org-agenda)
+        ("M-s" :default org-schedule :C-u org-deadline))
+       (text-mode-map
+        :package text-mode
+        ("C-t" :default transpose-chars :C-u org-time-stamp)
+        ("M-t" :default transpose-words :C-u org-time-stamp-inactive)))
+     (prog1 'org
+       (unless (fboundp 'org-capture) (autoload #'org-capture "org" nil t))
+       (unless (fboundp 'org-agenda) (autoload #'org-agenda "org" nil t))
+       (unless (fboundp 'org-schedule) (autoload #'org-schedule "org" nil t))
+       (unless (fboundp 'org-deadline) (autoload #'org-deadline "org" nil t))
+       (unless (fboundp 'transpose-chars) (autoload #'transpose-chars "org" nil t))
+       (unless (fboundp 'org-time-stamp) (autoload #'org-time-stamp "org" nil t))
+       (unless (fboundp 'transpose-words) (autoload #'transpose-words "org" nil t))
+       (unless (fboundp 'org-time-stamp-inactive) (autoload #'org-time-stamp-inactive "org" nil t))
+
+       (declare-function org-capture "org")
+       (declare-function org-agenda "org")
+       (declare-function org-schedule "org")
+       (declare-function org-deadline "org")
+       (declare-function transpose-chars "org")
+       (declare-function org-time-stamp "org")
+       (declare-function transpose-words "org")
+       (declare-function org-time-stamp-inactive "org")
+       (leaf-key-mykies*
+        (("M-c" :default org-capture :C-u org-agenda)
+         ("M-s" :default org-schedule :C-u org-deadline)
+         (text-mode-map :package text-mode
+                        ("C-t" :default transpose-chars :C-u org-time-stamp)
+                        ("M-t" :default transpose-words :C-u org-time-stamp-inactive))))))))
+
 (cort-deftest-with-macroexpand leaf/hydra
   '(((leaf face-remap
        :hydra (hydra-zoom
