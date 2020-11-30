@@ -696,7 +696,7 @@ NOTE: BIND can also accept list of these."
 
 ;;;###autoload
 (defmacro leaf-key-mykies* (bind)
-  "Similar to `leaf-key-chords', but overrides any mode-specific bindings for BIND."
+  "Similar to `leaf-key-mykies', but overrides any mode-specific bindings for BIND."
   (let ((binds (if (and
                     (atom (car bind))
                     (maplist
