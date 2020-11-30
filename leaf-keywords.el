@@ -133,6 +133,12 @@
    :smartrep*  (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(smartrep-define-key ,@elm)) (car leaf--value)) ,@leaf--body))
+   :mykie      (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((leaf-key-mykies ,(car leaf--value)) ,@leaf--body))
+   :mykie*     (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `((leaf-key-mykies* ,(car leaf--value)) ,@leaf--body))
    :chord      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `((leaf-key-chords ,(car leaf--value)) ,@leaf--body))
@@ -312,6 +318,13 @@
                             (cond ((symbolp elm) elm)
                                   ((and (listp elm) (eq 'quote (car elm))) (eval elm))))
                           fns)))))
+
+    ((memq leaf--key '(:mykie :mykie*))
+     ;; Accept: list of list (bind :keyword func :keyword func ...)
+     ;;         ([:{{hoge}}-map] [:package {{pkg}}] (bind :keyword func :keyword func ...) (bind :keyword func :keyword func ...) ...)
+     ;;         optional, [:{{hoge}}-map] [:package {{pkg}}]
+     ;; Return: list of ([:{{hoge}}-map] [:package {{pkg}}] (bind :keyword func :keyword func ...))
+     (eval `(leaf-key-mykies ,leaf--value ,leaf--name)))
 
     ((memq leaf--key '(:delight))
      (mapcan
@@ -573,6 +586,129 @@ NOTE: BIND can also accept list of these."
   (let ((binds (if (and (atom (car bind)) (atom (cdr bind)))
                    `(,bind) bind)))
     `(leaf-key-chords (:leaf-key-override-global-map ,@binds))))
+
+;;;###autoload
+(defmacro leaf-key-mykies (bind &optional dryrun-name)
+  "Bind multiple BIND for KEYMAP defined in PKG.
+BIND is (KEY :keyword COMMAND :keyword COMMAND ...).
+This macro is minor change version form `leaf-keys'.
+
+OPTIONAL:
+  BIND also accept below form.
+    (:{{map}} :package {{pkg}} (KEY :keyword COMMAND :keyword COMMAND...)...)
+  KEYMAP is quoted keymap name.
+  PKG is quoted package name which define KEYMAP.
+  (wrap `eval-after-load' PKG)
+
+  If DRYRUN-NAME is non-nil, return list like
+  (LEAF_KEYS-FORMS (FN FN ...))
+
+  If omit :package of BIND, fill it in LEAF_KEYS-FORM.
+
+NOTE: BIND can also accept list of these."
+  (let ((singlep (lambda (x)
+                   (condition-case _err
+                       (and (listp x)
+                            (or (stringp (eval (car x)))
+                                (vectorp (eval (car x))))
+                            (maplist
+                             (lambda (y)
+                               (if (eq (% (length y) 2) 1)
+                                   (keywordp y)
+                                 (or
+                                  (symbolp (car y))
+                                  (functionp (car y)))))
+                             (cdr x)))
+                     (error nil))))
+        (recurfn) (forms) (bds) (fns))
+    (setq recurfn
+          (lambda (bind)
+            (cond
+             ((funcall singlep bind)
+              (push `(mykie:global-set-key ,@bind) forms)
+              (push bind bds)
+              (setq fns
+                    (append
+                     (nreverse
+                      (delq nil
+                            (maplist
+                             (lambda (y)
+                               (when (eq (% (length y) 2) 1) (car y)))
+                             (cdr bind))))
+                     fns)))
+             ((and (listp (car bind))
+                   (funcall singlep (car bind)))
+              (mapcar (lambda (elm)
+                        (if (funcall singlep elm)
+                            (progn
+                              (push `(mykie:global-set-key ,@elm) forms)
+                              (push elm bds)
+                              (setq fns
+                                    (append
+                                     (nreverse
+                                      (delq nil
+                                            (maplist
+                                             (lambda (y)
+                                               (when (eq (% (length y) 2) 1) (car y)))
+                                             (cdr elm))))
+                                     fns)))
+                          (funcall recurfn elm)))
+                      bind))
+             ;; kokomade
+             ((or (keywordp (car bind))
+                  (symbolp (car bind)))
+              (let* ((map (if (keywordp (car bind))
+                              (intern (substring (symbol-name (car bind)) 1))
+                            (car bind)))
+                     (pkg (leaf-plist-get :package (cdr bind)))
+                     (pkgs (if (atom pkg) `(,pkg) pkg))
+                     (elmbind (if pkg (nthcdr 3 bind) (nthcdr 1 bind)))
+                     (elmbinds (if (funcall singlep (car elmbind))
+                                   elmbind (car elmbind)))
+                     (form `(progn
+                              ,@(mapcar
+                                 (lambda (elm)
+                                   (setq fns
+                                         (append
+                                          (nreverse
+                                           (delq nil
+                                                 (maplist
+                                                  (lambda (y)
+                                                    (when (eq (% (length y) 2) 1) (car y)))
+                                                  (cdr elm))))
+                                          fns))
+                                   `(mykie:define-key ,map ,@elm))
+                                 elmbinds))))
+                (push (if pkg bind
+                        `(,(intern (concat ":" (symbol-name map)))
+                          :package ,dryrun-name
+                          ,@elmbinds))
+                      bds)
+                (when pkg
+                  (dolist (elmpkg pkgs)
+                    (setq form `(eval-after-load ',elmpkg ',form))))
+                (push form forms)))
+             (t
+              (mapcar (lambda (elm) (funcall recurfn elm)) bind)))))
+    (funcall recurfn bind)
+    (if dryrun-name `'(,(nreverse bds) ,(nreverse fns))
+      (if (cdr forms) `(progn ,@(nreverse forms)) (car forms)))))
+
+;;;###autoload
+(defmacro leaf-key-mykies* (bind)
+  "Similar to `leaf-key-chords', but overrides any mode-specific bindings for BIND."
+  (let ((binds (if (and
+                    (atom (car bind))
+                    (maplist
+                     (lambda (y)
+                       (if (eq (% (length y) 2) 1)
+                           (keywordp y)
+                         (or
+                          (symbolp (car y))
+                          (functionp (car y)))))
+                     (cdr bind)))
+                   `(,bind) bind)))
+    `(leaf-key-mykies (:leaf-key-override-global-map ,@binds))))
 
 
 ;;; Handlers
