@@ -71,8 +71,7 @@
    hydra key-combo smartrep key-chord grugru
 
    ;; `leaf-keywords-after-require'
-   diminish delight
-   )
+   diminish delight)
   "List of dependent packages.")
 
 (defcustom leaf-keywords-before-protection
@@ -339,13 +338,7 @@
            nil
          (mapcar
           (lambda (elm)
-            (intern
-             (funcall
-              #'concat
-              "leaf-keywords-defaults--"
-              (if (eq t elm) "leaf" (symbol-name elm))
-              "/"
-              (symbol-name leaf--name))))
+            (intern (format "leaf-keywords-defaults--%s/%s" (if (eq t elm) "leaf" elm) leaf--name)))
           (delete-dups ret)))))
 
     ((memq leaf--key '(:grugru))
@@ -371,11 +364,7 @@
 
     ((memq leaf--key '(:convert-defaults))
      (let ((key (car leaf--value)))
-       `(,(intern (concat
-                   "leaf-keywords-defaults--"
-                   (if (eq t key) "leaf" (symbol-name key))
-                   "/"
-                   (symbol-name leaf--name)))
+       `(,(intern (format "leaf-keywords-defaults--%s/%s" (if (eq t key) "leaf" key) leaf--name))
          . "Default config for leaf/base.")))
 
     ((memq leaf--key '(:mode-hook))
