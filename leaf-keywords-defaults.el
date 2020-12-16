@@ -114,6 +114,7 @@
 (leaf leaf-manager
   :config
   (leaf company
+    :convert-defaults t
     :doc "Modular text completion framework"
     :req "emacs-24.3"
     :tag "matching" "convenience" "abbrev" "emacs>=24.3"
@@ -203,6 +204,7 @@
               (delete-old-versions . t)))
 
   (leaf flycheck
+    :convert-defaults t
     :doc "On-the-fly syntax checking"
     :req "dash-2.12.1" "pkg-info-0.4" "let-alist-1.0.4" "seq-1.11" "emacs-24.3"
     :tag "tools" "languages" "convenience" "emacs>=24.3"
