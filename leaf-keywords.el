@@ -363,9 +363,10 @@
             leaf--value (car leaf--value)))))
 
     ((memq leaf--key '(:convert-defaults))
-     (let ((key (car leaf--value)))
-       `(,(intern (format "leaf-keywords-defaults--%s/%s" (if (eq t key) "leaf" key) leaf--name))
-         . "Default config for leaf/base.")))
+     (let* ((key (car leaf--value))
+            (sym (intern (format "%s/%s" (if (eq t key) "leaf" key) leaf--name))))
+       `(,(intern (format "leaf-keywords-defaults--%s" sym))
+         . ,(format "Default config for %s." sym))))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar

@@ -497,7 +497,7 @@ Example
        :config (package-init))
      (prog1 'leaf
        (defun leaf-keywords-defaults--leaf/leaf ()
-         "Default config for leaf/base."
+         "Default config for leaf/leaf."
          (leaf-pre-init)
          (leaf-pre-init-after)
          (when
