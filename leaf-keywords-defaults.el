@@ -301,6 +301,18 @@
     :custom ((show-paren-delay . 0.1))
     :global-minor-mode show-paren-mode)
 
+  (leaf posframe
+    :convert-defaults
+    :when window-system
+    :doc "Pop a posframe (just a frame) at point"
+    :req "emacs-26"
+    :tag "tooltip" "convenience" "emacs>=26"
+    :added "2020-12-25"
+    :url "https://github.com/tumashu/posframe"
+    :emacs>= 26
+    :ensure t
+    :require t)
+
   (leaf simple
     :convert-defaults t
     :doc "basic editing commands for Emacs"
