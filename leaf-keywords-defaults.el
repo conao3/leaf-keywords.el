@@ -179,6 +179,18 @@
     (defalias 'yes-or-no-p 'y-or-n-p)
     (keyboard-translate 8 127))
 
+  (leaf ddskk-posframe
+    :convert-defaults t
+    :doc "Show Henkan tooltip for ddskk via posframe"
+    :req "emacs-26.1" "posframe-0.4.3" "ddskk-16.2.50"
+    :tag "posframe" "convenience" "tooltip" "emacs>=26.1"
+    :added "2020-12-25"
+    :url "https://github.com/conao3/ddskk-posframe.el"
+    :emacs>= 26.1
+    :ensure t
+    :after posframe ddskk
+    :global-minor-mode t)
+
   (leaf delsel
     :convert-defaults t
     :doc "delete selection if you insert"
@@ -299,6 +311,15 @@
              (kill-whole-line . t)
              (eval-expression-print-length)
              (eval-expression-print-level)))
+
+  (leaf skk
+    :convert-defaults t
+    :doc "Daredevil SKK (Simple Kana to Kanji conversion program)"
+    :tag "out-of-MELPA" "input method" "mule" "japanese"
+    :added "2020-12-25"
+    :url "https://github.com/skk-dev/ddskk"
+    :ensure ddskk
+    :custom ((default-input-method . "japanese-skk")))
 
   (leaf startup
     :convert-defaults t
