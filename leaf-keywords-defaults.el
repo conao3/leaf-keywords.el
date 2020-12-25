@@ -25,7 +25,7 @@
 
 ;;   ;; reqire this module and initialize dependency.
 ;;   (require 'leaf-keywords-defaults)
-;;   (leaf-keywords-defaults-install-dependency)
+;;   (leaf-keywords-defaults--leaf/leaf-keyword)
 
 ;;   ;; load prepared configures you want.
 ;;   (leaf-keywords-defaults--leaf-defaults/base)
