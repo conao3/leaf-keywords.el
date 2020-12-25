@@ -302,7 +302,7 @@
     :global-minor-mode show-paren-mode)
 
   (leaf posframe
-    :convert-defaults
+    :convert-defaults t
     :when window-system
     :doc "Pop a posframe (just a frame) at point"
     :req "emacs-26"
