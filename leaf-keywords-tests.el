@@ -436,6 +436,76 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+(cort-deftest-with-macroexpand leaf/defaults
+  '(((leaf helm
+       :ensure t
+       :defaults t)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-keywords-defaults--leaf/helm)))
+
+    ((leaf helm
+       :when nil
+       :ensure t
+       :defaults t)
+     (prog1 'helm
+       (when nil
+         (leaf-handler-package helm helm nil)
+         (leaf-keywords-defaults--leaf/helm))))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-keywords-defaults--conao3/helm)))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3 garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-keywords-defaults--conao3/helm)
+       (leaf-keywords-defaults--garario3/helm)))
+
+    ((leaf helm
+       :ensure t
+       :defaults conao3
+       :defaults garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)
+       (leaf-keywords-defaults--conao3/helm)
+       (leaf-keywords-defaults--garario3/helm)))
+
+    ((leaf helm
+       :ensure t
+       :defaults nil
+       :defaults conao3
+       :defaults garario3)
+     (prog1 'helm
+       (leaf-handler-package helm helm nil)))))
+
+(cort-deftest-with-macroexpand leaf/convert-defaults
+  '(((leaf leaf
+       :convert-defaults t
+       :preface
+       (leaf-pre-init)
+       (leaf-pre-init-after)
+       :when (some-condition)
+       :require t
+       :init (package-preconfig)
+       :config (package-init))
+     (prog1 'leaf
+       (defun leaf-keywords-defaults--leaf/leaf ()
+         "Default config for leaf/leaf."
+         (leaf-pre-init)
+         (leaf-pre-init-after)
+         (when
+             (some-condition)
+           (package-preconfig)
+           (require 'leaf)
+           (package-init)))))))
+
 (cort-deftest-with-macroexpand leaf/straight
   '(((leaf leaf
        :init (leaf-pre-init)
@@ -887,6 +957,101 @@ Example
          (:isearch-mode-map :package isearch
                             ("ji" . isearch-moccur)
                             ("jo" . isearch-moccur-all))))))))
+
+(cort-deftest-with-macroexpand leaf/grugru
+  '(
+    ;; grugru difinition with :grugru keyword
+    ((leaf cc-mode
+       :grugru
+       (c-mode
+        (symbol "true" "false")))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        (c-mode (symbol "true" "false")))))
+
+    ;; definition list also accepted
+    ((leaf cc-mode
+       :grugru
+       ((c-mode
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        (c-mode (symbol "true" "false")))))
+
+    ;; grugru definition with major-mode list
+    ((leaf cc-mode
+       :grugru
+       ((c-mode c++-mode)
+        (symbol "true" "false")))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode)
+         (symbol "true" "false")))))
+
+    ;; definition list with major-mode list
+    ((leaf cc-mode
+       :grugru
+       (((c-mode c++-mode)
+         (symbol "true" "false"))))
+     (prog1 'cc-mode
+       (grugru-define-multiple
+        ((c-mode c++-mode) (symbol "true" "false")))))
+
+    ;; simple listed definition are inferred to be for leaf--name
+    ((leaf lisp-mode
+       :grugru
+       (symbol "nil" "t")
+       (emacs-lisp-mode
+        (word "add" "remove")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; simple listed definition list are inferred to be for leaf--name
+    ((leaf lisp-mode
+       :grugru
+       ((symbol "nil" "t")
+        (emacs-lisp-mode
+         (word "add" "remove"))))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (lisp-mode (symbol "nil" "t"))
+        (emacs-lisp-mode (word "add" "remove")))))
+
+    ;; assume major-mode name from leaf--name
+    ((leaf gnuplot
+       :grugru
+       ((symbol "sin" "cos" "tan")
+        (symbol "log" "log10")))
+     (prog1 'gnuplot
+       (grugru-define-multiple
+        (gnuplot-mode
+         (symbol "sin" "cos" "tan"))
+        (gnuplot-mode
+         (symbol "log" "log10")))))
+
+    ;; shuffle variation
+    ((leaf lisp-mode
+       :grugru
+       (emacs-lisp-mode
+        (word "add" "remove"))
+       (symbol "nil" "t"))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))
+
+    ;; shuffle variation
+    ((leaf lisp-mode
+       :grugru
+       ((emacs-lisp-mode
+         (word "add" "remove"))
+        (symbol "nil" "t")))
+     (prog1 'lisp-mode
+       (grugru-define-multiple
+        (emacs-lisp-mode (word "add" "remove"))
+        (lisp-mode (symbol "nil" "t")))))))
 
 (cort-deftest-with-macroexpand leaf/mode-hook
   '((;; you can place sexp(s) like :config
@@ -1488,7 +1653,7 @@ Example
           ("!" "Run" dired-git-run)]]))
 
      (prog1 'dired-git
-       (define-transient-command transient-dwim-dired-mode--git ()
+       (transient-define-prefix transient-dwim-dired-mode--git ()
          "Transient-dwim for `dired-mode--git'."
          [["Worktree"
            ("c" "Commit" dired-git-commit)

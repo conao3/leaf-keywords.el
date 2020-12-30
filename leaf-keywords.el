@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 1.4.8
+;; Version: 2.0.1
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -67,17 +67,16 @@
    ;; straight
    feather el-get
 
-   ;; `leaf-keywords-before-load'
-   hydra key-combo smartrep key-chord
-
-   ;; `leaf-keywords-after-load'
-   diminish delight
+   ;; `leaf-keywords-before-require'
+   hydra key-combo smartrep key-chord grugru
 
    ;; `leaf-keywords-after-require'
-   )
+   diminish delight)
   "List of dependent packages.")
 
-(defcustom leaf-keywords-before-protection nil
+(defcustom leaf-keywords-before-protection
+  (leaf-list
+   :convert-defaults `((defun ,(car leaf--value) () ,(cdr leaf--value) ,@leaf--body)))
   "Additional `leaf-keywords' before protection.
 :disabled <this place> :leaf-protect"
   :set #'leaf-keywords-set-keywords
@@ -106,21 +105,22 @@
    :feather    `(,@(mapcar (lambda (elm) `(leaf-handler-package ,leaf--name ,(car elm) ,(cdr elm))) leaf--value)
                  (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
-   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body))
+   :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
+   :defaults   `(,@(mapcar (lambda (elm) `(,elm)) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
-:when :unless :if :ensure <this place> :after"
+:when :unless :if ... :ensure <this place> :after"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
 
-(defcustom leaf-keywords-before-load
+(defcustom leaf-keywords-before-require
   (leaf-list
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
    :transient  (progn
                  ;; (leaf-register-autoload (cadr leaf--value) leaf--name)
-                 `(,@(mapcar (lambda (elm) `(define-transient-command ,@elm)) (car leaf--value)) ,@leaf--body))
+                 `(,@(mapcar (lambda (elm) `(transient-define-prefix ,@elm)) (car leaf--value)) ,@leaf--body))
    :combo      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(key-combo-define ,@elm)) (car leaf--value)) ,@leaf--body))
@@ -147,14 +147,7 @@
                  `((leaf-key-chords* ,(car leaf--value)) ,@leaf--body))
    :mode-hook  `(,@(mapcar (lambda (elm) `(leaf-keywords-handler-mode-hook ,leaf--name ,(car elm) ,@(cadr elm))) leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' before wait loading.
-:after ... <this place> :leaf-defer"
-  :set #'leaf-keywords-set-keywords
-  :type 'sexp
-  :group 'leaf-keywords)
-
-(defcustom leaf-keywords-after-load nil
-  "Additional `leaf-keywords' after wait loading.
-:leaf-defer <this place> :init :require"
+:after ... <this place> :require"
   :set #'leaf-keywords-set-keywords
   :type 'sexp
   :group 'leaf-keywords)
@@ -163,7 +156,8 @@
   (leaf-list
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body))
+   :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
   "Additional `leaf-keywords' after require.
 :require <this place> :config"
   :set #'leaf-keywords-set-keywords
@@ -350,6 +344,42 @@
         (lambda (elm)
           (if (eq t elm) leaf--name elm))
         leaf--value)))
+
+    ((memq leaf--key '(:defaults))
+     (let ((ret (leaf-flatten leaf--value)))
+       (if (eq nil (car ret))
+           nil
+         (mapcar
+          (lambda (elm)
+            (intern (format "leaf-keywords-defaults--%s/%s" (if (eq t elm) "leaf" elm) leaf--name)))
+          (delete-dups ret)))))
+
+    ((memq leaf--key '(:grugru))
+     (cl-flet ((rightvaluep
+                (obj)
+                (when obj
+                  (or
+                   (functionp obj)
+                   (and (listp obj) (cl-every #'stringp obj))))))
+       (mapcar
+        (lambda (arg)
+          (if (rightvaluep (cdr arg))
+              (list (leaf-mode-sym leaf--name) arg)
+            arg))
+        (if (or
+             (rightvaluep (cdar leaf--value))
+             (and
+              (not
+               (or (rightvaluep (cdr-safe (caar leaf--value)))
+                   (rightvaluep (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
+              (rightvaluep (cdar (cdar leaf--value)))))
+            leaf--value (car leaf--value)))))
+
+    ((memq leaf--key '(:convert-defaults))
+     (let* ((key (car leaf--value))
+            (sym (intern (format "%s/%s" (if (eq t key) "leaf" key) leaf--name))))
+       `(,(intern (format "leaf-keywords-defaults--%s" sym))
+         . ,(format "Default config for %s." sym))))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar
@@ -769,19 +799,14 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
         (leaf-insert-list-before leaf-keywords :after
           leaf-keywords-after-conditions))
 
-  ;; :after ... <this place> :leaf-defer
+  ;; :after ... <this place> :require
+  (setq leaf-keywords
+        (leaf-insert-list-before leaf-keywords :require
+          leaf-keywords-before-require))
+
+  ;; :require ... <this place> :leaf-defer
   (setq leaf-keywords
         (leaf-insert-list-before leaf-keywords :leaf-defer
-          leaf-keywords-before-load))
-
-  ;; :leaf-defer ... <this place> :init :require
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :init
-          leaf-keywords-after-load))
-
-  ;; :require ... <this place> :config
-  (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :config
           leaf-keywords-after-require))
 
   ;; :config <this place> :setq
