@@ -24,7 +24,7 @@
   - [[#ensure-system-package-keyword][:ensure-system-package keyword]]
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind, :bind* keywords]]
-  - [[#hydra-keyword][:hydra keyword]]
+  - [[#hydra-mode-hydra-pretty-hydra-keyword][:hydra, :mode-hydra, :pretty-hydra keyword]]
   - [[#hydra-keyword][:transient keyword]]
   - [[#chord-chord-keywords][:chord, :chord* keywords]]
   - [[#smartrep-smartrep-keywords][:smartrep, :smartrep* keywords]]
@@ -629,7 +629,7 @@ These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#bind-bin
          (define-key global-map (kbd "C-M-i") 'flyspell-correct-wrapper)))))
 #+end_src
 
-** :hydra keyword
+** :hydra, :mode-hydra, :pretty-hydra keyword
 ~:hydra~ provide frontend for [[https://github.com/abo-abo/hydra][hydra]].
 
 If you pass a list, you pass it to ~defhydra~, and if you pass a nested list, you pass each one to it.
@@ -735,6 +735,172 @@ The reason for using this keyword is that it automatically creates an ~autoload~
                 ("m" yas/minor-mode)
                 ("a" yas-reload-all))))))))
 #+end_src
+
+And leaf support [[https://github.com/jerrypnz/major-mode-hydra.el][major-mode-hydra]] and [[https://github.com/jerrypnz/major-mode-hydra.el#pretty-hydra][pretty-hydra]] via ~:mode-hydra~ and ~:pretty-hydra~.
+
+#+begin_src emacs-lisp
+  (cort-deftest-with-macroexpand leaf/mode-hydra
+    '(
+      ;; assume leaf--name as major-mode and no body
+      ((leaf go-mode
+         :ensure t
+         :mode "\\.go\\'"
+         :mode-hydra
+         ("Doc"
+          (("d" godoc-at-point "doc at point"))
+          "Imports"
+          (("ia" go-import-add "add")
+           ("ir" go-remove-unused-imports "cleanup"))))
+
+       (prog1 'go-mode
+         (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+         (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+         (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+         (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+         (declare-function godoc-at-point "go-mode")
+         (declare-function go-import-add "go-mode")
+         (declare-function go-remove-unused-imports "go-mode")
+         (declare-function go-mode "go-mode")
+         (leaf-handler-package go-mode go-mode nil)
+         (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+         (major-mode-hydra-define+ go-mode nil
+           ("Doc"
+            (("d" godoc-at-point "doc at point"))
+            "Imports"
+            (("ia" go-import-add "add")
+             ("ir" go-remove-unused-imports "cleanup"))))))
+
+      ;; assume leaf--name as major-mode and spesific body
+      ((leaf go-mode
+         :ensure t
+         :mode "\\.go\\'"
+         :mode-hydra
+         ((:title "Go Commands")
+          ("Doc"
+           (("d" godoc-at-point "doc at point"))
+           "Imports"
+           (("ia" go-import-add "add")
+            ("ir" go-remove-unused-imports "cleanup")))))
+
+       (prog1 'go-mode
+         (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+         (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+         (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+         (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+         (declare-function godoc-at-point "go-mode")
+         (declare-function go-import-add "go-mode")
+         (declare-function go-remove-unused-imports "go-mode")
+         (declare-function go-mode "go-mode")
+         (leaf-handler-package go-mode go-mode nil)
+         (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+         (major-mode-hydra-define+ go-mode
+           (:title "Go Commands")
+           ("Doc"
+            (("d" godoc-at-point "doc at point"))
+            "Imports"
+            (("ia" go-import-add "add")
+             ("ir" go-remove-unused-imports "cleanup"))))))
+
+      ;; specify major-mode and body
+      ((leaf go-mode
+         :ensure t
+         :mode "\\.go\\'"
+         :mode-hydra
+         (go-mode
+          (:title "Go Commands")
+          ("Doc"
+           (("d" godoc-at-point "doc at point"))
+           "Imports"
+           (("ia" go-import-add "add")
+            ("ir" go-remove-unused-imports "cleanup")))))
+
+       (prog1 'go-mode
+         (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+         (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+         (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+         (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+         (declare-function godoc-at-point "go-mode")
+         (declare-function go-import-add "go-mode")
+         (declare-function go-remove-unused-imports "go-mode")
+         (declare-function go-mode "go-mode")
+         (leaf-handler-package go-mode go-mode nil)
+         (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+         (major-mode-hydra-define+ go-mode
+           (:title "Go Commands")
+           ("Doc"
+            (("d" godoc-at-point "doc at point"))
+            "Imports"
+            (("ia" go-import-add "add")
+             ("ir" go-remove-unused-imports "cleanup"))))))
+
+      ;; define two or more :mode-hydra at once
+      ((leaf elisp-mode
+         :mode-hydra
+         (emacs-lisp-mode
+          (:title "Emacs-lisp Commands")
+          ("Eval"
+           (("b" eval-buffer "buffer")
+            ("e" eval-defun "defun")
+            ("r" eval-region "region"))))
+
+         (lisp-interaction-mode
+          (:title "Lisp interaction Commands")
+          ("Eval"
+           (("t" eval-print-last-sexp "this")))))
+
+       (prog1 'elisp-mode
+         (unless (fboundp 'eval-buffer) (autoload #'eval-buffer "elisp-mode" nil t))
+         (unless (fboundp 'eval-defun) (autoload #'eval-defun "elisp-mode" nil t))
+         (unless (fboundp 'eval-region) (autoload #'eval-region "elisp-mode" nil t))
+         (unless (fboundp 'eval-print-last-sexp) (autoload #'eval-print-last-sexp "elisp-mode" nil t))
+         (declare-function eval-buffer "elisp-mode")
+         (declare-function eval-defun "elisp-mode")
+         (declare-function eval-region "elisp-mode")
+         (declare-function eval-print-last-sexp "elisp-mode")
+         (major-mode-hydra-define+ emacs-lisp-mode
+           (:title "Emacs-lisp Commands")
+           ("Eval"
+            (("b" eval-buffer "buffer")
+             ("e" eval-defun "defun")
+             ("r" eval-region "region"))))
+         (major-mode-hydra-define+ lisp-interaction-mode
+           (:title "Lisp interaction Commands")
+           ("Eval"
+            (("t" eval-print-last-sexp "this"))))))))
+
+  (cort-deftest-with-macroexpand leaf/pretty-hydra
+    '(
+      ;; assume leaf--name as major-mode and no body
+      ((leaf go-mode
+         :ensure t
+         :mode "\\.go\\'"
+         :pretty-hydra
+         ("Doc"
+          (("d" godoc-at-point "doc at point"))
+          "Imports"
+          (("ia" go-import-add "add")
+           ("ir" go-remove-unused-imports "cleanup"))))
+
+       (prog1 'go-mode
+         (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+         (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+         (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+         (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+         (declare-function godoc-at-point "go-mode")
+         (declare-function go-import-add "go-mode")
+         (declare-function go-remove-unused-imports "go-mode")
+         (declare-function go-mode "go-mode")
+         (leaf-handler-package go-mode go-mode nil)
+         (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+         (pretty-hydra-define+ go-mode nil
+           ("Doc"
+            (("d" godoc-at-point "doc at point"))
+            "Imports"
+            (("ia" go-import-add "add")
+             ("ir" go-remove-unused-imports "cleanup"))))))))
+#+end_src
+
+
 
 ** :transient keyword
 ~:transient~ provide frontend for [[https://github.com/magit/transient][transient]].

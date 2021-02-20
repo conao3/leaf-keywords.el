@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 2.0.2
+;; Version: 2.0.3
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -68,7 +68,8 @@
    feather el-get system-packages
 
    ;; `leaf-keywords-before-require'
-   hydra key-combo smartrep key-chord grugru
+   hydra major-mode-hydra pretty-hydra key-combo smartrep
+   key-chord grugru
 
    ;; `leaf-keywords-after-require'
    diminish delight)
@@ -119,6 +120,12 @@
    :hydra      (progn
                  (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(defhydra ,@elm)) (car leaf--value)) ,@leaf--body))
+   :mode-hydra (progn
+                 (leaf-register-autoload (cadr leaf--value) leaf--name)
+                 `(,@(mapcar (lambda (elm) `(major-mode-hydra-define+ ,@elm)) (car leaf--value)) ,@leaf--body))
+   :pretty-hydra (progn
+                   (leaf-register-autoload (cadr leaf--value) leaf--name)
+                   `(,@(mapcar (lambda (elm) `(pretty-hydra-define+ ,@elm)) (car leaf--value)) ,@leaf--body))
    :transient  (progn
                  ;; (leaf-register-autoload (cadr leaf--value) leaf--name)
                  `(,@(mapcar (lambda (elm) `(transient-define-prefix ,@elm)) (car leaf--value)) ,@leaf--body))
@@ -233,6 +240,19 @@
                       (progn (mapc (lambda (el) (setq fns (append fns (funcall fn el)))) elm) elm))
                      ((listp elm)
                       (progn (setq fns (append fns (funcall fn elm))) `(,elm)))))
+                  leaf--value))
+       `(,val ,fns)))
+
+    ((memq leaf--key '(:mode-hydra :pretty-hydra))
+     (let ((fn (lambda (elm)
+                 (mapcan (lambda (el) (mapcar (lambda (e) (when (listp e) (cadr e))) (when (listp el) el))) elm)))
+           val fns)
+       (setq val (mapcan
+                  (lambda (elm)
+                    (cond
+                     ((stringp (car-safe elm)) (setq fns (append fns (funcall fn elm))) `((,leaf--name nil ,elm)))
+                     ((listp (car-safe elm)) (setq fns (append fns (funcall fn (cadr elm)))) `((,leaf--name ,@elm)))
+                     ((symbolp (car-safe elm)) (setq fns (append fns (funcall fn (cl-caddr elm)))) `((,@elm)))))
                   leaf--value))
        `(,val ,fns)))
 

@@ -1449,6 +1449,264 @@ Example
          ("m" yas/minor-mode)
          ("a" yas-reload-all))))))
 
+(cort-deftest-with-macroexpand leaf/mode-hydra
+  '(
+    ;; assume leaf--name as major-mode and no body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :mode-hydra
+       ("Doc"
+        (("d" godoc-at-point "doc at point"))
+        "Imports"
+        (("ia" go-import-add "add")
+         ("ir" go-remove-unused-imports "cleanup"))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (major-mode-hydra-define+ go-mode nil
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; assume leaf--name as major-mode and spesific body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :mode-hydra
+       ((:title "Go Commands")
+        ("Doc"
+         (("d" godoc-at-point "doc at point"))
+         "Imports"
+         (("ia" go-import-add "add")
+          ("ir" go-remove-unused-imports "cleanup")))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (major-mode-hydra-define+ go-mode
+	 (:title "Go Commands")
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; specify major-mode and body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :mode-hydra
+       (go-mode
+        (:title "Go Commands")
+        ("Doc"
+         (("d" godoc-at-point "doc at point"))
+         "Imports"
+         (("ia" go-import-add "add")
+          ("ir" go-remove-unused-imports "cleanup")))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (major-mode-hydra-define+ go-mode
+	 (:title "Go Commands")
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; define two or more :mode-hydra at once
+    ((leaf elisp-mode
+       :mode-hydra
+       (emacs-lisp-mode
+        (:title "Emacs-lisp Commands")
+        ("Eval"
+         (("b" eval-buffer "buffer")
+          ("e" eval-defun "defun")
+          ("r" eval-region "region"))))
+
+       (lisp-interaction-mode
+        (:title "Lisp interaction Commands")
+        ("Eval"
+         (("t" eval-print-last-sexp "this")))))
+
+     (prog1 'elisp-mode
+       (unless (fboundp 'eval-buffer) (autoload #'eval-buffer "elisp-mode" nil t))
+       (unless (fboundp 'eval-defun) (autoload #'eval-defun "elisp-mode" nil t))
+       (unless (fboundp 'eval-region) (autoload #'eval-region "elisp-mode" nil t))
+       (unless (fboundp 'eval-print-last-sexp) (autoload #'eval-print-last-sexp "elisp-mode" nil t))
+       (declare-function eval-buffer "elisp-mode")
+       (declare-function eval-defun "elisp-mode")
+       (declare-function eval-region "elisp-mode")
+       (declare-function eval-print-last-sexp "elisp-mode")
+       (major-mode-hydra-define+ emacs-lisp-mode
+	 (:title "Emacs-lisp Commands")
+	 ("Eval"
+	  (("b" eval-buffer "buffer")
+	   ("e" eval-defun "defun")
+	   ("r" eval-region "region"))))
+       (major-mode-hydra-define+ lisp-interaction-mode
+	 (:title "Lisp interaction Commands")
+	 ("Eval"
+	  (("t" eval-print-last-sexp "this"))))))))
+
+(cort-deftest-with-macroexpand leaf/pretty-hydra
+  '(
+    ;; assume leaf--name as major-mode and no body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :pretty-hydra
+       ("Doc"
+        (("d" godoc-at-point "doc at point"))
+        "Imports"
+        (("ia" go-import-add "add")
+         ("ir" go-remove-unused-imports "cleanup"))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (pretty-hydra-define+ go-mode nil
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; assume leaf--name as major-mode and spesific body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :pretty-hydra
+       ((:title "Go Commands")
+        ("Doc"
+         (("d" godoc-at-point "doc at point"))
+         "Imports"
+         (("ia" go-import-add "add")
+          ("ir" go-remove-unused-imports "cleanup")))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (pretty-hydra-define+ go-mode
+	 (:title "Go Commands")
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; specify major-mode and body
+    ((leaf go-mode
+       :ensure t
+       :mode "\\.go\\'"
+       :pretty-hydra
+       (go-mode
+        (:title "Go Commands")
+        ("Doc"
+         (("d" godoc-at-point "doc at point"))
+         "Imports"
+         (("ia" go-import-add "add")
+          ("ir" go-remove-unused-imports "cleanup")))))
+
+     (prog1 'go-mode
+       (unless (fboundp 'godoc-at-point) (autoload #'godoc-at-point "go-mode" nil t))
+       (unless (fboundp 'go-import-add) (autoload #'go-import-add "go-mode" nil t))
+       (unless (fboundp 'go-remove-unused-imports) (autoload #'go-remove-unused-imports "go-mode" nil t))
+       (unless (fboundp 'go-mode) (autoload #'go-mode "go-mode" nil t))
+       (declare-function godoc-at-point "go-mode")
+       (declare-function go-import-add "go-mode")
+       (declare-function go-remove-unused-imports "go-mode")
+       (declare-function go-mode "go-mode")
+       (leaf-handler-package go-mode go-mode nil)
+       (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+       (pretty-hydra-define+ go-mode
+	 (:title "Go Commands")
+	 ("Doc"
+	  (("d" godoc-at-point "doc at point"))
+	  "Imports"
+	  (("ia" go-import-add "add")
+	   ("ir" go-remove-unused-imports "cleanup"))))))
+
+    ;; define two or more :pretty-hydra at once
+    ((leaf elisp-mode
+       :pretty-hydra
+       (emacs-lisp-mode
+        (:title "Emacs-lisp Commands")
+        ("Eval"
+         (("b" eval-buffer "buffer")
+          ("e" eval-defun "defun")
+          ("r" eval-region "region"))))
+
+       (lisp-interaction-mode
+        (:title "Lisp interaction Commands")
+        ("Eval"
+         (("t" eval-print-last-sexp "this")))))
+
+     (prog1 'elisp-mode
+       (unless (fboundp 'eval-buffer) (autoload #'eval-buffer "elisp-mode" nil t))
+       (unless (fboundp 'eval-defun) (autoload #'eval-defun "elisp-mode" nil t))
+       (unless (fboundp 'eval-region) (autoload #'eval-region "elisp-mode" nil t))
+       (unless (fboundp 'eval-print-last-sexp) (autoload #'eval-print-last-sexp "elisp-mode" nil t))
+       (declare-function eval-buffer "elisp-mode")
+       (declare-function eval-defun "elisp-mode")
+       (declare-function eval-region "elisp-mode")
+       (declare-function eval-print-last-sexp "elisp-mode")
+       (pretty-hydra-define+ emacs-lisp-mode
+	 (:title "Emacs-lisp Commands")
+	 ("Eval"
+	  (("b" eval-buffer "buffer")
+	   ("e" eval-defun "defun")
+	   ("r" eval-region "region"))))
+       (pretty-hydra-define+ lisp-interaction-mode
+	 (:title "Lisp interaction Commands")
+	 ("Eval"
+	  (("t" eval-print-last-sexp "this"))))))))
+
 (cort-deftest-with-macroexpand leaf/transient
   '(((leaf dired-git
        :transient
