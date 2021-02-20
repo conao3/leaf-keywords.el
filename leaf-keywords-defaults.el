@@ -294,6 +294,25 @@
       :custom ((ivy-prescient-retain-classic-highlighting . t))
       :global-minor-mode t))
 
+  (leaf leaf-keywords
+    :convert-defaults t
+    :doc "Additional leaf.el keywords for external packages"
+    :req "emacs-24.4" "leaf-3.5.0"
+    :tag "settings" "lisp" "emacs>=24.4"
+    :added "2020-12-25"
+    :url "https://github.com/conao3/leaf-keywords.el"
+    :emacs>= 24.4
+    :ensure t
+    :after leaf
+    :config
+    (leaf el-get
+      :ensure t)
+
+    (leaf blackout
+      :ensure t)
+
+    (leaf-keywords-init))
+
   (leaf paren
     :convert-defaults t
     :doc "highlight matching paren"
