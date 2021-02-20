@@ -726,6 +726,47 @@ Example
        (key-combo-define emacs-lisp-mode-map "." '("." " . "))
        (key-combo-define emacs-lisp-mode-map "=" '("= " "eq " "equal "))))))
 
+(cort-deftest-with-macroexpand leaf/ensure-system-package
+  '(
+    ;; specify a symbol to set to autoload function
+    ((leaf leaf
+       :ensure-system-package rg
+       :config (leaf-init))
+     (prog1 'leaf
+       (unless (executable-find "rg") (system-packages-install "rg"))
+       (leaf-init)))
+
+    ;; multi symbols will be accepted
+    ((leaf leaf
+       :ensure-system-package rg exa bat)
+     (prog1 'leaf
+       (unless (executable-find "rg") (system-packages-install "rg"))
+       (unless (executable-find "exa") (system-packages-install "exa"))
+       (unless (executable-find "bat") (system-packages-install "bat"))))
+
+    ;; multi symbols in list will be accepted
+    ((leaf leaf
+       :ensure-system-package (rg exa bat))
+     (prog1 'leaf
+       (unless (executable-find "rg") (system-packages-install "rg"))
+       (unless (executable-find "exa") (system-packages-install "exa"))
+       (unless (executable-find "bat") (system-packages-install "bat"))))
+
+    ;; It is accepted even if you specify symbol and list at the same time
+    ((leaf leaf
+       :ensure-system-package openssl (rg exa bat))
+     (prog1 'leaf
+       (unless (executable-find "openssl") (system-packages-install "openssl"))
+       (unless (executable-find "rg") (system-packages-install "rg"))
+       (unless (executable-find "exa") (system-packages-install "exa"))
+       (unless (executable-find "bat") (system-packages-install "bat"))))
+
+    ;; if you specify t, use leaf--name
+    ((leaf rg
+       :ensure-system-package t)
+     (prog1 'rg
+       (unless (executable-find "rg") (system-packages-install "rg"))))))
+
 (cort-deftest-with-macroexpand leaf/chord
   '(((leaf macrostep
        :ensure t
