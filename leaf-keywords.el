@@ -252,7 +252,7 @@
                     (cond
                      ((stringp (car-safe elm)) (setq fns (append fns (funcall fn elm))) `((,leaf--name nil ,elm)))
                      ((listp (car-safe elm)) (setq fns (append fns (funcall fn (cadr elm)))) `((,leaf--name ,@elm)))
-                     ((symbolp (car-safe elm)) (setq fns (append fns (funcall fn (caddr elm)))) `((,@elm)))))
+                     ((symbolp (car-safe elm)) (setq fns (append fns (funcall fn (cl-caddr elm)))) `((,@elm)))))
                   leaf--value))
        `(,val ,fns)))
 
