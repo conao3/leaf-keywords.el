@@ -21,6 +21,7 @@
   - [[#feather-keyword][:feather keyword]]
   - [[#el-get-keyword][:el-get keyword]]
   - [[#straight-keyword][:straight keyword]]
+  - [[#ensure-system-package-keyword][:ensure-system-package keyword]]
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind, :bind* keywords]]
   - [[#hydra-keyword][:hydra keyword]]
@@ -433,6 +434,54 @@ Given a list, the arguments are passed as is to ~straight-use-package~.
               (straight-use-package '(mew :type git :host gitlab :repo "fake/fakest" :no-build))))
          (leaf-pre-init)
          (leaf-init)))))
+#+end_src
+
+** :ensure-system-package keyword
+~:ensure-system-package~ provides a frontend for [[https://gitlab.com/jabranham/system-packages][system-packages]].
+
+If you specify ~t~, leaf assumes that you specified the name of the leaf-block.
+
+#+begin_src elisp
+  (cort-deftest-with-macroexpand leaf/ensure-system-package
+    '(
+      ;; specify a symbol to set to autoload function
+      ((leaf leaf
+         :ensure-system-package rg
+         :config (leaf-init))
+       (prog1 'leaf
+         (unless (executable-find "rg") (system-packages-install "rg"))
+         (leaf-init)))
+
+      ;; multi symbols will be accepted
+      ((leaf leaf
+         :ensure-system-package rg exa bat)
+       (prog1 'leaf
+         (unless (executable-find "rg") (system-packages-install "rg"))
+         (unless (executable-find "exa") (system-packages-install "exa"))
+         (unless (executable-find "bat") (system-packages-install "bat"))))
+
+      ;; multi symbols in list will be accepted
+      ((leaf leaf
+         :ensure-system-package (rg exa bat))
+       (prog1 'leaf
+         (unless (executable-find "rg") (system-packages-install "rg"))
+         (unless (executable-find "exa") (system-packages-install "exa"))
+         (unless (executable-find "bat") (system-packages-install "bat"))))
+
+      ;; It is accepted even if you specify symbol and list at the same time
+      ((leaf leaf
+         :ensure-system-package openssl (rg exa bat))
+       (prog1 'leaf
+         (unless (executable-find "openssl") (system-packages-install "openssl"))
+         (unless (executable-find "rg") (system-packages-install "rg"))
+         (unless (executable-find "exa") (system-packages-install "exa"))
+         (unless (executable-find "bat") (system-packages-install "bat"))))
+
+      ;; if you specify t, use leaf--name
+      ((leaf rg
+         :ensure-system-package t)
+       (prog1 'rg
+         (unless (executable-find "rg") (system-packages-install "rg"))))))
 #+end_src
 
 * Bind keywords
