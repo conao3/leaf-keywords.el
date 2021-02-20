@@ -90,7 +90,8 @@
       (let ((plist* (leaf-normalize-plist plist 'merge))
             ret)
         (while plist*
-          (let* ((key (leaf-sym-from-keyword (pop plist*)))
+          (let* ((key (leaf-sym-from-keyword
+                       (pop plist*)))
                  (val (pop plist*)))
             (push
              `(defun ,(intern
