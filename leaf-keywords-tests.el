@@ -765,7 +765,22 @@ Example
     ((leaf rg
        :ensure-system-package t)
      (prog1 'rg
-       (unless (executable-find "rg") (system-packages-install "rg"))))))
+       (unless (executable-find "rg") (system-packages-install "rg"))))
+
+    ;; Specify the package the package name for given symbol
+    ((leaf leaf
+       :ensure-system-package (rg . ripgrep))
+     (prog1 'leaf
+       (unless (executable-find "rg") (system-packages-install "ripgrep"))))
+
+    ;; Install package if the presence of file is nil
+    ((leaf vterm
+       :ensure-system-package (("/usr/lib/libvterm.so" . libvterm)
+                               (cmake libtool)))
+     (prog1 'vterm
+       (unless (file-exists-p "/usr/lib/libvterm.so") (system-packages-install "libvterm"))
+       (unless (executable-find "cmake") (system-packages-install "cmake"))
+       (unless (executable-find "libtool") (system-packages-install "libtool"))))))
 
 (cort-deftest-with-macroexpand leaf/chord
   '(((leaf macrostep
