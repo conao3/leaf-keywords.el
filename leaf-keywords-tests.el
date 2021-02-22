@@ -780,7 +780,13 @@ Example
      (prog1 'vterm
        (unless (file-exists-p "/usr/lib/libvterm.so") (system-packages-install "libvterm"))
        (unless (executable-find "cmake") (system-packages-install "cmake"))
-       (unless (executable-find "libtool") (system-packages-install "libtool"))))))
+       (unless (executable-find "libtool") (system-packages-install "libtool"))))
+
+    ;; you can specify install shell command
+    ((leaf vterm
+       :ensure-system-package (prettier . "npm i -g prettier-plugin-svelte"))
+     (prog1 'vterm
+       (unless (executable-find "prettier") (async-shell-command "npm i -g prettier-plugin-svelte"))))))
 
 (cort-deftest-with-macroexpand leaf/chord
   '(((leaf macrostep

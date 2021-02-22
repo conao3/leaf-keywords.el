@@ -110,10 +110,17 @@
    :defaults   `(,@(mapcar (lambda (elm) `(,elm)) leaf--value) ,@leaf--body)
    :ensure-system-package
    `(,@(mapcar (lambda (elm)
-                 (if (leaf-pairp elm)
-                     `(unless ,(if (stringp (car elm)) `(file-exists-p ,(car elm)) `(executable-find ,(symbol-name (car elm))))
-                        (system-packages-install ,(symbol-name (cdr elm))))
-                   `(unless (executable-find ,(symbol-name (car elm))) (system-packages-install ,(symbol-name (car elm))))))
+                 (let ((a (car elm)) (d (cdr elm)))
+                   (cond
+                    ((null d)
+                     `(unless (executable-find ,(symbol-name a))
+                        (system-packages-install ,(symbol-name a))))
+                    ((symbolp d)
+                     `(unless ,(if (stringp a) `(file-exists-p ,a) `(executable-find ,(symbol-name a)))
+                        (system-packages-install ,(symbol-name d))))
+                    ((stringp d)
+                     `(unless ,(if (stringp a) `(file-exists-p ,a) `(executable-find ,(symbol-name a)))
+                        (async-shell-command ,d))))))
                leaf--value)
      ,@leaf--body))
   "Additional `leaf-keywords' after conditional branching.
