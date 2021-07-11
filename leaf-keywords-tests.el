@@ -120,7 +120,9 @@ Example
 ;;  test definition
 ;;
 
-(custom-set-variables '(leaf-expand-leaf-protect nil))
+(setq leaf-expand-leaf-protect nil)
+(setq leaf-expand-leaf-path nil)
+
 (leaf-keywords-init)
 
 (cort-deftest-with-macroexpand leaf/diminish
@@ -435,76 +437,6 @@ Example
          ("./configure" "make"))
        (leaf-pre-init)
        (leaf-init)))))
-
-(cort-deftest-with-macroexpand leaf/defaults
-  '(((leaf helm
-       :ensure t
-       :defaults t)
-     (prog1 'helm
-       (leaf-handler-package helm helm nil)
-       (leaf-keywords-defaults--leaf/helm)))
-
-    ((leaf helm
-       :when nil
-       :ensure t
-       :defaults t)
-     (prog1 'helm
-       (when nil
-         (leaf-handler-package helm helm nil)
-         (leaf-keywords-defaults--leaf/helm))))
-
-    ((leaf helm
-       :ensure t
-       :defaults conao3)
-     (prog1 'helm
-       (leaf-handler-package helm helm nil)
-       (leaf-keywords-defaults--conao3/helm)))
-
-    ((leaf helm
-       :ensure t
-       :defaults conao3 garario3)
-     (prog1 'helm
-       (leaf-handler-package helm helm nil)
-       (leaf-keywords-defaults--conao3/helm)
-       (leaf-keywords-defaults--garario3/helm)))
-
-    ((leaf helm
-       :ensure t
-       :defaults conao3
-       :defaults garario3)
-     (prog1 'helm
-       (leaf-handler-package helm helm nil)
-       (leaf-keywords-defaults--conao3/helm)
-       (leaf-keywords-defaults--garario3/helm)))
-
-    ((leaf helm
-       :ensure t
-       :defaults nil
-       :defaults conao3
-       :defaults garario3)
-     (prog1 'helm
-       (leaf-handler-package helm helm nil)))))
-
-(cort-deftest-with-macroexpand leaf/convert-defaults
-  '(((leaf leaf
-       :convert-defaults t
-       :preface
-       (leaf-pre-init)
-       (leaf-pre-init-after)
-       :when (some-condition)
-       :require t
-       :init (package-preconfig)
-       :config (package-init))
-     (prog1 'leaf
-       (defun leaf-keywords-defaults--leaf/leaf ()
-         "Default config for leaf/leaf."
-         (leaf-pre-init)
-         (leaf-pre-init-after)
-         (when
-             (some-condition)
-           (package-preconfig)
-           (require 'leaf)
-           (package-init)))))))
 
 (cort-deftest-with-macroexpand leaf/straight
   '(((leaf leaf

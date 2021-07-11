@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 2.0.5
+;; Version: 2.0.6
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -75,9 +75,7 @@
    diminish delight)
   "List of dependent packages.")
 
-(defcustom leaf-keywords-before-protection
-  (leaf-list
-   :convert-defaults `((defun ,(car leaf--value) () ,(cdr leaf--value) ,@leaf--body)))
+(defcustom leaf-keywords-before-protection nil
   "Additional `leaf-keywords' before protection.
 :disabled <this place> :leaf-protect"
   :set #'leaf-keywords-set-keywords
@@ -107,7 +105,6 @@
                  (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
    :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
-   :defaults   `(,@(mapcar (lambda (elm) `(,elm)) leaf--value) ,@leaf--body)
    :ensure-system-package
    `(,@(mapcar (lambda (elm)
                  (let ((a (car elm)) (d (cdr elm)))
@@ -367,15 +364,6 @@
           (if (eq t elm) leaf--name elm))
         leaf--value)))
 
-    ((memq leaf--key '(:defaults))
-     (let ((ret (leaf-flatten leaf--value)))
-       (if (eq nil (car ret))
-           nil
-         (mapcar
-          (lambda (elm)
-            (intern (format "leaf-keywords-defaults--%s/%s" (if (eq t elm) "leaf" elm) leaf--name)))
-          (delete-dups ret)))))
-
     ((memq leaf--key '(:grugru))
      (cl-flet ((rightvaluep
                 (obj)
@@ -396,12 +384,6 @@
                    (rightvaluep (cdr-safe (car-safe (cdr-safe (caar leaf--value)))))))
               (rightvaluep (cdar (cdar leaf--value)))))
             leaf--value (car leaf--value)))))
-
-    ((memq leaf--key '(:convert-defaults))
-     (let* ((key (car leaf--value))
-            (sym (intern (format "%s/%s" (if (eq t key) "leaf" key) leaf--name))))
-       `(,(intern (format "leaf-keywords-defaults--%s" sym))
-         . ,(format "Default config for %s." sym))))
 
     ((memq leaf--key '(:mode-hook))
      (mapcar
