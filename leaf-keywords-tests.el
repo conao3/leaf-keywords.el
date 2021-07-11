@@ -120,7 +120,9 @@ Example
 ;;  test definition
 ;;
 
-(custom-set-variables '(leaf-expand-leaf-protect nil))
+(setq leaf-expand-leaf-protect nil)
+(setq leaf-expand-leaf-path nil)
+
 (leaf-keywords-init)
 
 (cort-deftest-with-macroexpand leaf/diminish
