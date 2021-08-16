@@ -5,7 +5,7 @@
 ;; Author: Naoya Yamashita <conao3@gmail.com>
 ;; Maintainer: Naoya Yamashita <conao3@gmail.com>
 ;; Keywords: lisp settings
-;; Version: 2.0.6
+;; Version: 2.0.7
 ;; URL: https://github.com/conao3/leaf-keywords.el
 ;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
 
@@ -84,7 +84,6 @@
 
 (defcustom leaf-keywords-documentation-keywords
   (leaf-list
-   :added      `(,@leaf--body)
    :comment    `(,@leaf--body))
   "Additional `leaf-keywords' documentation keywords.
 :doc :req :tag <this place> :file :url"
