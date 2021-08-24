@@ -725,7 +725,7 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
         (append leaf-keywords-normalize leaf-keywords-raw-normalize))
 
   ;; add keywords to `leaf-defaults'
-  (setq leaf-defaults (append '(:el-patch/feature t) leaf-defaults))
+  (setq leaf-defaults (plist-put leaf-defaults :el-patch/feature t))
 
   ;; define new leaf-expand-* variable
   (eval
