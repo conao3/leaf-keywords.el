@@ -162,9 +162,9 @@
    :el-patch/feature (if (leaf-list-memq '(:init/el-patch :config/el-patch) (leaf-plist-keys leaf--raw))
                          `((el-patch-feature ,leaf--name) ,@leaf--body)
                        `,@leaf--body)
-   :init/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+   :init/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) (bound-and-true-p el-patch-deftype-alist)))
                                             (cons (or
-                                                   (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                   (plist-get (cdr (assq (car elm) (bound-and-true-p el-patch-deftype-alist))) :macro-name)
                                                    (intern (format "el-patch-%S" (car elm))))
                                                   (cdr elm))
                                           elm))
@@ -182,9 +182,9 @@
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
-   :config/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) el-patch-deftype-alist))
+   :config/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) (bound-and-true-p el-patch-deftype-alist)))
                                               (cons (or
-                                                     (plist-get (alist-get (car elm) el-patch-deftype-alist) :macro-name)
+                                                     (plist-get (cdr (assq (car elm) (bound-and-true-p el-patch-deftype-alist))) :macro-name)
                                                      (intern (format "el-patch-%S" (car elm))))
                                                     (cdr elm))
                                             elm))
