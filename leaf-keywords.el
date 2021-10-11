@@ -181,7 +181,15 @@
    :delight    `(,@(mapcar (lambda (elm) `(delight ,@elm)) leaf--value) ,@leaf--body)
    :diminish   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(diminish ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
    :blackout   `((with-eval-after-load ',leaf--name ,@(mapcar (lambda (elm) `(blackout ',(car elm) ,(cdr elm))) leaf--value)) ,@leaf--body)
-   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body)
+   :grugru     `((grugru-define-multiple ,@leaf--value) ,@leaf--body))
+  "Additional `leaf-keywords' after require.
+:require <this place> :config"
+  :set #'leaf-keywords-set-keywords
+  :type 'sexp
+  :group 'leaf-keywords)
+
+(defcustom leaf-keywords-after-config
+  (leaf-list
    :config/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) (bound-and-true-p el-patch-deftype-alist)))
                                               (cons (or
                                                      (plist-get (cdr (assq (car elm) (bound-and-true-p el-patch-deftype-alist))) :macro-name)
@@ -190,13 +198,6 @@
                                             elm))
                                 leaf--value)
                       ,@leaf--body))
-  "Additional `leaf-keywords' after require.
-:require <this place> :config"
-  :set #'leaf-keywords-set-keywords
-  :type 'sexp
-  :group 'leaf-keywords)
-
-(defcustom leaf-keywords-after-config nil
   "Additional `leaf-keywords' after config.
 :config <this place> :setq"
   :set #'leaf-keywords-set-keywords
@@ -715,9 +716,9 @@ If RENEW is non-nil, renew leaf-{keywords, normalize} cache."
         (leaf-insert-list-before leaf-keywords :leaf-defer
           leaf-keywords-after-require))
 
-  ;; :config <this place> :setq
+  ;; :config <this place> :defer-config
   (setq leaf-keywords
-        (leaf-insert-list-before leaf-keywords :setq
+        (leaf-insert-list-before leaf-keywords :defer-config
           leaf-keywords-after-config))
 
   ;; add additional normalize on the top
