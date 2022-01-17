@@ -161,7 +161,7 @@
 
    :el-patch/feature (if (leaf-list-memq '(:init/el-patch :config/el-patch) (leaf-plist-keys leaf--raw))
                          `((el-patch-feature ,leaf--name) ,@leaf--body)
-                       `,@leaf--body)
+                       `(,@leaf--body))
    :init/el-patch `(,@(mapcar (lambda (elm) (if (and (consp elm) (assq (car elm) (bound-and-true-p el-patch-deftype-alist)))
                                             (cons (or
                                                    (plist-get (cdr (assq (car elm) (bound-and-true-p el-patch-deftype-alist))) :macro-name)
