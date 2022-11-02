@@ -15,6 +15,8 @@
 * Table of Contents
 - [[#description][Description]]
 - [[#install][Install]]
+  - [[#melpa][MELPA]]
+  - [[#manual-install][Manual install]]
 - [[#usage][Usage]]
 - [[#ensure-keywords][Ensure keywords]]
   - [[#package-ensure-keywords][:package, :ensure keywords]]
@@ -25,8 +27,8 @@
 - [[#bind-keywords][Bind keywords]]
   - [[#bind-bind-keywords][:bind, :bind* keywords]]
   - [[#hydra-mode-hydra-pretty-hydra-keyword][:hydra, :mode-hydra, :pretty-hydra keyword]]
-  - [[#hydra-keyword][:transient keyword]]
   - [[#chord-chord-keywords][:chord, :chord* keywords]]
+  - [[#transient-keyword][:transient keyword]]
   - [[#smartrep-smartrep-keywords][:smartrep, :smartrep* keywords]]
   - [[#combo-combo-keywords][:combo, :combo* keywords]]
   - [[#mode-hook-keyword][:mode-hook keyword]]
