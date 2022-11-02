@@ -1529,59 +1529,6 @@ To specify the hook name explicitly, specify a hook symbol in ~car~ and a list o
          (add-hook 'cc-mode-hook 'leaf-keywords-mode-hook--cc-mode--cc-mode-hook)))))
 #+end_src
 
-* Ensure keywords
-** :package, :ensure keywords
-These keywords are buildin. Info is [[https://github.com/conao3/leaf.el#package-ensure-keywords][here]].
-
-#+begin_src emacs-lisp
-  (cort-deftest-with-macroexpand leaf/package
-    '(((leaf leaf
-         :package t
-         :config (leaf-init))
-       (prog1 'leaf
-         (leaf-handler-package leaf leaf nil)
-         (leaf-init)))
-
-      ((leaf leaf
-         :package t leaf-browser
-         :config (leaf-init))
-       (prog1 'leaf
-         (leaf-handler-package leaf leaf nil)
-         (leaf-handler-package leaf leaf-browser nil)
-         (leaf-init)))
-
-      ((leaf leaf
-         :package feather leaf-key leaf-browser
-         :config (leaf-init))
-       (prog1 'leaf
-         (leaf-handler-package leaf feather nil)
-         (leaf-handler-package leaf leaf-key nil)
-         (leaf-handler-package leaf leaf-browser nil)
-         (leaf-init)))))
-
-  (cort-deftest-with-macroexpand leaf/handler-package
-    '(((leaf macrostep :ensure t)
-       (prog1 'macrostep
-         (leaf-handler-package macrostep macrostep nil))
-
-       ((leaf-handler-package macrostep macrostep nil)
-        (unless
-            (package-installed-p 'macrostep)
-          (condition-case err
-              (progn
-                (unless (assoc 'macrostep package-archive-contents)
-                  (package-refresh-contents))
-                (package-install 'macrostep))
-            (error
-             (condition-case err
-                 (progn
-                   (package-refresh-contents)
-                   (package-install 'macrostep))
-               (error
-                (leaf-error "In `macrostep' block, failed to :package of macrostep.  Error msg: %s"
-                            (error-message-string err)))))))))))
-#+end_src
-
 ** :el-get keyword
 ~:el-get~ provide frontend of ~el-get-bundle~.
 
