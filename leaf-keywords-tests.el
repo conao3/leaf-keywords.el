@@ -303,9 +303,10 @@ Example
        :config (leaf-init))
      (prog1 'leaf
        (leaf-handler-package leaf leaf nil)
-       (feather-add-after-installed-hook-sexp leaf
-         (leaf-pre-init)
-         (leaf-init))))
+       (eval
+	(feather-add-after-installed-hook-sexp leaf
+          (leaf-pre-init)
+          (leaf-init)))))
 
     ;; multi symbols will be accepted
     ((leaf leaf
@@ -315,9 +316,10 @@ Example
      (prog1 'leaf
        (leaf-handler-package leaf leaf nil)
        (leaf-handler-package leaf leaf-polyfill nil)
-       (feather-add-after-installed-hook-sexp leaf-polyfill
-         (leaf-pre-init)
-         (leaf-init))))
+       (eval
+	(feather-add-after-installed-hook-sexp leaf-polyfill
+          (leaf-pre-init)
+          (leaf-init)))))
 
     ;; multi symbols in list will be accepted
     ((leaf leaf
@@ -327,8 +329,9 @@ Example
        (leaf-handler-package leaf feather nil)
        (leaf-handler-package leaf leaf-key nil)
        (leaf-handler-package leaf leaf-browser nil)
-       (feather-add-after-installed-hook-sexp leaf-browser
-         (leaf-init))))
+       (eval
+	(feather-add-after-installed-hook-sexp leaf-browser
+          (leaf-init)))))
 
     ;; multi keyword will be accepted
     ((leaf leaf
@@ -339,9 +342,10 @@ Example
      (prog1 'leaf
        (leaf-handler-package leaf leaf nil)
        (leaf-handler-package leaf leaf-polyfill nil)
-       (feather-add-after-installed-hook-sexp leaf-polyfill
-         (leaf-pre-init)
-         (leaf-init))))
+       (eval
+	(feather-add-after-installed-hook-sexp leaf-polyfill
+          (leaf-pre-init)
+          (leaf-init)))))
 
     ;; keywords such as :preface that expand before :feather
     ;; are not registered in the hook of feather
@@ -353,9 +357,10 @@ Example
      (prog1 'leaf
        (leaf-preface)
        (leaf-handler-package leaf leaf nil)
-       (feather-add-after-installed-hook-sexp leaf
-         (leaf-pre-init)
-         (leaf-init))))))
+       (eval
+	(feather-add-after-installed-hook-sexp leaf
+          (leaf-pre-init)
+          (leaf-init)))))))
 
 (cort-deftest-with-macroexpand leaf/el-get
   '(((leaf leaf

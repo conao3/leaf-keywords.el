@@ -101,7 +101,7 @@
 (defcustom leaf-keywords-after-conditions
   (leaf-list
    :feather    `(,@(mapcar (lambda (elm) `(leaf-handler-package ,leaf--name ,(car elm) ,(cdr elm))) leaf--value)
-                 (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
+                 (eval (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body)))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
    :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
    :ensure-system-package
