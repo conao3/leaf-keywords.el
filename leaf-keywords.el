@@ -103,6 +103,8 @@
    :feather    `(,@(mapcar (lambda (elm) `(leaf-handler-package ,leaf--name ,(car elm) ,(cdr elm))) leaf--value)
                  (feather-add-after-installed-hook-sexp ,(caar (last leaf--value)) ,@leaf--body))
    :straight   `(,@(mapcar (lambda (elm) `(straight-use-package ',elm)) leaf--value) ,@leaf--body)
+   :elpaca     `(,@(mapcar (lambda (elm) `(elpaca ,elm)) (butlast leaf--value))
+                 ,@(if (eq nil leaf--value) leaf--body `((elpaca ,@(last leaf--value) ,@leaf--body))))
    :el-get     `(,@(mapcar (lambda (elm) `(el-get-bundle ,@elm)) leaf--value) ,@leaf--body)
    :ensure-system-package
    `(,@(mapcar (lambda (elm)
@@ -356,7 +358,7 @@
           (leaf-keywords-normalize-list-in-list (if (eq t elm) leaf--name elm) 'allow-dotlist))
         leaf--value)))
 
-    ((memq leaf--key '(:straight))
+    ((memq leaf--key '(:straight :elpaca))
      (unless (eq (car-safe leaf--value) nil)
        (mapcar
         (lambda (elm)

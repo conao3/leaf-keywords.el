@@ -510,6 +510,79 @@ Example
        (leaf-pre-init)
        (leaf-init)))))
 
+
+(cort-deftest-with-macroexpand leaf/elpaca
+  '(((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca t
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca leaf
+         (leaf-pre-init)
+         (leaf-init))))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca nil t
+       :config (leaf-init))
+     (prog1 'leaf
+       (leaf-pre-init)
+       (leaf-init)))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca leaf leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca leaf)
+       (elpaca leaf-polyfill
+         (leaf-pre-init)
+         (leaf-init))))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca t
+       :elpaca leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca leaf)
+       (elpaca leaf-polyfill
+         (leaf-pre-init)
+         (leaf-init))))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca t leaf-polyfill
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca leaf)
+       (elpaca leaf-polyfill
+         (leaf-pre-init)
+         (leaf-init))))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca (zenburn-theme :host github :repo "fake/fake")
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca (zenburn-theme :host github :repo "fake/fake")
+         (leaf-pre-init)
+         (leaf-init))))
+
+    ((leaf leaf
+       :init (leaf-pre-init)
+       :elpaca
+       (zenburn-theme :host github :repo "fake/fake")
+       (yaicomplete :host github :repo "fake/faker")
+       (mew :host gitlab :repo "fake/fakest")
+       :config (leaf-init))
+     (prog1 'leaf
+       (elpaca (zenburn-theme :host github :repo "fake/fake"))
+       (elpaca (yaicomplete :host github :repo "fake/faker"))
+       (elpaca (mew :host gitlab :repo "fake/fakest")
+         (leaf-pre-init)
+         (leaf-init))))))
+
 (cort-deftest-with-macroexpand leaf/key-combo
   '(((leaf key-combo
        :combo (("="   . (" = " " == " " === " ))
