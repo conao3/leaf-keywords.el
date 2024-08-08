@@ -287,8 +287,8 @@
                            (listp (caar elm)))
                       (mapcan
                        (lambda (el)
-                         (let ((emap  (and (symbolp (car el)) (car el)))   ; el's map
-                               (binds (if (leaf-pairp (car el)) el (cdr el))))
+                         (let* ((emap  (and (symbolp (car el)) (car el)))   ; el's map
+                                (binds (if emap (cdr el) el)))
                            (mapcar
                             (lambda (el)
                               (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
@@ -296,8 +296,8 @@
                             binds)))
                        elm))
                      ((listp elm)
-                      (let ((emap  (and (symbolp (car elm)) (car elm)))    ; elm's map
-                            (binds (if (leaf-pairp (car elm)) elm (cdr elm))))
+                      (let* ((emap  (and (symbolp (car elm)) (car elm)))    ; elm's map
+                             (binds (if emap (cdr elm) elm)))
                         (mapcar
                          (lambda (el)
                            (setq fns (append fns (if (listp (cdr el)) (cdr el) `(,(cdr el)))))
