@@ -7,13 +7,20 @@ PACKAGE_NAME := leaf-keywords
 REPO_NAME    := leaf-keywords.el
 
 EMACS        ?= emacs
-ELS          := $(shell cask files)
+ELS          := leaf-keywords.el
 
 GIT_HOOKS    := pre-commit
 
+LEAF_REPO    := https://github.com/conao3/leaf.el.git
+LEAF_REF     := 1e363fe114310a6af5f3f770be795657307ad3d1
+DEPS_DIR     := .deps
+LEAF_DIR     := $(DEPS_DIR)/leaf
+
+BATCH        := $(EMACS) -Q --batch -L . -L $(LEAF_DIR)
+
 ##################################################
 
-.PHONY: all
+.PHONY: all test clean
 
 all: git-hook help
 
@@ -31,26 +38,22 @@ help:
 	$(info )
 	$(info Cleaning)
 	$(info ========)
-	$(info   - make clean    # Clean compiled files, docker conf files)
-	$(info )
-	$(info This Makefile required `cask`)
-	$(info See https://github.com/$(REPO_USER)/$(REPO_NAME)#contribution)
+	$(info   - make clean    # Clean compiled files and fetched dependencies)
 	$(info )
 
 ##############################
 
-%.elc: %.el .cask
-	cask exec $(EMACS) -Q --batch -f batch-byte-compile $<
+$(LEAF_DIR):
+	git clone $(LEAF_REPO) $(LEAF_DIR)
+	git -C $(LEAF_DIR) checkout --quiet $(LEAF_REF)
 
-.cask: Cask
-	cask install
-	touch $@
+%.elc: %.el $(LEAF_DIR)
+	$(BATCH) -f batch-byte-compile $<
 
 ##############################
 
-test: $(ELS:%.el=%.elc)
-	cask exec $(EMACS) -Q --batch -L . -l leaf-keywords-tests.el -f cort-test-run
-#	cask exec buttercup -L .
+test: $(LEAF_DIR) $(ELS:%.el=%.elc)
+	$(BATCH) -l leaf-keywords-tests.el -f cort-test-run
 
 clean:
-	rm -rf $(ELS:%.el=%.elc) .cask
+	rm -rf $(ELS:%.el=%.elc) $(DEPS_DIR)
