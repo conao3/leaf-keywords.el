@@ -7,7 +7,7 @@
 ;; Keywords: lisp settings
 ;; Version: 2.0.8
 ;; URL: https://github.com/conao3/leaf-keywords.el
-;; Package-Requires: ((emacs "24.4") (leaf "3.5.0"))
+;; Package-Requires: ((emacs "24.4") (leaf "4.5.5"))
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
